@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_welcome"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sarahrobinson.finalyearproject.LoginActivity">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerLogin"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="20dp"
+        android:gravity="bottom"
+        android:layout_height="150dp">
+
+        <ImageView
+            android:src="@drawable/circle_white"
+            android:contentDescription="Logo"
+            android:layout_gravity="center"
+            android:layout_width="120dp"
+            android:layout_height="120dp" />
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <LinearLayout
+        android:id="@+id/contentLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/headerLogin"
+        android:layout_above="@+id/footerLogin"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingRight="30dp"
+        android:paddingLeft="30dp">
+
+        <EditText
+            android:id="@+id/editTextLoginEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/border_white_bottom"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="40dp" />
+
+        <EditText
+            android:id="@+id/editTextLoginPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:background="@drawable/border_white_bottom"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="40dp" />
+
+        <Button
+            android:id="@+id/btnLogIn"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_white"
+            android:text="LOG IN"
+            android:layout_marginBottom="30dp"
+            style="@style/BtnWhite" />
+
+    </LinearLayout>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:id="@+id/footerLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom">
+
+        <TextView
+            android:id="@+id/btnSignUpPrompt"
+            android:layout_width="match_parent"
+            android:padding="20dp"
+            android:text="Don't have an account? Sign up"
+            android:gravity="bottom|center"
+            android:layout_marginTop="30dp"
+            android:layout_height="60dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

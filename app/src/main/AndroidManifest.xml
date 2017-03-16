@@ -15,19 +15,22 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".WelcomeActivity"
-            android:theme="@style/ThemeLogin">
-        </activity>
+            android:theme="@style/ThemeLogin" />
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/ThemeLogin">
-        </activity>
+            android:theme="@style/ThemeLogin" />
         <activity
             android:name=".SignUpActivity"
             android:theme="@style/ThemeLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/ThemeLogin">
         </activity>
     </application>
 

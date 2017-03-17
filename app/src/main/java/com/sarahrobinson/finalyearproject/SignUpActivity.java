@@ -62,7 +62,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         btnSignUp.setOnClickListener(this);
         btnLogInPrompt.setOnClickListener(this);
 
-
     }
 
     private void registerUser(){

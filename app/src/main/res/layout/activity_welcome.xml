@@ -44,6 +44,7 @@
             android:fontFamily="serif"
             android:layout_marginBottom="60dp" />
 
+        <!--
         <Button
             android:id="@+id/btnFbLoginLarge"
             android:layout_width="280dp"
@@ -71,6 +72,7 @@
             android:textStyle="normal"
             android:fontFamily="serif"
             android:layout_marginBottom="30dp" />
+        -->
 
         <Button
             android:id="@+id/btnSignUpWelcome"

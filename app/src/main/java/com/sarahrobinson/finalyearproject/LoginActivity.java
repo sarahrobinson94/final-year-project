@@ -13,19 +13,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.FirebaseException;
+
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.widget.LoginButton;
+
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth firebaseAuth;
+    private CallbackManager callbackManager;
 
     private EditText editTextLogInEmail;
     private EditText editTextLogInPassword;
     private Button btnLogIn;
+    private Button btnLogInFacebook;
+    private Button btnLogInGoogle;
     private TextView btnSignUpPrompt;
 
     private ProgressDialog progressDialog;
@@ -33,6 +43,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // initializing facebook sdk
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        // facebook analytics
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -51,12 +65,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextLogInEmail = (EditText)findViewById(R.id.editTextLoginEmail);
         editTextLogInPassword = (EditText)findViewById(R.id.editTextLoginPassword);
         btnLogIn = (Button)findViewById(R.id.btnLogIn);
+        btnLogInFacebook = (Button)findViewById(R.id.btnFbLoginLarge);
+        btnLogInGoogle = (Button)findViewById(R.id.btnGoogleLoginLarge);
         btnSignUpPrompt = (TextView)findViewById(R.id.btnSignUpPrompt);
 
         progressDialog = new ProgressDialog(this);
 
         btnLogIn.setOnClickListener(this);
         btnSignUpPrompt.setOnClickListener(this);
+
+        ////////////////// facebook login //////////////////
+
+        // callback manager
+        callbackManager = CallbackManager.Factory.create();
+
+        //btnLogInFacebook.setReadPermissions("email", "public_profile");
     }
 
     private void userLogin(){

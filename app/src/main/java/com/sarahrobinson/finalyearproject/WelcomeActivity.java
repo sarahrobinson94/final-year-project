@@ -6,26 +6,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.firebase.ui.auth.AuthUI;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button btnSignUp;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_welcome);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        startActivityForResult(AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setProviders(
-                        AuthUI.FACEBOOK_PROVIDER,
-                        AuthUI.GOOGLE_PROVIDER)
-                .build(), 1);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this); // facebook analytics
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         btnSignUp = (Button)findViewById(R.id.btnSignUpWelcome);
         btnSignUp.setOnClickListener(this);

@@ -35,7 +35,8 @@
         android:layout_above="@+id/footerLogin"
         android:gravity="center_vertical|center_horizontal"
         android:paddingRight="30dp"
-        android:paddingLeft="30dp">
+        android:paddingLeft="30dp"
+        android:paddingTop="40dp">
 
         <EditText
             android:id="@+id/editTextLoginEmail"
@@ -66,16 +67,35 @@
             android:layout_marginBottom="30dp"
             style="@style/BtnWhite" />
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/btnFbLoginLarge"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="30dp" />
+
+        <Button
+            android:id="@+id/btnGoogleLoginLarge"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_google_login_large"
+            android:text="Log in with Google"
+            android:layout_marginBottom="30dp"
+            style="@style/BtnSocialLoginLarge" />
+
     </LinearLayout>
 
     <!-- Footer -->
     <LinearLayout
         android:id="@+id/footerLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:layout_height="60dp">
 
         <TextView
             android:id="@+id/btnSignUpPrompt"

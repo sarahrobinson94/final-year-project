@@ -7,16 +7,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
-
-    private TextView textViewHomeWelcome;
+    private TextView welcomeMessage;
+    private ImageView profilePicture;
     private Button btnLogOut;
 
     @Override
@@ -24,6 +27,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
         firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -31,18 +35,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // start login activity if user is not logged in
         if(firebaseAuth.getCurrentUser() == null){
             finish();
-            Intent i = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(i);
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         }else{
             Log.d("HomeActivity", "User email: " + user.getEmail());
             Log.d("HomeActivity", "User display name: " + user.getDisplayName());
         }
 
-        textViewHomeWelcome = (TextView)findViewById(R.id.textViewHomeWelcome);
-        textViewHomeWelcome.setText("Welcome " + user.getDisplayName());
+        welcomeMessage = (TextView)findViewById(R.id.textViewHomeWelcome);
+        welcomeMessage.setText("Welcome " + user.getDisplayName());
+
+        profilePicture = (ImageView)findViewById(R.id.profilePicture);
 
         btnLogOut = (Button)findViewById(R.id.btnLogOut);
-
         btnLogOut.setOnClickListener(this);
     }
 

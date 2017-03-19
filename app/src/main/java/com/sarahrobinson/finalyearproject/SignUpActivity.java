@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,21 +26,22 @@ import org.w3c.dom.Text;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
-
+    private ProgressDialog progressDialog;
+    private User user;
     private EditText editTextSignUpName;
     private EditText editTextSignUpEmail;
     private EditText editTextSignUpPassword;
     private Button btnSignUp;
     private TextView btnLogInPrompt;
 
-    private ProgressDialog progressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
         firebaseAuth = FirebaseAuth.getInstance();
 
         // checking if user is already logged in
@@ -47,8 +49,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             // TODO: 16/03/2017 take user to home screen (create new fragment)
             finish();
             // start HomeActivity
-            Intent i = new Intent(SignUpActivity.this,HomeActivity.class);
-            startActivity(i);
+            startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
         }
 
         editTextSignUpName = (EditText)findViewById(R.id.editTextSignUpName);
@@ -61,7 +62,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         btnSignUp.setOnClickListener(this);
         btnLogInPrompt.setOnClickListener(this);
-
     }
 
     private void registerUser(){
@@ -69,20 +69,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String email = editTextSignUpEmail.getText().toString().trim();
         String password = editTextSignUpPassword.getText().toString().trim();
 
+        // validating entries
         if(TextUtils.isEmpty(name)){
             // name field is empty
             Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
             // stopping function from executing further
             return;
         }
-
         if(TextUtils.isEmpty(email)){
             // email field is empty
             Toast.makeText(this, "Email address is required", Toast.LENGTH_SHORT).show();
             // stopping function from executing further
             return;
         }
-
         if(TextUtils.isEmpty(password)){
             // password field is empty
             Toast.makeText(this, "Password is required", Toast.LENGTH_SHORT).show();
@@ -94,13 +93,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         progressDialog.setMessage("Creating your account...");
         progressDialog.show();
 
-        // registering user to firebase server
+        // registering user to firebase authentication server
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            // adding display name to user profile
+                            // adding display name to user profile (firebase authentication database)
+                            // TODO: 19/03/2017 do I need to do this if i'm saving user details in firebase database?
                             final FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name)
@@ -116,15 +116,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         }
                                     });
 
+                            // setting up user on firebase database
+                            setUpNewUser();
+
+                            // saving user to firebase database
+                            onAuthenticationSuccess(task.getResult().getUser());
+
+                            // notifying user their account has been created
                             progressDialog.dismiss();
                             Toast.makeText(SignUpActivity.this, "Your account has been created",
                                     Toast.LENGTH_SHORT).show();
 
-                            // TODO: 12/03/2017 take user to login screen
+                            // keeping user logged out and opening login activity
+                            signOut();
                             finish();
-                            // start LoginActivity
-                            Intent login = new Intent(SignUpActivity.this,LoginActivity.class);
-                            startActivity(login);
+                            startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
 
                         }else{
                             progressDialog.dismiss();
@@ -134,6 +140,29 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+    }
+
+    // setting up new user on firebase database
+    protected void setUpNewUser() {
+        user = new User();
+        user.setName(editTextSignUpName.getText().toString().trim());
+        user.setEmail(editTextSignUpEmail.getText().toString().trim());
+    }
+
+    // successful email & password authentication
+    private void onAuthenticationSuccess(FirebaseUser firebaseUser) {
+        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail());
+    }
+
+    // saving new user to firebase database (assigning details to uid)
+    private void saveNewUser(String userId, String name, String email) {
+        User user = new User(userId, name, email);
+        firebaseRef.child("users").child(userId).setValue(user);
+    }
+
+    // logging user out
+    private void signOut() {
+        firebaseAuth.signOut();
     }
 
     @Override
@@ -146,8 +175,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             // end this activity
             finish();
             // start LoginActivity
-            Intent i = new Intent(SignUpActivity.this,LoginActivity.class);
-            startActivity(i);
+            startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
         }
     }
 }

@@ -26,10 +26,13 @@ import org.w3c.dom.Text;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private User user;
+
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
+
     private ProgressDialog progressDialog;
-    private User user;
+
     private EditText editTextSignUpName;
     private EditText editTextSignUpEmail;
     private EditText editTextSignUpPassword;
@@ -116,8 +119,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         }
                                     });
 
-                            // setting up user on firebase database
-                            setUpNewUser();
+                            // setting up user on firebase database ??
+                            setUpUser();
 
                             // saving user to firebase database
                             onAuthenticationSuccess(task.getResult().getUser());
@@ -131,7 +134,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             signOut();
                             finish();
                             startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
-
                         }else{
                             progressDialog.dismiss();
                             // TODO: 16/03/2017 check why signup was unsuccessful and notify user, e.g. invalid password
@@ -142,8 +144,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 });
     }
 
-    // setting up new user on firebase database
-    protected void setUpNewUser() {
+    // setting up user on firebase database ??
+    protected void setUpUser() {
         user = new User();
         user.setName(editTextSignUpName.getText().toString().trim());
         user.setEmail(editTextSignUpEmail.getText().toString().trim());

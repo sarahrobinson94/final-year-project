@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    //private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private FirebaseUser firebaseUser;
 
     // facebook callbackManager
@@ -51,23 +51,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextLogInEmail;
     private EditText editTextLogInPassword;
     private Button btnLogIn;
-    private Button btnLogInFacebook;
+    private LoginButton btnLogInFacebook;
     private Button btnLogInGoogle;
     private TextView btnSignUpPrompt;
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "LoginActivity ******* ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // initializing facebook sdk before setContentView
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
+        // setting Android context before using Firebase
+        Firebase.setAndroidContext(this);
 
         firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-
-        btnLogInFacebook = (Button)findViewById(R.id.btnFbLoginLarge);
-        btnLogInGoogle = (Button)findViewById(R.id.btnGoogleLoginLarge);
 
         // checking if user is logged in
         if (firebaseUser != null){
@@ -75,13 +77,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // TODO: 16/03/2017 take user to home screen (create new fragment)
             Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
             String uid = firebaseUser.getUid();
-            String image = firebaseUser.getPhotoUrl().toString();
-            // passing user id to HomeActivity
-            homeIntent.putExtra("user_id", uid);
+
             // passing profile image to HomeActivity if the user has one
-            if (image != null || image != "") {
+            if (firebaseUser.getPhotoUrl() != null){
+                String image = firebaseUser.getPhotoUrl().toString();
                 homeIntent.putExtra("profile_picture", image);
             }
+
+            // passing user id to HomeActivity
+            homeIntent.putExtra("user_id", uid);
+
             finish();
             startActivity(homeIntent);
 
@@ -89,8 +94,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         // facebook login
-        FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        btnLogInFacebook = (LoginButton) findViewById(R.id.btnFbLoginLarge);
         btnLogInFacebook.setReadPermissions("email", "public_profile");
         btnLogInFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -113,28 +118,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
 
+        Log.d(TAG, "onStart()");
+
         editTextLogInEmail = (EditText)findViewById(R.id.editTextLoginEmail);
         editTextLogInPassword = (EditText)findViewById(R.id.editTextLoginPassword);
         btnLogIn = (Button)findViewById(R.id.btnLogIn);
         btnSignUpPrompt = (TextView)findViewById(R.id.btnSignUpPrompt);
-
+        btnLogInGoogle = (Button) findViewById(R.id.btnGoogleLoginLarge);
         progressDialog = new ProgressDialog(this);
 
+        // onclick listeners
         btnLogIn.setOnClickListener(this);
+        btnLogInFacebook.setOnClickListener(this);
         btnSignUpPrompt.setOnClickListener(this);
 
-        firebaseAuth.addAuthStateListener(firebaseAuthListener);
+        //firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+        Log.d(TAG, "onStop()");
+        /*
         if (firebaseAuthListener != null) {
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
+        */
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // called if user clicks normal login button (email & password login)
     private void userLogin(){
+        Log.d(TAG, "userLogin()");
+
         String email = editTextLogInEmail.getText().toString().trim();
         String password = editTextLogInPassword.getText().toString().trim();
 
@@ -162,15 +184,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d("LoginActivity", "Display name: " + firebaseUser.getDisplayName());
+                            //Log.d("LoginActivity", "Display name: " + firebaseUser.getDisplayName());
 
                             // setting up user on firebase database ??
                             setUpUser();
 
                             // TODO: 16/03/2017 take user to onboarding or home screen
                             Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                            firebaseUser = firebaseAuth.getCurrentUser();
                             String uid = firebaseUser.getUid();
                             homeIntent.putExtra("user_id", uid);
+                            progressDialog.dismiss();
                             finish();
                             startActivity(homeIntent);
                         }else{
@@ -190,11 +214,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         user.setEmail(editTextLogInEmail.getText().toString().trim());
     }
 
-    // facebook login
+    // called on facebook success callback
     private void logInWithFacebook(AccessToken token) {
         Log.d(TAG, "logInWithFacebook: " + token);
 
-        // showing progress dialog
         progressDialog.setMessage("Logging in..."); // TODO: 20/03/2017 message may need to change
         progressDialog.show();
 
@@ -232,8 +255,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             progressDialog.dismiss();
                             // displaying error message to user
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, task.getException().getMessage(),
-                                    Toast.LENGTH_LONG).show();
+                            // TODO: 22/03/2017 fix this so user can't log in with facebook if email address already in use
+                            if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
+                                Toast.makeText(LoginActivity.this, "An account already exists with the same email address. " +
+                                        "Please disable this account before logging in with Facebook.",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 });
@@ -241,11 +268,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
+        Log.d(TAG, "onClick: " + view.toString());
         if (view == btnLogIn){
             // log in
             userLogin();
         }
-
         if (view == btnSignUpPrompt){
             finish();
             // start SignUpActivity

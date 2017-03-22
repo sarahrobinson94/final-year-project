@@ -32,6 +32,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView profilePicture;
     private Button btnLogOut;
 
+    private static final String TAG = "HomeActivity ******* ";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +48,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             finish();
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         }else{
-            Log.d("HomeActivity", "User email: " + firebaseUser.getEmail());
-            Log.d("HomeActivity", "User display name: " + firebaseUser.getDisplayName());
+            Log.d(TAG, "User email: " + firebaseUser.getEmail());
+            Log.d(TAG, "User display name: " + firebaseUser.getDisplayName());
         }
     }
 
@@ -66,7 +68,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // getting imageUrl for logged in user
         String imageUrl = getIntent().getExtras().getString("profile_picture");
 
-        new ImageLoadTask(imageUrl, profilePicture).execute();
+        if(imageUrl != null){
+            new ImageLoadTask(imageUrl, profilePicture).execute();
+        }else{
+            Log.d(TAG, "onStart: no profile picture");
+        }
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
     }

@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
-        // checking if user is logged in
+        // checking if user is already logged in
         if (firebaseUser != null){
             // user is logged in
             // TODO: 16/03/2017 take user to home screen (create new fragment)
@@ -186,14 +186,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (task.isSuccessful()) {
                             //Log.d("LoginActivity", "Display name: " + firebaseUser.getDisplayName());
 
-                            // setting up user on firebase database ??
+                            // setting up user on firebase database ?? (should this be done on login??)
                             setUpUser();
 
-                            // TODO: 16/03/2017 take user to onboarding or home screen
-                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                            firebaseUser = firebaseAuth.getCurrentUser();
-                            String uid = firebaseUser.getUid();
-                            homeIntent.putExtra("user_id", uid);
+                            // if user's first time logging in...
+                                // TODO: 22/03/2017 check if first time log in
+                                // take user to onboarding screens
+                            // else...
+                                // TODO: 22/03/2017 take user to home screen
+                                Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                firebaseUser = firebaseAuth.getCurrentUser();
+                                String uid = firebaseUser.getUid();
+                                homeIntent.putExtra("user_id", uid);
+
                             progressDialog.dismiss();
                             finish();
                             startActivity(homeIntent);
@@ -237,15 +242,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String email = task.getResult().getUser().getEmail();
                             String image = task.getResult().getUser().getPhotoUrl().toString();
 
-                            // TODO: 20/03/2017 does this save the user's changes from other times using the app ??
-                            // create user and save in firebase database ??
-                            user = new User(uid, name, email);
-                            firebaseRef.child(uid).setValue(user);
-
-                            // TODO: 20/03/2017 take user to onboarding or home screen
-                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                            homeIntent.putExtra("user_id", uid);
-                            homeIntent.putExtra("profile_picture", image);
+                            // if fb user's first time logging in...
+                                // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
+                                // ask for permission
+                                // save user to database
+                                // take user to onboarding screens
+                            // else...
+                                // TODO: 20/03/2017 take user to home screen
+                                Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                homeIntent.putExtra("user_id", uid);
+                                homeIntent.putExtra("profile_picture", image);
 
                             progressDialog.dismiss();
                             finish();

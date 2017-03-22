@@ -117,6 +117,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == btnLogOut){
             firebaseAuth.signOut();
+            // TODO: 22/03/2017 logout facebook and google users too
             finish();
             Intent i = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(i);

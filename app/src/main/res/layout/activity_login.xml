@@ -77,6 +77,17 @@
             android:paddingRight="10dp"
             android:layout_marginBottom="30dp" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btnGoogleLoginLarge"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="30dp" />
+
+        <!--
         <Button
             android:id="@+id/btnGoogleLoginLarge"
             android:layout_width="280dp"
@@ -85,6 +96,7 @@
             android:text="Log in with Google"
             android:layout_marginBottom="30dp"
             style="@style/BtnSocialLoginLarge" />
+        -->
 
     </LinearLayout>
 

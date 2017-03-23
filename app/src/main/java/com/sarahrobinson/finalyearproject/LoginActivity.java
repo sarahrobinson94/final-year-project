@@ -20,6 +20,12 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.firebase.client.Firebase;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -32,6 +38,7 @@ import com.google.firebase.FirebaseException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
@@ -40,11 +47,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
-    //private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private FirebaseUser firebaseUser;
 
     // facebook callbackManager
     private CallbackManager callbackManager;
+
+    // google sign in
+    private GoogleApiClient googleApiClient;
+    private static int RC_SIGN_IN = 289;
 
     private ProgressDialog progressDialog;
 
@@ -112,6 +123,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.d(TAG, "facebook:onError " + error);
             }
         });
+
+        // configuring google login
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this , new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                } /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
     }
 
     @Override
@@ -145,12 +172,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
         */
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     // called if user clicks normal login button (email & password login)
@@ -265,6 +286,83 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
                                 Toast.makeText(LoginActivity.this, "An account already exists with the same email address. " +
                                         "Please disable this account before logging in with Facebook.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+    }
+
+    // result for facebook and google sign in
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // result returned from googleSignInIntent
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // google sign in was successful, authenticate with firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                // google sign in failed, show error message
+                // ...
+            }
+        // result returned from facebook log in
+        } else{
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    // handling google sign in
+    private void signIn() {
+        Intent googleSignInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(googleSignInIntent, RC_SIGN_IN);
+    }
+
+    // authenticating google user with firebase
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        if (task.isSuccessful()) {
+                            // sign in succeeded...
+                            // the auth state listener will be notified and logic to handle
+                            // the signed in user can be handled in the listener
+                            String uid = task.getResult().getUser().getUid();
+                            String name = task.getResult().getUser().getDisplayName();
+                            String email = task.getResult().getUser().getEmail();
+                            String image = task.getResult().getUser().getPhotoUrl().toString();
+
+                            // if google user's first time logging in...
+                            // TODO: 22/03/2017 check first time google login (see bookmark - "Firebase: Check if user exists")
+                            // ask for permission
+                            // save user to database
+                            // take user to onboarding screens
+                            // else...
+                            // TODO: 20/03/2017 take user to home screen
+                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                            homeIntent.putExtra("user_id", uid);
+                            homeIntent.putExtra("profile_picture", image);
+
+                            progressDialog.dismiss();
+                            finish();
+                            startActivity(homeIntent);
+                        } else {
+                            // sign in failed...
+                            progressDialog.dismiss();
+                            // displaying error message to user
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            // TODO: 22/03/2017 fix this so user can't log in with google if email address already in use
+                            if(task.getException().toString().contains("FirebaseAuthUserCollisionException")){
+                                Toast.makeText(LoginActivity.this, "An account already exists with the same email address. " +
+                                                "Please disable this account before logging in with Google.",
                                         Toast.LENGTH_LONG).show();
                             }
                         }

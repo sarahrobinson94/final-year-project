@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -27,6 +31,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+
+    // google sign in
+    private GoogleApiClient googleApiClient;
 
     private TextView welcomeMessage;
     private ImageView profilePicture;
@@ -116,8 +123,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btnLogOut){
+            // email sign out
             firebaseAuth.signOut();
-            // TODO: 22/03/2017 logout facebook and google users too
+            // google sign out
+            // TODO: 23/03/2017 maybe need to check first if user is signed in via google
+            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Log.d(TAG, "onClick: google sign out");
+                        }
+                    });
+            // TODO: 22/03/2017 logout facebook users too
             finish();
             Intent i = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(i);

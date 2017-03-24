@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-        // setting Android context before using Firebase
+        // setting android context before using firebase
         Firebase.setAndroidContext(this);
 
         firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .enableAutoManage(this , new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+                        progressDialog.hide();
                     }
                 } /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // onclick listeners
         btnLogIn.setOnClickListener(this);
-        btnLogInFacebook.setOnClickListener(this);
+        btnLogInGoogle.setOnClickListener(this);
         btnSignUpPrompt.setOnClickListener(this);
 
         //firebaseAuth.addAuthStateListener(firebaseAuthListener);
@@ -241,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         user.setEmail(editTextLogInEmail.getText().toString().trim());
     }
 
-    // called on facebook success callback
+    // handling facebook log in (called on facebook success callback)
     private void logInWithFacebook(AccessToken token) {
         Log.d(TAG, "logInWithFacebook: " + token);
 
@@ -294,6 +294,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    // handling google sign in
+    private void googleSignIn() {
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+        Intent googleSignInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(googleSignInIntent, RC_SIGN_IN);
+    }
+
     // result for facebook and google sign in
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -315,14 +323,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    // handling google sign in
-    private void signIn() {
-        Intent googleSignInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(googleSignInIntent, RC_SIGN_IN);
-    }
-
     // authenticating google user with firebase
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        progressDialog.setMessage("Logging in...");
+        progressDialog.show();
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -374,13 +378,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         Log.d(TAG, "onClick: " + view.toString());
+        // log in button clicked
         if (view == btnLogIn){
-            // log in
             userLogin();
         }
+        // google sign in button clicked
+        if (view == btnLogInGoogle){
+            googleSignIn();
+        }
+        // sign up button clicked
         if (view == btnSignUpPrompt){
             finish();
-            // start SignUpActivity
             Intent i = new Intent(LoginActivity.this,SignUpActivity.class);
             startActivity(i);
         }

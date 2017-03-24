@@ -125,17 +125,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (view == btnLogOut){
             // firebase user sign out
             firebaseAuth.signOut();
-            // google sign out
+            // google sign out - seems to work without this code?
+            /*
             if (googleApiClient != null){
                 Log.d(TAG, "onClick: signing out google user");
                 Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
                         new ResultCallback<Status>() {
                             @Override
                             public void onResult(Status status) {
-                                Log.d(TAG, "onClick: google sign out");
+                                Log.d(TAG, "onClick: sign out successful");
                             }
                         });
             }
+            */
             // TODO: 22/03/2017 logout facebook users too
             finish();
             Intent i = new Intent(HomeActivity.this, LoginActivity.class);

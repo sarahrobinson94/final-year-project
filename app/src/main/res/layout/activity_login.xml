@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:gravity="bottom"
         android:layout_height="150dp">
 
@@ -35,8 +35,7 @@
         android:layout_above="@+id/footerLogin"
         android:gravity="center_vertical|center_horizontal"
         android:paddingRight="30dp"
-        android:paddingLeft="30dp"
-        android:paddingTop="40dp">
+        android:paddingLeft="30dp">
 
         <EditText
             android:id="@+id/editTextLoginEmail"
@@ -46,7 +45,7 @@
             android:inputType="textEmailAddress"
             android:background="@drawable/border_white_bottom"
             android:paddingBottom="10dp"
-            android:layout_marginBottom="40dp" />
+            android:layout_marginBottom="30dp" />
 
         <EditText
             android:id="@+id/editTextLoginPassword"
@@ -56,7 +55,7 @@
             android:inputType="textPassword"
             android:background="@drawable/border_white_bottom"
             android:paddingBottom="10dp"
-            android:layout_marginBottom="40dp" />
+            android:layout_marginBottom="30dp" />
 
         <Button
             android:id="@+id/btnLogIn"
@@ -74,8 +73,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginBottom="30dp" />
+            android:paddingRight="10dp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btnGoogleLoginLarge"
@@ -84,8 +82,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginBottom="30dp" />
+            android:paddingRight="10dp" />
 
         <!--
         <Button

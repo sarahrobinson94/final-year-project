@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextLogInPassword;
     private Button btnLogIn;
     private LoginButton btnLogInFacebook;
-    private Button btnLogInGoogle;
+    private SignInButton btnLogInGoogle;
     private TextView btnSignUpPrompt;
 
     private static final String TAG = "LoginActivity ******* ";
@@ -151,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextLogInPassword = (EditText)findViewById(R.id.editTextLoginPassword);
         btnLogIn = (Button)findViewById(R.id.btnLogIn);
         btnSignUpPrompt = (TextView)findViewById(R.id.btnSignUpPrompt);
-        btnLogInGoogle = (Button) findViewById(R.id.btnGoogleLoginLarge);
+        btnLogInGoogle = (SignInButton) findViewById(R.id.btnGoogleLoginLarge);
         progressDialog = new ProgressDialog(this);
 
         // onclick listeners

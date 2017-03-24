@@ -123,17 +123,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btnLogOut){
-            // email sign out
+            // firebase user sign out
             firebaseAuth.signOut();
             // google sign out
-            // TODO: 23/03/2017 maybe need to check first if user is signed in via google
-            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                            Log.d(TAG, "onClick: google sign out");
-                        }
-                    });
+            if (googleApiClient != null){
+                Log.d(TAG, "onClick: signing out google user");
+                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                Log.d(TAG, "onClick: google sign out");
+                            }
+                        });
+            }
             // TODO: 22/03/2017 logout facebook users too
             finish();
             Intent i = new Intent(HomeActivity.this, LoginActivity.class);

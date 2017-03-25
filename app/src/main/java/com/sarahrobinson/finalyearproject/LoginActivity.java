@@ -58,6 +58,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient googleApiClient;
     private static int RC_SIGN_IN = 289;
 
+    public static final String PREF_USER_FIRST_TIME = "user_first_time";
+    boolean isUserFirstTime;
+    final Intent intentOnboarding = null;
+
     private ProgressDialog progressDialog;
 
     private EditText editTextLogInEmail;
@@ -72,8 +76,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // initializing facebook sdk before setContentView
         FacebookSdk.sdkInitialize(getApplicationContext());
+
+        // setting user first time pref to true
+        isUserFirstTime = Boolean.valueOf(Utils.readSharedSetting(LoginActivity.this,
+                PREF_USER_FIRST_TIME, "true"));
+
+        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
+        intentOnboarding.putExtra(PREF_USER_FIRST_TIME, isUserFirstTime);
+
         setContentView(R.layout.activity_login);
 
         // setting android context before using firebase
@@ -275,15 +288,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to empty string
                             String image = task.getResult().getUser().getPhotoUrl().toString();
 
-                            // if fb user's first time logging in...
-                                // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
+                            // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
+                            // if user's first time logging in...
+                            if (isUserFirstTime) {
                                 // ask for permission
                                 // setting up user on firebase database
                                 setUpUser(name, email, image);
                                 // saving user to firebase database
                                 onAuthenticationSuccess(task.getResult().getUser());
                                 // take user to onboarding screens
-                            // else...
+                                startActivity(intentOnboarding);
+                            // if not user's first time logging in...
+                            }else {
                                 // TODO: 20/03/2017 take user to home screen
                                 Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
                                 homeIntent.putExtra("user_id", uid);
@@ -291,6 +307,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 progressDialog.dismiss();
                                 finish();
                                 startActivity(homeIntent);
+                            }
                         } else {
                             // sign in failed...
                             progressDialog.dismiss();

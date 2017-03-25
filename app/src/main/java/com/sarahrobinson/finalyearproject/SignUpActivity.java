@@ -162,7 +162,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     // saving new user to firebase realtime database
     private void saveNewUser(String userId, String name, String email, String image) {
-        // TODO: 25/03/2017 check 'null' works when user has no profile photo
         User user = new User(userId, name, email, image);
         firebaseRef.child("users").child(userId).setValue(user);
     }

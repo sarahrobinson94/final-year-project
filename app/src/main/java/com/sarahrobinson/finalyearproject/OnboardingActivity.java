@@ -1,22 +1,18 @@
 package com.sarahrobinson.finalyearproject;
 
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.google.android.gms.common.SignInButton;
 
 public class OnboardingActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button btnFinishOnboarding;
+
+    // for getting user info to pass to home activity
+    private String uid;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +24,11 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
     protected void onStart() {
         super.onStart();
 
+        // getting uid for logged in user
+        uid = getIntent().getExtras().getString("user_id");
+        // getting imageUrl for logged in user
+        imageUrl = getIntent().getExtras().getString("profile_picture");
+
         btnFinishOnboarding = (Button)findViewById(R.id.btnFinishOnboarding);
 
         // onclick listeners
@@ -36,6 +37,13 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        // TODO: 25/03/2017 set user_first_time_pref to false & go to home activity 
+        // update first time pref
+        Utils.saveSharedSetting(OnboardingActivity.this, LoginActivity.PREF_USER_FIRST_TIME, "false");
+        // pass user info to home activity
+        Intent intentHome = new Intent(OnboardingActivity.this, HomeActivity.class);
+        intentHome.putExtra("user_id", uid);
+        intentHome.putExtra("profile_picture", imageUrl);
+        // go to home screen
+        startActivity(intentHome);
     }
 }

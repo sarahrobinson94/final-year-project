@@ -84,9 +84,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         isUserFirstTime = Boolean.valueOf(Utils.readSharedSetting(LoginActivity.this,
                 PREF_USER_FIRST_TIME, "true"));
 
-        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
-        intentOnboarding.putExtra(PREF_USER_FIRST_TIME, isUserFirstTime);
-
         setContentView(R.layout.activity_login);
 
         // setting android context before using firebase
@@ -279,6 +276,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d(TAG, "signInWithCredential:onComplete: " + task.isSuccessful());
 
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "facebook login successful");
                             // sign in succeeded...
                             // the auth state listener will be notified and logic to handle
                             // the signed in user can be handled in the listener
@@ -291,15 +289,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
                             // if user's first time logging in...
                             if (isUserFirstTime) {
+                                Log.d(TAG, "user's first time logging in");
                                 // ask for permission
                                 // setting up user on firebase database
                                 setUpUser(name, email, image);
                                 // saving user to firebase database
                                 onAuthenticationSuccess(task.getResult().getUser());
                                 // take user to onboarding screens
+                                Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
+                                intentOnboarding.putExtra(PREF_USER_FIRST_TIME, isUserFirstTime);
+                                intentOnboarding.putExtra("user_id", uid);
+                                intentOnboarding.putExtra("profile_picture", image);
                                 startActivity(intentOnboarding);
                             // if not user's first time logging in...
                             }else {
+                                Log.d(TAG, "existing user logging in");
                                 // TODO: 20/03/2017 take user to home screen
                                 Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
                                 homeIntent.putExtra("user_id", uid);

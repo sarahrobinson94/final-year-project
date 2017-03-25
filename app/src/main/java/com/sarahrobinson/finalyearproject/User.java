@@ -9,15 +9,17 @@ public class User {
     private String id;
     private String name;
     private String email;
+    private String image;
 
     public User() {
 
     }
 
-    public User(String id, String name, String email) {
+    public User(String id, String name, String email, String image) {
         this.id = id;
         this.email = email;
         this.name = name;
+        this.image = image;
     }
 
     public String getId() {
@@ -42,5 +44,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

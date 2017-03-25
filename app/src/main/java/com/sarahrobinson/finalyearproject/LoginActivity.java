@@ -206,11 +206,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //Log.d("LoginActivity", "Display name: " + firebaseUser.getDisplayName());
-
-                            // setting up user on firebase database ?? (should this be done on login??)
-                            setUpUser();
-
                             // if user's first time logging in...
                                 // TODO: 22/03/2017 check if first time log in
                                 // take user to onboarding screens
@@ -235,10 +230,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    // setting up user on firebase database ??
-    protected void setUpUser() {
-        user = new User();
-        user.setEmail(editTextLogInEmail.getText().toString().trim());
+    // result for facebook and google sign in
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // result returned from googleSignInIntent
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // google sign in was successful, authenticate with firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                // google sign in failed, show error message
+                // ...
+            }
+            // result returned from facebook log in
+        } else{
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     // handling facebook log in (called on facebook success callback)
@@ -262,22 +272,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String uid = task.getResult().getUser().getUid();
                             String name = task.getResult().getUser().getDisplayName();
                             String email = task.getResult().getUser().getEmail();
+                            // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to empty string
                             String image = task.getResult().getUser().getPhotoUrl().toString();
 
                             // if fb user's first time logging in...
                                 // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
                                 // ask for permission
-                                // save user to database
+                                // setting up user on firebase database
+                                setUpUser(name, email, image);
+                                // saving user to firebase database
+                                onAuthenticationSuccess(task.getResult().getUser());
                                 // take user to onboarding screens
                             // else...
                                 // TODO: 20/03/2017 take user to home screen
                                 Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
                                 homeIntent.putExtra("user_id", uid);
                                 homeIntent.putExtra("profile_picture", image);
-
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(homeIntent);
+                                progressDialog.dismiss();
+                                finish();
+                                startActivity(homeIntent);
                         } else {
                             // sign in failed...
                             progressDialog.dismiss();
@@ -302,27 +315,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivityForResult(googleSignInIntent, RC_SIGN_IN);
     }
 
-    // result for facebook and google sign in
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // result returned from googleSignInIntent
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                // google sign in was successful, authenticate with firebase
-                GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
-            } else {
-                // google sign in failed, show error message
-                // ...
-            }
-        // result returned from facebook log in
-        } else{
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
     // authenticating google user with firebase
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         progressDialog.setMessage("Logging in...");
@@ -343,12 +335,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String uid = task.getResult().getUser().getUid();
                             String name = task.getResult().getUser().getDisplayName();
                             String email = task.getResult().getUser().getEmail();
+                            // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to null
                             String image = task.getResult().getUser().getPhotoUrl().toString();
 
                             // if google user's first time logging in...
                             // TODO: 22/03/2017 check first time google login (see bookmark - "Firebase: Check if user exists")
                             // ask for permission
-                            // save user to database
+                            // setting up user on firebase database
+                            setUpUser(name, email, image);
+                            // saving user to firebase database
+                            onAuthenticationSuccess(task.getResult().getUser());
                             // take user to onboarding screens
                             // else...
                             // TODO: 20/03/2017 take user to home screen
@@ -374,6 +370,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
     }
+
+    //////////// SAVING USER TO FIREBASE REALTIME DATABASE ////////////
+
+    // setting up user on firebase realtime database
+    protected void setUpUser(String name, String email, String image) {
+        user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setImage(image);
+    }
+
+    // successful firebase authentication
+    private void onAuthenticationSuccess(FirebaseUser firebaseUser){
+        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail(), user.getImage());
+    }
+
+    // saving new user to firebase realtime database
+    private void saveNewUser(String userId, String name, String email, String image) {
+        User user = new User(userId, name, email, image);
+        firebaseRef.child("users").child(userId).setValue(user);
+    }
+
+    ///////////////////////////////////////////////////////////////////
 
     @Override
     public void onClick(View view) {

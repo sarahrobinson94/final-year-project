@@ -121,9 +121,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         }
                                     });
 
-                            // setting up user on firebase database ??
+                            // setting up user on firebase database
                             setUpUser();
-
                             // saving user to firebase database
                             onAuthenticationSuccess(task.getResult().getUser());
 
@@ -146,23 +145,29 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 });
     }
 
-    // setting up user on firebase database ??
+    //////////// SAVING USER TO FIREBASE REALTIME DATABASE ////////////
+
+    // setting up user on firebase realtime database
     protected void setUpUser() {
         user = new User();
         user.setName(editTextSignUpName.getText().toString().trim());
         user.setEmail(editTextSignUpEmail.getText().toString().trim());
+        user.setImage("");
     }
 
-    // successful email & password authentication
+    // successful firebase authentication
     private void onAuthenticationSuccess(FirebaseUser firebaseUser) {
-        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail());
+        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail(), user.getImage());
     }
 
-    // saving new user to firebase database (assigning details to uid)
-    private void saveNewUser(String userId, String name, String email) {
-        User user = new User(userId, name, email);
+    // saving new user to firebase realtime database
+    private void saveNewUser(String userId, String name, String email, String image) {
+        // TODO: 25/03/2017 check 'null' works when user has no profile photo
+        User user = new User(userId, name, email, image);
         firebaseRef.child("users").child(userId).setValue(user);
     }
+
+    ///////////////////////////////////////////////////////////////////
 
     // logging user out
     private void signOut() {

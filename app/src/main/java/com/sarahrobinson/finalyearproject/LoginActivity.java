@@ -18,6 +18,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -44,6 +45,8 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
+
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -55,21 +58,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseUser firebaseUser;
     private Firebase userRef;
 
-    // facebook callbackManager
+    // facebook log in
     private CallbackManager callbackManager;
 
     // google sign in
     private GoogleApiClient googleApiClient;
     private static int RC_SIGN_IN = 289;
 
-    final Intent intentOnboarding = null;
-
     private ProgressDialog progressDialog;
 
     private EditText editTextLogInEmail;
     private EditText editTextLogInPassword;
     private Button btnLogIn;
-    private LoginButton btnLogInFacebook;
+    private Button btnLogInFacebook;
     private SignInButton btnLogInGoogle;
     private TextView btnSignUpPrompt;
 
@@ -115,9 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // facebook login
         callbackManager = CallbackManager.Factory.create();
-        btnLogInFacebook = (LoginButton) findViewById(R.id.btnFbLoginLarge);
-        btnLogInFacebook.setReadPermissions("email", "public_profile");
-        btnLogInFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess " + loginResult);
@@ -159,12 +158,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextLogInEmail = (EditText)findViewById(R.id.editTextLoginEmail);
         editTextLogInPassword = (EditText)findViewById(R.id.editTextLoginPassword);
         btnLogIn = (Button)findViewById(R.id.btnLogIn);
-        btnSignUpPrompt = (TextView)findViewById(R.id.btnSignUpPrompt);
+        btnLogInFacebook = (Button) findViewById(R.id.btnFbLoginLarge);
         btnLogInGoogle = (SignInButton) findViewById(R.id.btnGoogleLoginLarge);
+        btnSignUpPrompt = (TextView)findViewById(R.id.btnSignUpPrompt);
         progressDialog = new ProgressDialog(this);
 
         // onclick listeners
         btnLogIn.setOnClickListener(this);
+        btnLogInFacebook.setOnClickListener(this);
         btnLogInGoogle.setOnClickListener(this);
         btnSignUpPrompt.setOnClickListener(this);
 
@@ -475,6 +476,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // log in button clicked
         if (view == btnLogIn){
             userLogin();
+        }
+        // facebook log in button clicked
+        if (view == btnLogInFacebook){
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile", "user_friends"));
         }
         // google sign in button clicked
         if (view == btnLogInGoogle){

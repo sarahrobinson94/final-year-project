@@ -10,6 +10,9 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     private Button btnFinishOnboarding;
 
+    private static final String TAG = "OnboardingActivity ******* ";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

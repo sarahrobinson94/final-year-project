@@ -110,7 +110,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             final String uid = user.getUid();
 
                             // adding display name to user profile (firebase authentication database)
-                            // TODO: 19/03/2017 do I need to do this if i'm saving user details in firebase database?
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name)
                                     .build();

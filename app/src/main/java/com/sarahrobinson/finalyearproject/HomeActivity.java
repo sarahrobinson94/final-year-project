@@ -101,7 +101,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         .openConnection();
                 connection.setDoInput(true);
                 connection.connect();
-                // TODO: 19/03/2017 ensure InputStream is using correct import
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;

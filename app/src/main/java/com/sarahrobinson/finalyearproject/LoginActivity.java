@@ -19,7 +19,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -50,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private FirebaseUser firebaseUser;
+    private Firebase userRef;
 
     // facebook callbackManager
     private CallbackManager callbackManager;
@@ -58,8 +62,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient googleApiClient;
     private static int RC_SIGN_IN = 289;
 
-    public static final String PREF_USER_FIRST_TIME = "user_first_time";
-    boolean isUserFirstTime;
     final Intent intentOnboarding = null;
 
     private ProgressDialog progressDialog;
@@ -79,10 +81,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // initializing facebook sdk before setContentView
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-        // setting user first time pref to true
-        isUserFirstTime = Boolean.valueOf(Utils.readSharedSetting(LoginActivity.this,
-                PREF_USER_FIRST_TIME, "true"));
 
         setContentView(R.layout.activity_login);
 
@@ -280,38 +278,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // sign in succeeded...
                             // the auth state listener will be notified and logic to handle
                             // the signed in user can be handled in the listener
-                            String uid = task.getResult().getUser().getUid();
-                            String name = task.getResult().getUser().getDisplayName();
-                            String email = task.getResult().getUser().getEmail();
+                            final String uid = task.getResult().getUser().getUid();
+                            final String name = task.getResult().getUser().getDisplayName();
+                            final String email = task.getResult().getUser().getEmail();
                             // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to empty string
-                            String image = task.getResult().getUser().getPhotoUrl().toString();
+                            final String image = task.getResult().getUser().getPhotoUrl().toString();
 
-                            // TODO: 22/03/2017 check first time fb login (see bookmark - "Firebase: Check if user exists")
-                            // if user's first time logging in...
-                            if (isUserFirstTime) {
-                                Log.d(TAG, "user's first time logging in");
-                                // ask for permission
-                                // setting up user on firebase database
-                                setUpUser(name, email, image);
-                                // saving user to firebase database
-                                onAuthenticationSuccess(task.getResult().getUser());
-                                // take user to onboarding screens
-                                Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
-                                intentOnboarding.putExtra(PREF_USER_FIRST_TIME, isUserFirstTime);
-                                intentOnboarding.putExtra("user_id", uid);
-                                intentOnboarding.putExtra("profile_picture", image);
-                                startActivity(intentOnboarding);
-                            // if not user's first time logging in...
-                            }else {
-                                Log.d(TAG, "existing user logging in");
-                                // TODO: 20/03/2017 take user to home screen
-                                Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                                homeIntent.putExtra("user_id", uid);
-                                homeIntent.putExtra("profile_picture", image);
-                                progressDialog.dismiss();
-                                finish();
-                                startActivity(homeIntent);
-                            }
+                            firebaseUser = firebaseAuth.getCurrentUser();
+
+                            userRef = firebaseRef.child("users").child(firebaseUser.getUid() + "/");
+                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // user already exists
+                                        Log.d(TAG, "existing user logging in");
+                                        // TODO: 20/03/2017 take user to home screen
+                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        homeIntent.putExtra("user_id", uid);
+                                        homeIntent.putExtra("profile_picture", image);
+                                        progressDialog.dismiss();
+                                        finish();
+                                        startActivity(homeIntent);
+                                    } else {
+                                        // new user
+                                        Log.d(TAG, "user's first time logging in");
+                                        // ask for permission
+                                        // setting up user on firebase database
+                                        setUpUser(name, email, image);
+                                        // saving user to firebase database
+                                        onAuthenticationSuccess(firebaseUser);
+                                        // take user to onboarding screens
+                                        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
+                                        intentOnboarding.putExtra("user_id", uid);
+                                        intentOnboarding.putExtra("profile_picture", image);
+                                        startActivity(intentOnboarding);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    Log.d(TAG, "ValueEventListener: OnCancelled");
+                                }
+                            });
                         } else {
                             // sign in failed...
                             progressDialog.dismiss();

@@ -37,8 +37,6 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        // update first time pref
-        Utils.saveSharedSetting(OnboardingActivity.this, LoginActivity.PREF_USER_FIRST_TIME, "false");
         // pass user info to home activity
         Intent intentHome = new Intent(OnboardingActivity.this, HomeActivity.class);
         intentHome.putExtra("user_id", uid);

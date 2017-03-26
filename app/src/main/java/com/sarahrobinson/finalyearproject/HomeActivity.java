@@ -70,14 +70,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         btnLogOut = (Button)findViewById(R.id.btnLogOut);
         btnLogOut.setOnClickListener(this);
 
-        // getting uid for logged in user
-        String uid = getIntent().getExtras().getString("user_id");
-        // getting imageUrl for logged in user
-        String imageUrl = getIntent().getExtras().getString("profile_picture");
-
-        if(imageUrl != null){
+        // getting uid & image of logged in user
+        String uid = firebaseUser.getUid();
+        if (firebaseUser.getPhotoUrl() != null){
+            String imageUrl = firebaseUser.getPhotoUrl().toString();
             new ImageLoadTask(imageUrl, profilePicture).execute();
-        }else{
+        }else {
             Log.d(TAG, "onStart: no profile picture");
         }
 

@@ -71,8 +71,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void registerUser(){
         final String name = editTextSignUpName.getText().toString().trim();
-        String email = editTextSignUpEmail.getText().toString().trim();
-        String password = editTextSignUpPassword.getText().toString().trim();
+        final String email = editTextSignUpEmail.getText().toString().trim();
+        final String password = editTextSignUpPassword.getText().toString().trim();
 
         // validating entries
         if(TextUtils.isEmpty(name)){
@@ -104,13 +104,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+
+                            // getting user id
+                            final FirebaseUser user = firebaseAuth.getCurrentUser();
+                            final String uid = user.getUid();
+
                             // adding display name to user profile (firebase authentication database)
                             // TODO: 19/03/2017 do I need to do this if i'm saving user details in firebase database?
-                            final FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name)
                                     .build();
-
                             user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -121,11 +124,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                         }
                                     });
 
-                            // setting up user on firebase database
-                            setUpUser();
-                            // saving user to firebase database
-                            onAuthenticationSuccess(task.getResult().getUser());
-
                             // notifying user their account has been created
                             progressDialog.dismiss();
                             Toast.makeText(SignUpActivity.this, "Your account has been created",
@@ -134,7 +132,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             // keeping user logged out and opening login activity
                             signOut();
                             finish();
-                            startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+                            Intent intentLogin = new Intent(SignUpActivity.this, LoginActivity.class);
+                            startActivity(intentLogin);
                         }else{
                             progressDialog.dismiss();
                             // TODO: 16/03/2017 check why signup was unsuccessful and notify user, e.g. invalid password
@@ -144,29 +143,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 });
     }
-
-    //////////// SAVING USER TO FIREBASE REALTIME DATABASE ////////////
-
-    // setting up user on firebase realtime database
-    protected void setUpUser() {
-        user = new User();
-        user.setName(editTextSignUpName.getText().toString().trim());
-        user.setEmail(editTextSignUpEmail.getText().toString().trim());
-        user.setImage("");
-    }
-
-    // successful firebase authentication
-    private void onAuthenticationSuccess(FirebaseUser firebaseUser) {
-        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail(), user.getImage());
-    }
-
-    // saving new user to firebase realtime database
-    private void saveNewUser(String userId, String name, String email, String image) {
-        User user = new User(userId, name, email, image);
-        firebaseRef.child("users").child(userId).setValue(user);
-    }
-
-    ///////////////////////////////////////////////////////////////////
 
     // logging user out
     private void signOut() {

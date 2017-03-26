@@ -10,10 +10,6 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     private Button btnFinishOnboarding;
 
-    // for getting user info to pass to home activity
-    private String uid;
-    private String imageUrl;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,11 +20,6 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
     protected void onStart() {
         super.onStart();
 
-        // getting uid for logged in user
-        uid = getIntent().getExtras().getString("user_id");
-        // getting imageUrl for logged in user
-        imageUrl = getIntent().getExtras().getString("profile_picture");
-
         btnFinishOnboarding = (Button)findViewById(R.id.btnFinishOnboarding);
 
         // onclick listeners
@@ -37,11 +28,7 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        // pass user info to home activity
         Intent intentHome = new Intent(OnboardingActivity.this, HomeActivity.class);
-        intentHome.putExtra("user_id", uid);
-        intentHome.putExtra("profile_picture", imageUrl);
-        // go to home screen
         startActivity(intentHome);
     }
 }

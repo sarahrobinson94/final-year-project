@@ -214,19 +214,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // if user's first time logging in...
-                                // TODO: 22/03/2017 check if first time log in
-                                // take user to onboarding screens
-                            // else...
-                                // TODO: 22/03/2017 take user to home screen
-                                Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                                firebaseUser = firebaseAuth.getCurrentUser();
-                                String uid = firebaseUser.getUid();
-                                homeIntent.putExtra("user_id", uid);
 
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(homeIntent);
+                            // getting user info
+                            firebaseUser = firebaseAuth.getCurrentUser();
+                            final String uid = firebaseUser.getUid();
+                            final String name = firebaseUser.getDisplayName();
+                            final String email = firebaseUser.getEmail();
+                            final String image;
+                            if (firebaseUser.getPhotoUrl() != null){
+                                image = firebaseUser.getPhotoUrl().toString();
+                            }else {
+                                image = "";
+                            }
+
+                            // checking if user's first time logging in
+                            userRef = firebaseRef.child("users").child(firebaseUser.getUid() + "/");
+                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // user already exists
+                                        Log.d(TAG, "existing user logging in");
+                                        // TODO: 20/03/2017 take user to home screen
+                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        progressDialog.dismiss();
+                                        finish();
+                                        startActivity(homeIntent);
+                                    } else {
+                                        // new user
+                                        Log.d(TAG, "user's first time logging in");
+                                        // setting up user on firebase database
+                                        setUpUser(name, email, image);
+                                        // saving user to firebase database
+                                        onAuthenticationSuccess(firebaseUser);
+                                        // taking user to onboarding screens
+                                        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
+                                        startActivity(intentOnboarding);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    Log.d(TAG, "ValueEventListener: OnCancelled");
+                                }
+                            });
                         }else{
                             Log.w(TAG, "signInWithEmail", task.getException());
                             progressDialog.dismiss();
@@ -285,7 +315,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             final String image = task.getResult().getUser().getPhotoUrl().toString();
 
                             firebaseUser = firebaseAuth.getCurrentUser();
-
                             userRef = firebaseRef.child("users").child(firebaseUser.getUid() + "/");
                             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -303,7 +332,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     } else {
                                         // new user
                                         Log.d(TAG, "user's first time logging in");
-                                        // ask for permission
                                         // setting up user on firebase database
                                         setUpUser(name, email, image);
                                         // saving user to firebase database
@@ -386,7 +414,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     } else {
                                         // new user
                                         Log.d(TAG, "user's first time logging in");
-                                        // ask for permission
                                         // setting up user on firebase database
                                         setUpUser(name, email, image);
                                         // saving user to firebase database

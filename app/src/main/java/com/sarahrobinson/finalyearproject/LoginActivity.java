@@ -361,29 +361,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // sign in succeeded...
                             // the auth state listener will be notified and logic to handle
                             // the signed in user can be handled in the listener
-                            String uid = task.getResult().getUser().getUid();
-                            String name = task.getResult().getUser().getDisplayName();
-                            String email = task.getResult().getUser().getEmail();
-                            // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to null
-                            String image = task.getResult().getUser().getPhotoUrl().toString();
+                            final String uid = task.getResult().getUser().getUid();
+                            final String name = task.getResult().getUser().getDisplayName();
+                            final String email = task.getResult().getUser().getEmail();
+                            // TODO: 25/03/2017 may need to check if photoURL exists and if not set image to empty string
+                            final String image = task.getResult().getUser().getPhotoUrl().toString();
 
-                            // if google user's first time logging in...
-                            // TODO: 22/03/2017 check first time google login (see bookmark - "Firebase: Check if user exists")
-                            // ask for permission
-                            // setting up user on firebase database
-                            setUpUser(name, email, image);
-                            // saving user to firebase database
-                            onAuthenticationSuccess(task.getResult().getUser());
-                            // take user to onboarding screens
-                            // else...
-                            // TODO: 20/03/2017 take user to home screen
-                            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                            homeIntent.putExtra("user_id", uid);
-                            homeIntent.putExtra("profile_picture", image);
+                            firebaseUser = firebaseAuth.getCurrentUser();
 
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(homeIntent);
+                            userRef = firebaseRef.child("users").child(firebaseUser.getUid() + "/");
+                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // user already exists
+                                        Log.d(TAG, "existing user logging in");
+                                        // TODO: 20/03/2017 take user to home screen
+                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        homeIntent.putExtra("user_id", uid);
+                                        homeIntent.putExtra("profile_picture", image);
+                                        progressDialog.dismiss();
+                                        finish();
+                                        startActivity(homeIntent);
+                                    } else {
+                                        // new user
+                                        Log.d(TAG, "user's first time logging in");
+                                        // ask for permission
+                                        // setting up user on firebase database
+                                        setUpUser(name, email, image);
+                                        // saving user to firebase database
+                                        onAuthenticationSuccess(firebaseUser);
+                                        // take user to onboarding screens
+                                        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
+                                        intentOnboarding.putExtra("user_id", uid);
+                                        intentOnboarding.putExtra("profile_picture", image);
+                                        startActivity(intentOnboarding);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    Log.d(TAG, "ValueEventListener: OnCancelled");
+                                }
+                            });
                         } else {
                             // sign in failed...
                             progressDialog.dismiss();

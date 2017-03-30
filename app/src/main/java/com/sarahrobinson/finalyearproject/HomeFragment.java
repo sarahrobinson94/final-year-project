@@ -71,11 +71,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        welcomeMessage = (TextView)getView().findViewById(R.id.textViewHomeWelcome);
+        welcomeMessage = (TextView)rootView.findViewById(R.id.textViewHomeWelcome);
         welcomeMessage.setText("Welcome " + firebaseUser.getDisplayName());
-        profilePicture = (ImageView)getView().findViewById(R.id.profilePicture);
-        btnLogOut = (Button)getView().findViewById(R.id.btnLogOut);
+        profilePicture = (ImageView)rootView.findViewById(R.id.profilePicture);
+        btnLogOut = (Button)rootView.findViewById(R.id.btnLogOut);
         btnLogOut.setOnClickListener(this);
 
         // getting uid & image of logged in user
@@ -89,8 +91,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return rootView;
     }
 
     // getting profile picture if user logs in with facebook or google

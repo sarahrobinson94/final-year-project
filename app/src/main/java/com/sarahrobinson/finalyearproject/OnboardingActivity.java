@@ -31,7 +31,7 @@ public class OnboardingActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        Intent intentHome = new Intent(OnboardingActivity.this, HomeActivity.class);
+        Intent intentHome = new Intent(OnboardingActivity.this, MainActivity.class);
         startActivity(intentHome);
     }
 }

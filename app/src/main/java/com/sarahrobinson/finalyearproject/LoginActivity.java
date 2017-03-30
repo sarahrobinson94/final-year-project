@@ -95,8 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // checking if user is already logged in
         if (firebaseUser != null){
             // user is logged in
-            // TODO: 16/03/2017 take user to home screen (create new fragment)
-            Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
             String uid = firebaseUser.getUid();
 
             // passing profile image to HomeActivity if the user has one
@@ -237,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         // user already exists
                                         Log.d(TAG, "existing user logging in");
                                         // TODO: 20/03/2017 take user to home screen
-                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         progressDialog.dismiss();
                                         finish();
                                         startActivity(homeIntent);
@@ -324,7 +323,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         // user already exists
                                         Log.d(TAG, "existing user logging in");
                                         // TODO: 20/03/2017 take user to home screen
-                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         homeIntent.putExtra("user_id", uid);
                                         homeIntent.putExtra("profile_picture", image);
                                         progressDialog.dismiss();
@@ -406,7 +405,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         // user already exists
                                         Log.d(TAG, "existing user logging in");
                                         // TODO: 20/03/2017 take user to home screen
-                                        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         homeIntent.putExtra("user_id", uid);
                                         homeIntent.putExtra("profile_picture", image);
                                         progressDialog.dismiss();

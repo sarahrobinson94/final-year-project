@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sarahrobinson.finalyearproject.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:id="@+id/textViewHomeWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome message"
+            android:textSize="24sp"
+            android:textStyle="normal|bold|italic"
+            android:fontFamily="serif"
+            android:layout_marginBottom="40dp" />
+
+        <ImageView
+            android:id="@+id/profilePicture"
+            android:layout_height="100dp"
+            android:layout_marginBottom="40dp"
+            android:layout_width="100dp" />
+
+        <Button
+            android:id="@+id/btnLogOut"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_white"
+            android:text="LOG OUT"
+            style="@style/BtnWhite" />
+
+    </LinearLayout>
+
+</RelativeLayout>

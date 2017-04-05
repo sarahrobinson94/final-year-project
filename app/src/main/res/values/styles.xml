@@ -33,6 +33,19 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!-- all other app screens -->
+    <style name="ThemeMain" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/grey</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowSoftInputMode">stateHidden</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+    </style>
+
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- My styles -->
@@ -53,10 +66,23 @@
         <item name="android:padding">12dp</item>
     </style>
 
+    <!-- blue button -->
+    <style name="BtnBlue" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
     <!-- nav menu item -->
     <style name="NavItem" parent="ThemeLogin">
         <item name="android:textSize">16sp</item>
         <item name="android:layout_margin">15dp</item>
+    </style>
+
+    <!-- action bar colour -->
+    <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

@@ -36,9 +36,9 @@
             android:id="@+id/btnLogOut"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_white"
+            android:background="@drawable/button_blue"
             android:text="LOG OUT"
-            style="@style/BtnWhite" />
+            style="@style/BtnBlue" />
 
     </LinearLayout>
 

@@ -40,10 +40,12 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/ThemeLogin" />
+            android:theme="@style/ThemeMain"
+            android:title="Find" />
         <activity
             android:name=".HomeActivity"
-            android:theme="@style/ThemeLogin" />
+            android:theme="@style/ThemeMain"
+            android:title="Find" />
         <activity
             android:name=".OnboardingActivity"
             android:theme="@style/ThemeLogin" />

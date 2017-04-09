@@ -41,7 +41,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private GoogleApiClient googleApiClient;
 
     private TextView welcomeMessage;
-    private ImageView profilePicture;
     private Button btnLogOut;
 
     private static final String TAG = "HomeFragment ******* ";
@@ -79,57 +78,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         welcomeMessage = (TextView)rootView.findViewById(R.id.textViewHomeWelcome);
         welcomeMessage.setText("Welcome " + firebaseUser.getDisplayName());
-        profilePicture = (ImageView)rootView.findViewById(R.id.profilePicture);
         btnLogOut = (Button)rootView.findViewById(R.id.btnLogOut);
         btnLogOut.setOnClickListener(this);
-
-        // getting uid & image of logged in user
-        String uid = firebaseUser.getUid();
-        if (firebaseUser.getPhotoUrl() != null){
-            String imageUrl = firebaseUser.getPhotoUrl().toString();
-            new HomeFragment.ImageLoadTask(imageUrl, profilePicture).execute();
-        }else {
-            Log.d(TAG, "onStart: no profile picture");
-        }
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
-    }
-
-    // getting profile picture if user logs in with facebook or google
-    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-        private String url;
-        private ImageView imageView;
-
-        public ImageLoadTask(String url, ImageView imageView) {
-            this.url = url;
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                URL urlConnection = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlConnection
-                        .openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            imageView.setImageBitmap(result);
-        }
     }
 
     @Override

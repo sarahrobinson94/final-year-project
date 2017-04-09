@@ -19,6 +19,7 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private ImageView navHeaderProfilePic;
+    private NavigationView navigationView;
 
     private static final String TAG = "MainActivity ******* ";
 
@@ -46,16 +48,23 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        navHeaderProfilePic = (ImageView)findViewById(R.id.NavHeaderProfilePic);
+        navHeaderProfilePic = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.NavHeaderProfilePic);
 
         if (firebaseUser.getPhotoUrl() != null){
-            String imageUrl = firebaseUser.getPhotoUrl().toString();
-            new MainActivity.ImageLoadTask(imageUrl, navHeaderProfilePic).execute();
+            String photoUrl = firebaseUser.getPhotoUrl().toString();
+            //new MainActivity.ImageLoadTask(imageUrl, navHeaderProfilePic).execute();
+            Picasso.with(getApplicationContext())
+                    .load(photoUrl)
+                    .placeholder(R.drawable.circle_white)
+                    .resize(100, 100)
+                    //.transform(new CircleTransform())
+                    .centerCrop()
+                    .into(navHeaderProfilePic);
         }else {
             Log.d(TAG, "onStart: no profile picture");
         }

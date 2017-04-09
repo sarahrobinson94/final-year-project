@@ -1,9 +1,11 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +15,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private ImageView navHeaderProfilePic;
+
+    private static final String TAG = "MainActivity ******* ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +49,56 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        navHeaderProfilePic = (ImageView)findViewById(R.id.NavHeaderProfilePic);
+
+        if (firebaseUser.getPhotoUrl() != null){
+            String imageUrl = firebaseUser.getPhotoUrl().toString();
+            new MainActivity.ImageLoadTask(imageUrl, navHeaderProfilePic).execute();
+        }else {
+            Log.d(TAG, "onStart: no profile picture");
+        }
+
         FragmentManager manager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();
 
         manager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
+    }
+
+    // getting profile picture if user logs in with facebook or google
+    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
+
+        private String url;
+        private ImageView imageView;
+
+        public ImageLoadTask(String url, ImageView imageView) {
+            this.url = url;
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            imageView.setImageBitmap(result);
+        }
     }
 
     @Override

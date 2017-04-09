@@ -6,20 +6,20 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/nav_location"
-            android:title=""
+            android:title="Find"
             app:theme="@style/NavItem"/>
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="" />
+            android:title="Favourites" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="" />
+            android:title="Friends" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="" />
+            android:title="Events" />
     </group>
 
     <item android:title="Communicate">

@@ -16,10 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,8 +33,12 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
-    private ImageView navHeaderProfilePic;
+
     private NavigationView navigationView;
+
+    private ImageView navHeaderProfilePic;
+    private TextView navHeaderUserName;
+    private TextView navHeaderUserEmail;
 
     private static final String TAG = "MainActivity ******* ";
 
@@ -53,7 +60,10 @@ public class MainActivity extends AppCompatActivity
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        navHeaderProfilePic = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.NavHeaderProfilePic);
+
+        navHeaderProfilePic = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.navHeaderProfilePic);
+        navHeaderUserName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.navHeaderUserName);
+        navHeaderUserEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.navHeaderUserEmail);
 
         if (firebaseUser.getPhotoUrl() != null){
             String photoUrl = firebaseUser.getPhotoUrl().toString();
@@ -68,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         }else {
             Log.d(TAG, "onStart: no profile picture");
         }
+
+        navHeaderUserName.setText(firebaseUser.getDisplayName());
+        navHeaderUserEmail.setText(firebaseUser.getEmail());
 
         FragmentManager manager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();

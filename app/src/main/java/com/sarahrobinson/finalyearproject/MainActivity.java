@@ -1,5 +1,6 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -18,6 +19,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.internal.LoginAuthorizationType;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
@@ -33,6 +40,9 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+
+    // google sign in
+    private GoogleApiClient googleApiClient;
 
     private NavigationView navigationView;
 
@@ -161,18 +171,36 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_find) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_favs) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_friends) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_events) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_logout) {
+            // firebase user sign out
+            firebaseAuth.signOut();
+            // google sign out - seems to work without this code?
+            if (googleApiClient != null){
+                Log.d(TAG, "onClick: signing out google user");
+                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                Log.d(TAG, "onClick: sign out successful");
+                            }
+                        });
+            }
+            // firebase user facebook sign out
+            LoginManager.getInstance().logOut();
+            // start loginActivity
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            // end main activity
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

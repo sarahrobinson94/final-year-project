@@ -41,7 +41,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private GoogleApiClient googleApiClient;
 
     private TextView welcomeMessage;
-    private Button btnLogOut;
 
     private static final String TAG = "HomeFragment ******* ";
 
@@ -78,8 +77,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         welcomeMessage = (TextView)rootView.findViewById(R.id.textViewHomeWelcome);
         welcomeMessage.setText("Welcome " + firebaseUser.getDisplayName());
-        btnLogOut = (Button)rootView.findViewById(R.id.btnLogOut);
-        btnLogOut.setOnClickListener(this);
+
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
@@ -88,26 +86,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == btnLogOut){
-            // firebase user sign out
-            firebaseAuth.signOut();
-            // google sign out - seems to work without this code?
-            if (googleApiClient != null){
-                Log.d(TAG, "onClick: signing out google user");
-                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                Log.d(TAG, "onClick: sign out successful");
-                            }
-                        });
-            }
-            // firebase user facebook sign out
-            LoginManager.getInstance().logOut();
 
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            getActivity().finish();
-        }
     }
-
 }

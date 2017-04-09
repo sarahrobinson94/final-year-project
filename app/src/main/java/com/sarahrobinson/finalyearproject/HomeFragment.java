@@ -74,6 +74,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // changing actionBar title
+        getActivity().setTitle("Find");
+
         welcomeMessage = (TextView)rootView.findViewById(R.id.textViewHomeWelcome);
         welcomeMessage.setText("Welcome " + firebaseUser.getDisplayName());
         profilePicture = (ImageView)rootView.findViewById(R.id.profilePicture);

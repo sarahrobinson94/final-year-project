@@ -5,20 +5,20 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_find"
-            android:icon="@drawable/nav_location"
+            android:icon="@drawable/ic_menu_location_24dp"
             android:title="Find"
             app:theme="@style/NavItem"/>
         <item
             android:id="@+id/nav_favs"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_favourites_24dp"
             android:title="Favourites" />
         <item
             android:id="@+id/nav_friends"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_friends_24dp"
             android:title="Friends" />
         <item
             android:id="@+id/nav_events"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/ic_menu_events_24dp"
             android:title="Events" />
     </group>
 
@@ -30,7 +30,7 @@
                 android:title="Settings" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_logout_24dp"
                 android:title="Log Out" />
         </menu>
     </item>

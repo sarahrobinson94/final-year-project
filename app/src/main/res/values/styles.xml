@@ -74,16 +74,10 @@
         <item name="android:padding">12dp</item>
     </style>
 
-    <!-- home screen text -->
+    <!-- home fragment text -->
     <style name="textHome" parent="@android:style/Widget.TextView">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/grey</item>
-    </style>
-
-    <!-- nav menu item -->
-    <style name="NavItem" parent="ThemeLogin">
-        <item name="android:textSize">16sp</item>
-        <item name="android:layout_margin">15dp</item>
     </style>
 
 </resources>

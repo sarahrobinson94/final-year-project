@@ -6,8 +6,7 @@
         <item
             android:id="@+id/nav_find"
             android:icon="@drawable/ic_menu_location_24dp"
-            android:title="Find"
-            app:theme="@style/NavItem"/>
+            android:title="Find" />
         <item
             android:id="@+id/nav_favs"
             android:icon="@drawable/ic_menu_favourites_24dp"

@@ -20,7 +20,8 @@
             android:id="@+id/btnFinishOnboarding"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_white"
+            android:background="@drawable/button_standard"
+            android:backgroundTint="@color/white"
             android:text="FINISH ONBOARDING"
             style="@style/BtnWhite" />
 

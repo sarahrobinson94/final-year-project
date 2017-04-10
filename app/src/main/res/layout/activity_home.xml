@@ -36,7 +36,7 @@
             android:id="@+id/btnLogOut"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_blue"
+            android:background="@drawable/button_standard"
             android:text="LOG OUT"
             style="@style/BtnBlue" />
 

@@ -4,35 +4,157 @@
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.HomeFragment">
 
+    <!-- section 1 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical|center_horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewHomeWelcome"
+        <!-- option -->
+        <RelativeLayout
+            android:id="@+id/optionBreakfast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome message"
-            android:textSize="24sp"
-            android:textStyle="normal|bold|italic"
-            android:fontFamily="serif"
-            android:layout_marginBottom="40dp" />
+            android:layout_weight="1"
+            android:padding="5dp">
 
-        <ImageView
-            android:id="@+id/profilePicture"
-            android:layout_height="100dp"
-            android:layout_marginBottom="40dp"
-            android:layout_width="100dp" />
+            <ImageView
+                android:id="@+id/imageViewOptionBreakfast"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_cup_24dp"
+                android:tint="@color/grey"
+                android:background="@drawable/circle_white_border_grey"
+                android:padding="8dp"/>
 
-        <Button
-            android:id="@+id/btnLogOut"
-            android:layout_width="280dp"
+            <TextView
+                android:id="@+id/textViewOptionBreakfast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:text="Breakfast"
+                style="@style/textHome"/>
+
+        </RelativeLayout>
+
+        <!-- option -->
+        <RelativeLayout
+            android:id="@+id/optionLunch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_white"
-            android:text="LOG OUT"
-            style="@style/BtnWhite" />
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/imageViewOptionLunch"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_cup_24dp"
+                android:tint="@color/grey"
+                android:background="@drawable/circle_white_border_grey"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewOptionLunch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:text="Lunch"
+                style="@style/textHome"/>
+
+        </RelativeLayout>
+
+        <!-- option -->
+        <RelativeLayout
+            android:id="@+id/optionDinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/imageViewOptionDinner"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_cup_24dp"
+                android:tint="@color/grey"
+                android:background="@drawable/circle_white_border_grey"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewOptionDinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:text="Dinner"
+                style="@style/textHome"/>
+
+        </RelativeLayout>
+
+        <!-- option -->
+        <RelativeLayout
+            android:id="@+id/optionDrinks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/imageViewOptionDrinks"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_cup_24dp"
+                android:tint="@color/grey"
+                android:background="@drawable/circle_white_border_grey"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewOptionDrinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:text="Drinks"
+                style="@style/textHome"/>
+
+        </RelativeLayout>
+
+        <!-- option -->
+        <RelativeLayout
+            android:id="@+id/optionAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/imageViewOptionAll"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_cup_24dp"
+                android:tint="@color/grey"
+                android:background="@drawable/circle_white_border_grey"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewOptionAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:text="All"
+                style="@style/textHome"/>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

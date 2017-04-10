@@ -42,9 +42,6 @@
             android:name=".MainActivity"
             android:theme="@style/ThemeMain" />
         <activity
-            android:name=".HomeActivity"
-            android:theme="@style/ThemeMain" />
-        <activity
             android:name=".OnboardingActivity"
             android:theme="@style/ThemeLogin" />
     </application>

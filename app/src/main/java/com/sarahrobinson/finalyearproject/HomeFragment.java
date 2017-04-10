@@ -75,10 +75,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         // changing actionBar title
         getActivity().setTitle("Find");
 
-        welcomeMessage = (TextView)rootView.findViewById(R.id.textViewHomeWelcome);
-        welcomeMessage.setText("Welcome " + firebaseUser.getDisplayName());
-
-
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;

@@ -33,31 +33,69 @@
         android:orientation="vertical"
         android:layout_below="@+id/headerLogin"
         android:layout_above="@+id/footerLogin"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingRight="30dp"
-        android:paddingLeft="30dp">
+        android:gravity="center_vertical|center_horizontal">
 
-        <EditText
-            android:id="@+id/editTextLoginEmail"
+        <LinearLayout
+            android:id="@+id/layoutLoginEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/white"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="30dp" />
+            android:orientation="horizontal"
+            android:weightSum="8"
+            android:longClickable="true"
+            android:paddingRight="30dp">
 
-        <EditText
-            android:id="@+id/editTextLoginPassword"
+            <ImageView
+                android:id="@+id/imageViewLoginEmail"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_email"
+                android:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editTextLoginEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="30dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutLoginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/white"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="30dp" />
+            android:orientation="horizontal"
+            android:weightSum="8"
+            android:longClickable="true"
+            android:paddingRight="30dp">
+
+            <ImageView
+                android:id="@+id/imageViewLoginPassword"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_lock"
+                android:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editTextLoginPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="30dp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnLogIn"

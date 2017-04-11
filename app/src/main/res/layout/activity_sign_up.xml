@@ -33,42 +33,103 @@
         android:orientation="vertical"
         android:layout_below="@+id/headerSignUp"
         android:layout_above="@+id/footerSignUp"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingRight="30dp"
-        android:paddingLeft="30dp">
+        android:gravity="center_vertical|center_horizontal">
 
-        <EditText
-            android:id="@+id/editTextSignUpName"
+        <!-- name field -->
+        <LinearLayout
+            android:id="@+id/layoutSignUpName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/white"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="40dp" />
+            android:orientation="horizontal"
+            android:weightSum="8"
+            android:longClickable="true"
+            android:paddingRight="30dp">
 
-        <EditText
-            android:id="@+id/editTextSignUpEmail"
+            <ImageView
+                android:id="@+id/imageViewSignUpName"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_user"
+                android:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editTextSignUpName"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:hint="Name"
+                android:inputType="text"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="30dp" />
+
+        </LinearLayout>
+
+        <!-- email field -->
+        <LinearLayout
+            android:id="@+id/layoutSignUpEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/white"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="40dp" />
+            android:orientation="horizontal"
+            android:weightSum="8"
+            android:longClickable="true"
+            android:paddingRight="30dp">
 
-        <EditText
-            android:id="@+id/editTextSignUpPassword"
+            <ImageView
+                android:id="@+id/imageViewSignUpEmail"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_email"
+                android:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editTextSignUpEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="30dp" />
+
+        </LinearLayout>
+
+        <!-- password field -->
+        <LinearLayout
+            android:id="@+id/layoutSignUpPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/white"
-            android:paddingBottom="10dp"
-            android:layout_marginBottom="40dp" />
+            android:orientation="horizontal"
+            android:weightSum="8"
+            android:longClickable="true"
+            android:paddingRight="30dp">
+
+            <ImageView
+                android:id="@+id/imageViewSignUpPasssword"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_lock"
+                android:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/editTextSignUpPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="7"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="30dp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnSignUp"

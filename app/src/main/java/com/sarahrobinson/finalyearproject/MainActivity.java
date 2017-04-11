@@ -94,10 +94,10 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager manager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();
-
         manager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
     }
 
+    // TODO: 11/04/2017 delete if not needed (using Picasso instead)
     // getting profile picture if user logs in with facebook or google
     public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
 
@@ -170,17 +170,22 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        FragmentManager manager = getSupportFragmentManager();
         if (id == R.id.nav_find) {
-            // Handle the camera action
+            HomeFragment homeFragment = new HomeFragment();
+            manager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
         } else if (id == R.id.nav_favs) {
-
+            FavouritesFragment favouritesFragment = new FavouritesFragment();
+            manager.beginTransaction().replace(R.id.content_main, favouritesFragment).commit();
         } else if (id == R.id.nav_friends) {
-
+            FriendsFragment friendsFragment = new FriendsFragment();
+            manager.beginTransaction().replace(R.id.content_main, friendsFragment).commit();
         } else if (id == R.id.nav_events) {
-
+            EventsFragment eventsFragment = new EventsFragment();
+            manager.beginTransaction().replace(R.id.content_main, eventsFragment).commit();
         } else if (id == R.id.nav_settings) {
-
+            SettingsFragment settingsFragment = new SettingsFragment();
+            manager.beginTransaction().replace(R.id.content_main, settingsFragment).commit();
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
             firebaseAuth.signOut();

@@ -3,7 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sarahrobinson.finalyearproject">
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- for accessing device location -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.B00636922.findapharmacy.permission.MAPS_RECEIVE" />
+    <!-- to determine location using wifi and mobile -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- to determine location using GPS (more precise) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <!-- required for facebook login -->
+        <!-- Required for facebook login -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -22,7 +31,7 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- app activities -->
+        <!-- App activities -->
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/ThemeLogin" />

@@ -30,7 +30,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/string_google_api_key" />
+            android:value="@string/google_maps_api_key" />
 
         <!-- Required for facebook login -->
         <meta-data

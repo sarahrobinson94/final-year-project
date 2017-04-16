@@ -35,7 +35,8 @@ import java.net.URL;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
 
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
+    private OnFragmentInteractionListener mListener;
 
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
@@ -93,12 +94,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         if (view == btnFindPlaces){
             String location = editTextSearchLocation.getText().toString();
-
+            if (mListener != null) {
+                mListener.onFragmentInteraction(location);
+            }
             MapFragment mapFragment = new MapFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
-
-            // TODO: 16/04/2017 pass searched location name to mapFragment
-
         }
+    }
+
+    // interface for passing data to other fragments via MainActivity
+    public interface OnFragmentInteractionListener {
+        public void onFragmentInteraction(String location);
     }
 }

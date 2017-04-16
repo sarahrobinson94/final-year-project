@@ -1,6 +1,5 @@
 package com.sarahrobinson.finalyearproject;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Address;
@@ -19,9 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-//import com.b00636938.com594.GetNearbyPlacesData;
-//import com.b00636938.com594.PoiClass;
-//import com.b00636938.com594.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,6 +63,8 @@ public class MapFragment extends Fragment implements
 
     private int REQUEST_LOCATION;
 
+    private static final String TAG = "MapFragment ******* ";
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -101,6 +99,10 @@ public class MapFragment extends Fragment implements
                 .setFastestInterval(250); // 0.25 second, in milliseconds
     }
 
+    public void getSearchData(String location){
+        sLocation = location;
+        Log.d(TAG, "searchData: location = " + location);
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                               MAP INITIALIZATION                              //
@@ -227,48 +229,6 @@ public class MapFragment extends Fragment implements
 
 
     ///////////////////////////////////////////////////////////////////////////////////
-    //                            DISPLAYING CURRENT LOCATION                        //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    // add map marker and zoom to location
-    public void setMarker(Location mLocation){
-        location = mLocation;
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                             HANDLING LOCATION CHANGE                          //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    // Method called when user's location changes
-    @Override
-    public void onLocationChanged(Location mLocation) {
-
-        location = mLocation;
-
-        findPlaces(location);
-
-        // Remove previous location marker
-        if (currLocationMarker != null) {
-            currLocationMarker.remove();
-        }
-
-        // Place current location marker and move map camera
-        setMarker(location);
-
-        // Stop location updates
-        if (googleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        }
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
     //                               HANDLING PERMISSIONS                            //
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -317,6 +277,49 @@ public class MapFragment extends Fragment implements
         }
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                            DISPLAYING CURRENT LOCATION                        //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // add map marker and zoom to location
+    public void setMarker(Location mLocation){
+        location = mLocation;
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                             HANDLING LOCATION CHANGE                          //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // Method called when user's location changes
+    @Override
+    public void onLocationChanged(Location mLocation) {
+
+        location = mLocation;
+
+        findPlaces(location);
+
+        // Remove previous location marker
+        if (currLocationMarker != null) {
+            currLocationMarker.remove();
+        }
+
+        // Place current location marker and move map camera
+        setMarker(location);
+
+        // Stop location updates
+        if (googleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        }
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////////////
     //                                FINDING PLACES                                 //
     ///////////////////////////////////////////////////////////////////////////////////
@@ -330,7 +333,7 @@ public class MapFragment extends Fragment implements
         location = mLocation;
 
         // if a location has not been specified in search, use current location
-        if (sLocation.equals("")){
+        if (sLocation == null || sLocation == ""){
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
         // if a location has been specified, get latitude & longitude of location
@@ -360,12 +363,6 @@ public class MapFragment extends Fragment implements
         getPlacesData.execute(DataTransfer);
 
         // TODO: 16/04/2017 place current location marker ??
-
-        if (sLocation.equals("")){
-            //Toast.makeText(MainActivity.this, "Pharmacies nearby", Toast.LENGTH_LONG).show();
-        }else{
-            //Toast.makeText(MainActivity.this, "Pharmacies near " + sLocation, Toast.LENGTH_LONG).show();
-        }
     }
 
     // gets the url for the point of interest
@@ -376,7 +373,7 @@ public class MapFragment extends Fragment implements
         googlePlacesUrl.append("&type=" + "amusement_park|art_gallery|mosque|church|cemetery|city_hall|stadium|hindu_temple|library|museum|park|synagogue|university|zoo");
 
         // TODO: 16/04/2017 fix search by name
-        Log.d("getUrl", "sName: " + sName);
+        //Log.d("getUrl", "sName: " + sName);
         // if a pharmacy name has been specified in search, add to url
         /*
         if (!sName.equals("") || !sName.equals(null) ){
@@ -384,7 +381,7 @@ public class MapFragment extends Fragment implements
         }
         */
 
-        googlePlacesUrl.append("&key=" + "AIzaSyAJ0uoGlxBCkOpTR1ASpy2V7e6m5_ywB3E");
+        googlePlacesUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }

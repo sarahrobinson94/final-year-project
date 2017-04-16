@@ -8,11 +8,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,14 +35,14 @@ import java.net.URL;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
 
+    FragmentManager fragmentManager;
+
     private Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    // google sign in
-    private GoogleApiClient googleApiClient;
-
-    private TextView welcomeMessage;
+    private Button btnFindPlaces;
+    private EditText editTextSearchLocation;
 
     private static final String TAG = "HomeFragment ******* ";
 
@@ -51,6 +53,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fragmentManager = getFragmentManager();
 
         firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
         firebaseAuth = FirebaseAuth.getInstance();
@@ -75,6 +79,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         // changing actionBar title
         getActivity().setTitle("Find");
 
+        // places search
+        editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
+        btnFindPlaces = (Button)rootView.findViewById(R.id.btnFind);
+        btnFindPlaces.setOnClickListener(this);
+
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
@@ -82,6 +91,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        if (view == btnFindPlaces){
+            String location = editTextSearchLocation.getText().toString();
 
+            MapFragment mapFragment = new MapFragment();
+            fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
+
+            // TODO: 16/04/2017 pass searched location name to mapFragment
+
+        }
     }
 }

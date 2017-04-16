@@ -211,7 +211,7 @@
 
     </LinearLayout>
 
-    <!-- section 4 -->
+    <!-- section 4 (find button) -->
     <LinearLayout
         android:id="@+id/layoutHomeSection4"
         android:orientation="vertical"

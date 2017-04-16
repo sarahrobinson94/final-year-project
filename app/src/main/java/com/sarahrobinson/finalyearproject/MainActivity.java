@@ -38,6 +38,8 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    FragmentManager fragmentManager;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        fragmentManager = getSupportFragmentManager();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -92,9 +96,8 @@ public class MainActivity extends AppCompatActivity
         navHeaderUserName.setText(firebaseUser.getDisplayName());
         navHeaderUserEmail.setText(firebaseUser.getEmail());
 
-        FragmentManager manager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();
-        manager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
     }
 
     // TODO: 11/04/2017 delete if not needed (using Picasso instead)
@@ -170,22 +173,21 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager manager = getSupportFragmentManager();
         if (id == R.id.nav_find) {
             HomeFragment homeFragment = new HomeFragment();
-            manager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
         } else if (id == R.id.nav_favs) {
             FavouritesFragment favouritesFragment = new FavouritesFragment();
-            manager.beginTransaction().replace(R.id.content_main, favouritesFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_main, favouritesFragment).commit();
         } else if (id == R.id.nav_friends) {
             FriendsFragment friendsFragment = new FriendsFragment();
-            manager.beginTransaction().replace(R.id.content_main, friendsFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_main, friendsFragment).commit();
         } else if (id == R.id.nav_events) {
             EventsFragment eventsFragment = new EventsFragment();
-            manager.beginTransaction().replace(R.id.content_main, eventsFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_main, eventsFragment).commit();
         } else if (id == R.id.nav_settings) {
             SettingsFragment settingsFragment = new SettingsFragment();
-            manager.beginTransaction().replace(R.id.content_main, settingsFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_main, settingsFragment).commit();
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
             firebaseAuth.signOut();

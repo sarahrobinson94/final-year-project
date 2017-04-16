@@ -74,7 +74,7 @@ public class MapFragment extends Fragment implements
                              Bundle savedInstanceState) {
 
         // setting the radius in meters for markers to be added to the map
-        PROXIMITY_RADIUS = 2000.0;
+        PROXIMITY_RADIUS = 20000.0;
 
         REQUEST_LOCATION = 2;
 
@@ -370,7 +370,7 @@ public class MapFragment extends Fragment implements
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + "amusement_park|art_gallery|mosque|church|cemetery|city_hall|stadium|hindu_temple|library|museum|park|synagogue|university|zoo");
+        googlePlacesUrl.append("&type=" + "bar|cafe|meal_takeaway|restaurant");
 
         // TODO: 16/04/2017 fix search by name
         //Log.d("getUrl", "sName: " + sName);

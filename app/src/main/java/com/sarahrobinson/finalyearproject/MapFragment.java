@@ -35,19 +35,19 @@ import com.google.android.gms.maps.model.Marker;
 import java.io.IOException;
 import java.util.List;
 
+import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
+import static com.sarahrobinson.finalyearproject.MainActivity.location;
+import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
+import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
+
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    // Declaring global variables
+    private static final String TAG = "MapFragment ******* ";
 
     private GoogleMap googleMap;
-    private GoogleApiClient googleApiClient;
-    private LocationRequest locationRequest;
-    private Location location;
-    private Marker currLocationMarker;
+    private Marker currLocationMarker; // TODO: 17/04/2017 needed ??
     private Marker selectedMarker;
 
     private LatLng latLng;
@@ -55,15 +55,9 @@ public class MapFragment extends Fragment implements
 
     double PROXIMITY_RADIUS;
 
-    private String placeType = "pharmacy";
-
     // values added to search
     private String sLocation;
     private String sName;
-
-    private int REQUEST_LOCATION;
-
-    private static final String TAG = "MapFragment ******* ";
 
     public MapFragment() {
         // Required empty public constructor
@@ -76,9 +70,7 @@ public class MapFragment extends Fragment implements
         // setting the radius in meters for markers to be added to the map
         PROXIMITY_RADIUS = 20000.0;
 
-        REQUEST_LOCATION = 2;
-
-        // Inflate the layout for this fragment
+        // inflating layout
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
@@ -89,42 +81,13 @@ public class MapFragment extends Fragment implements
         // loading the map fragment on startup
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
         mapFragment.getMapAsync(this);
-
-        checkGooglePlayServices();
-
-        // creating the LocationRequest object
-        locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(500)        // 0.5 seconds, in milliseconds
-                .setFastestInterval(250); // 0.25 second, in milliseconds
     }
 
-    public void getSearchData(String location){
-        sLocation = location;
-        Log.d(TAG, "searchData: location = " + location);
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                               MAP INITIALIZATION                              //
     ///////////////////////////////////////////////////////////////////////////////////
 
-
-    // Check if Google Play Services is available
-    private boolean checkGooglePlayServices() {
-        Log.d("checkGooglePlayServices", "entered");
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(super.getActivity());
-        // checking if connection successful
-        if (result != ConnectionResult.SUCCESS) {
-            // connection unsuccessful
-            if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(super.getActivity(), result, 0).show();
-            }
-            return false;
-        }
-        // connection successful
-        return true;
-    }
 
     /**
      * Manipulates the map once available.
@@ -134,157 +97,27 @@ public class MapFragment extends Fragment implements
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-
     @Override
     public void onMapReady(GoogleMap mMap) {
-        Log.d("onMapReady", "entered");
-
-        //final int REQUEST_LOCATION = 2;
+        Log.d(TAG, "onMapReady");
         googleMap = mMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        // Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(super.getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                buildGoogleApiClient();
-                googleMap.setMyLocationEnabled(true);
-            }
-            else
-            {
-                //requests permissions if they are not yet given
-                ActivityCompat.requestPermissions(super.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_LOCATION);
-            }
-        } else {
-            buildGoogleApiClient();
-            googleMap.setMyLocationEnabled(true);
-        }
-
-        //called when a marker is selected // TODO: 16/04/2017 needed ??
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
-            @Override
-            public boolean onMarkerClick(Marker marker){
-                selectedMarker = marker;
-                //getPlaceDetails();
-                return true;
-            }
-        });
-    }
-
-    // Builder method for initializing Google Play Services
-    protected synchronized void buildGoogleApiClient() {
-        Log.d("buildGoogleApiClient", "entered");
-        googleApiClient = new GoogleApiClient.Builder(super.getActivity())  // for configuring client
-                .addConnectionCallbacks(this)                               // called when client is connected or disconnected
-                .addOnConnectionFailedListener(this)                        // handles failed connection attempt
-                .addApi(LocationServices.API).build();                      // adds the LocationServices API endpoint from Google Play Services
-        googleApiClient.connect();                                          // ensures client is connected before executing any operation
-    }
-
-    // Method for regularly updating the user's current location
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.d("onConnected", "entered");
-        // Get last location
-        location = LocationServices.FusedLocationApi.getLastLocation(
-                googleApiClient);
-        // If last location is available
-        if (location != null) {
-            Log.d("onConnected", "location is not null");
-            // position marker
-            setMarker(location);
-        // If last location is not available
+        // necessary permissions check
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted
+            // TODO: 17/04/2017 toast error
         }else{
-            // If permissions have been granted
-            if (ContextCompat.checkSelfPermission(super.getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Log.d("onConnected", "PERMISSION GRANTED");
-                // get current location
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-            // If permissions have not been granted
-            }else{
-                Log.d("onConnected", "PERMISSION NOT GRANTED");
-                // request permission
-                checkLocationPermission();
-            }
-        }
-        findPlaces(location);
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                               HANDLING CONNECTION                             //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(super.getActivity(),"onConnectionSuspended",Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(super.getActivity(),"onConnectionFailed",Toast.LENGTH_SHORT).show();
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                               HANDLING PERMISSIONS                            //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    // asking user for permission to access location
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    public boolean checkLocationPermission() {
-        // TODO: 16/04/2017 more needed here ??
-        Log.d("checkLocationPermission", "entered");
-        if (ContextCompat.checkSelfPermission(super.getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //permission denied
-            return false;
-        } else {
-            //permission granted
-            return true;
+            googleMap.setMyLocationEnabled(true);
+            setMarker(location);
+            findPlaces(location);
         }
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        Log.d("onReqPermissionsResult", "entered");
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-
-                // If request is cancelled, the result arrays are empty
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // Permission granted
-                    if (ContextCompat.checkSelfPermission(super.getActivity(),
-                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                        if (googleApiClient == null) {
-                            buildGoogleApiClient();
-                        }
-                        googleMap.setMyLocationEnabled(true) ;
-                    }
-
-                } else {
-                    // Permission denied
-                    //Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                            DISPLAYING CURRENT LOCATION                        //
-    ///////////////////////////////////////////////////////////////////////////////////
-
 
     // add map marker and zoom to location
     public void setMarker(Location mLocation){
+        Log.d(TAG, "setMarker");
         location = mLocation;
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -297,22 +130,20 @@ public class MapFragment extends Fragment implements
     ///////////////////////////////////////////////////////////////////////////////////
 
 
+    // TODO: 17/04/2017 check this works
+
     // Method called when user's location changes
     @Override
     public void onLocationChanged(Location mLocation) {
-
+        Log.d(TAG, "onLocationChanged");
         location = mLocation;
-
         findPlaces(location);
-
         // Remove previous location marker
         if (currLocationMarker != null) {
             currLocationMarker.remove();
         }
-
         // Place current location marker and move map camera
         setMarker(location);
-
         // Stop location updates
         if (googleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
@@ -323,6 +154,12 @@ public class MapFragment extends Fragment implements
     ///////////////////////////////////////////////////////////////////////////////////
     //                                FINDING PLACES                                 //
     ///////////////////////////////////////////////////////////////////////////////////
+
+
+    public void getSearchData(String location) {
+        sLocation = location;
+        Log.d(TAG, "searchData: location = " + location);
+    }
 
     // Find places
     public void findPlaces(Location mLocation){

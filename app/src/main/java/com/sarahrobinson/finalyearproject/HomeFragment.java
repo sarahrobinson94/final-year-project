@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -33,7 +34,11 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
+
 public class HomeFragment extends Fragment implements View.OnClickListener{
+
+    private static final String TAG = "HomeFragment ******* ";
 
     private FragmentManager fragmentManager;
     private OnFragmentInteractionListener mListener;
@@ -45,7 +50,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private Button btnFindPlaces;
     private EditText editTextSearchLocation;
 
-    private static final String TAG = "HomeFragment ******* ";
+    private int REQUEST_LOCATION;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,15 +79,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // inflating layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         // changing actionBar title
         getActivity().setTitle("Find");
 
-        // places search
+        ///// places search /////
+
         editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
         btnFindPlaces = (Button)rootView.findViewById(R.id.btnFind);
+
+        REQUEST_LOCATION = 2;
+
+        if (permissionsGranted == true){
+            // TODO: 17/04/2017 set location to user's current location
+            editTextSearchLocation.setText("Current location");
+        }
+
         btnFindPlaces.setOnClickListener(this);
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
@@ -93,12 +107,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         if (view == btnFindPlaces){
-            String location = editTextSearchLocation.getText().toString();
-            if (mListener != null) {
-                mListener.onFragmentInteraction(location);
+            // request permissions or go to map
+            if (permissionsGranted == false){
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION);
+            }else{
+                String location = editTextSearchLocation.getText().toString();
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(location);
+                }
+                MapFragment mapFragment = new MapFragment();
+                fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
             }
-            MapFragment mapFragment = new MapFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
         }
     }
 

@@ -1,11 +1,20 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,13 +27,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.internal.LoginAuthorizationType;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,15 +53,16 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        HomeFragment.OnFragmentInteractionListener {
+        HomeFragment.OnFragmentInteractionListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
+
+    private static final String TAG = "MainActivity ******* ";
 
     FragmentManager fragmentManager;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
-
-    // google sign in
-    private GoogleApiClient googleApiClient;
 
     private NavigationView navigationView;
 
@@ -54,7 +70,13 @@ public class MainActivity extends AppCompatActivity implements
     private TextView navHeaderUserName;
     private TextView navHeaderUserEmail;
 
-    private static final String TAG = "MainActivity ******* ";
+    // location services
+    private int REQUEST_LOCATION;
+    private GoogleMap googleMap;
+    public static GoogleApiClient googleApiClient;
+    public static Location location;
+    public static LocationRequest locationRequest;
+    public static Boolean permissionsGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +85,13 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ///// navigation drawer /////
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        fragmentManager = getSupportFragmentManager();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -98,8 +120,35 @@ public class MainActivity extends AppCompatActivity implements
         navHeaderUserName.setText(firebaseUser.getDisplayName());
         navHeaderUserEmail.setText(firebaseUser.getEmail());
 
+        ///// location services /////
+
+        REQUEST_LOCATION = 2;
+
+        checkGooglePlayServices();
+
+        // creating the LocationRequest object
+        locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(500)        // 0.5 seconds, in milliseconds
+                .setFastestInterval(250); // 0.25 second, in milliseconds
+
+        initializeGooglePlayServices();
+
+        ///// home fragment initialization /////
+
+        fragmentManager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();
         fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
+    }
+
+    protected void onStart() {
+        googleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
     }
 
     // TODO: 11/04/2017 delete if not needed (using Picasso instead)
@@ -137,6 +186,12 @@ public class MainActivity extends AppCompatActivity implements
             imageView.setImageBitmap(result);
         }
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                                   NAVIGATION                                  //
+    ///////////////////////////////////////////////////////////////////////////////////
+
 
     @Override
     public void onBackPressed() {
@@ -216,6 +271,156 @@ public class MainActivity extends AppCompatActivity implements
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                              GOOGLE PLAY SERVICES                             //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // Check if Google Play Services is available
+    private boolean checkGooglePlayServices() {
+        Log.d(TAG, "checkGooglePlayServices");
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        // checking if connection successful
+        if (result != ConnectionResult.SUCCESS) {
+            // connection unsuccessful
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result, 0).show();
+            }
+            return false;
+        }
+        // connection successful
+        return true;
+    }
+
+    // Initialize Google Play Services
+    private void initializeGooglePlayServices(){
+        Log.d(TAG, "initializeGooglePlayServices");
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                permissionsGranted = true;
+                buildGoogleApiClient();
+            }
+            else
+            {
+                // requests permissions if they are not yet given
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION);
+            }
+        } else {
+            buildGoogleApiClient();
+        }
+    }
+
+    // Builder method for initializing Google Play Services
+    protected synchronized void buildGoogleApiClient() {
+        Log.d(TAG, "buildGoogleApiClient");
+        googleApiClient = new GoogleApiClient.Builder(this)  // for configuring client
+                .addConnectionCallbacks(this)                // called when client is connected or disconnected
+                .addOnConnectionFailedListener(this)         // handles failed connection attempt
+                .addApi(LocationServices.API).build();       // adds the LocationServices API endpoint from Google Play Services
+        googleApiClient.connect();                           // ensures client is connected before executing any operation
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                         CONNECTION TO LOCATION SERVICES                       //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // Method for regularly updating the user's current location
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected");
+        // Get last location
+        location = LocationServices.FusedLocationApi.getLastLocation(
+                googleApiClient);
+        // If last location is available
+        if (location != null) {
+            Log.d("onConnected", "last location is available");
+        // If last location is not available
+        }else{
+            // If permissions have been granted
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Log.d("onConnected", "PERMISSION GRANTED");
+                permissionsGranted = true;
+                // get current location
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, (LocationListener) this);
+            // If permissions have not been granted
+            }else{
+                Log.d("onConnected", "PERMISSION NOT GRANTED");
+                // request permission
+                checkLocationPermission();
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(this,"onConnectionSuspended",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,"onConnectionFailed",Toast.LENGTH_SHORT).show();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                               LOCATION PERMISSIONS                            //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // Asking user for permission to access location
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    public boolean checkLocationPermission() {
+        // TODO: 16/04/2017 more needed here ??
+        Log.d(TAG, "checkLocationPermission");
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //permission denied
+            return false;
+        } else {
+            //permission granted
+            permissionsGranted = true;
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionResult");
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        permissionsGranted = true;
+                        if (googleApiClient == null) {
+                            buildGoogleApiClient();
+                        }
+                    }
+                } else {
+                    // Permission denied
+                    Toast.makeText(this, "Permission denied. You will not be able to use location-based" +
+                            "features of this app.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                               FRAGMENT INTERACTION                            //
+    ///////////////////////////////////////////////////////////////////////////////////
+
 
     // Handle interaction between fragments
     @Override

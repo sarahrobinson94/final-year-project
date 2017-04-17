@@ -61,7 +61,6 @@ import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLoca
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        HomeFragment.OnFragmentInteractionListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
@@ -446,18 +445,5 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
         }
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                               FRAGMENT INTERACTION                            //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    // Handle interaction between fragments
-    @Override
-    public void onFragmentInteraction(String location) {
-        MapFragment mapFragment = (MapFragment)getSupportFragmentManager().findFragmentById(R.id.layoutFragmentMap);
-        mapFragment.getSearchData(location);
     }
 }

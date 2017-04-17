@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="7"
             android:layout_gravity="bottom"
-            android:text="km radius of:"
+            android:text="m radius of:"
             android:textSize="16dp"
             android:textColor="@color/grey"/>
 
@@ -239,7 +239,7 @@
 
     </LinearLayout>
 
-    <!-- section 4 (find button) -->
+    <!-- section 4 (find or add more) -->
     <LinearLayout
         android:id="@+id/layoutHomeSection4"
         android:orientation="vertical"

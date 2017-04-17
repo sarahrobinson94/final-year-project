@@ -50,8 +50,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
+    public static EditText editTextSearchRadius;
     public static EditText editTextSearchLocation;
     private Button btnFindPlaces;
+
+    // values added to search
+    public static double sRadius;
+    public static String sLocation;
+    public static String sName;
 
     private int REQUEST_LOCATION;
 
@@ -92,6 +98,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         REQUEST_LOCATION = 2;
 
+        editTextSearchRadius = (EditText)rootView.findViewById(R.id.editTextHomeRadius);
+
         editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
         editTextSearchLocation.setText(currentLocation);
 
@@ -111,9 +119,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         REQUEST_LOCATION);
             }else{
-                String location = editTextSearchLocation.getText().toString();
-                if (mListener != null) {
-                    mListener.onFragmentInteraction(location);
+                // get search location
+                sLocation = editTextSearchLocation.getText().toString();
+                // get search radius (set to default if none specified)
+                String stringRadius = editTextSearchRadius.getText().toString();
+                if (stringRadius.equals("") || stringRadius.equals(null)){
+                    Log.d(TAG, "Radius: default");
+                    sRadius = 20000.0;
+                }else{
+                    Log.d(TAG, "Radius: custom");
+                    Log.d(TAG, "Radius: " + stringRadius);
+                    sRadius = Double.parseDouble(stringRadius);
                 }
                 MapFragment mapFragment = new MapFragment();
                 fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
@@ -123,6 +139,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     // interface for passing data to other fragments via MainActivity
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(String location);
+        public void onFragmentInteraction(String location, double radius);
     }
 }

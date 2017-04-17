@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.Marker;
 import java.io.IOException;
 import java.util.List;
 
+import static com.sarahrobinson.finalyearproject.HomeFragment.sLocation;
+import static com.sarahrobinson.finalyearproject.HomeFragment.sRadius;
 import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
@@ -53,12 +55,6 @@ public class MapFragment extends Fragment implements
     private LatLng latLng;
     private double latitude, longitude;
 
-    double PROXIMITY_RADIUS;
-
-    // values added to search
-    private String sLocation;
-    private String sName;
-
     public MapFragment() {
         // Required empty public constructor
     }
@@ -66,9 +62,6 @@ public class MapFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // setting the radius in meters for markers to be added to the map
-        PROXIMITY_RADIUS = 20000.0;
 
         // inflating layout
         return inflater.inflate(R.layout.fragment_map, container, false);
@@ -156,11 +149,6 @@ public class MapFragment extends Fragment implements
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    public void getSearchData(String location) {
-        sLocation = location;
-        Log.d(TAG, "searchData: location = " + location);
-    }
-
     // Find places
     public void findPlaces(Location mLocation){
         Log.d("findNearbyPlaces", "entered");
@@ -206,7 +194,7 @@ public class MapFragment extends Fragment implements
     private String getUrl(double latitude, double longitude) {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlacesUrl.append("&radius=" + sRadius);
         googlePlacesUrl.append("&type=" + "bar|cafe|meal_takeaway|restaurant");
 
         // TODO: 16/04/2017 fix search by name

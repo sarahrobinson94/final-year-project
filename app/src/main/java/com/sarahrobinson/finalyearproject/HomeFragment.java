@@ -132,7 +132,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                     sRadius = Double.parseDouble(stringRadius);
                 }
                 MapFragment mapFragment = new MapFragment();
-                fragmentManager.beginTransaction().replace(R.id.content_main, mapFragment).commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_main, mapFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         }
     }

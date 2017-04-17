@@ -148,8 +148,6 @@ public class MapFragment extends Fragment implements
     //                                FINDING PLACES                                 //
     ///////////////////////////////////////////////////////////////////////////////////
 
-
-    // Find places
     public void findPlaces(Location mLocation){
         Log.d("findNearbyPlaces", "entered");
         googleMap.clear();
@@ -159,8 +157,8 @@ public class MapFragment extends Fragment implements
 
         // if a location has not been specified in search, use current location
         if (sLocation == null || sLocation == ""){
-            latitude = mLocation.getLatitude();
-            longitude = mLocation.getLongitude();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
         // if a location has been specified, get latitude & longitude of location
         }else{
             if(Geocoder.isPresent()){
@@ -173,7 +171,7 @@ public class MapFragment extends Fragment implements
                         longitude = a.getLongitude();
                     }
                 } catch (IOException e) {
-                    //todo: change to toast message
+                    // TODO: 17/04/2017 change to toast message
                     Log.d("findPlaces", "An error occurred retrieving latitude & longitude of " +
                             "location specified in search.");
                 }
@@ -190,7 +188,6 @@ public class MapFragment extends Fragment implements
         // TODO: 16/04/2017 place current location marker ??
     }
 
-    // gets the url for the point of interest
     private String getUrl(double latitude, double longitude) {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);

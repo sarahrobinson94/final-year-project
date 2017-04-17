@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.sarahrobinson.finalyearproject.MainActivity.currentLocation;
+import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
@@ -47,8 +50,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
+    public static EditText editTextSearchLocation;
     private Button btnFindPlaces;
-    private EditText editTextSearchLocation;
 
     private int REQUEST_LOCATION;
 
@@ -87,16 +90,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         ///// places search /////
 
-        editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
-        btnFindPlaces = (Button)rootView.findViewById(R.id.btnFind);
-
         REQUEST_LOCATION = 2;
 
-        if (permissionsGranted == true){
-            // TODO: 17/04/2017 set location to user's current location
-            editTextSearchLocation.setText("Current location");
-        }
+        editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
+        editTextSearchLocation.setText(currentLocation);
 
+        btnFindPlaces = (Button)rootView.findViewById(R.id.btnFind);
         btnFindPlaces.setOnClickListener(this);
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)

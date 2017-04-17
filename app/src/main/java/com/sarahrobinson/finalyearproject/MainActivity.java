@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -47,9 +50,14 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
+
+import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLocation;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -73,10 +81,12 @@ public class MainActivity extends AppCompatActivity implements
     // location services
     private int REQUEST_LOCATION;
     private GoogleMap googleMap;
+    double latitude, longitude;
     public static GoogleApiClient googleApiClient;
     public static Location location;
     public static LocationRequest locationRequest;
     public static Boolean permissionsGranted = false;
+    public static String currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +197,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // Method for getting location address from co-ordinates
+    public String Geocoder(double latitude, double longitude){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String addressLine1 = addresses.get(0).getAddressLine(0);
+        String addressLine2 = addresses.get(0).getAddressLine(1);
+        String addressLine3 = addresses.get(0).getAddressLine(2);
+        String addressToShow = addressLine1 + ", " + addressLine2;
+        return addressToShow;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                                   NAVIGATION                                  //
@@ -335,27 +360,34 @@ public class MainActivity extends AppCompatActivity implements
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected");
         // Get last location
-        location = LocationServices.FusedLocationApi.getLastLocation(
-                googleApiClient);
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         // If last location is available
         if (location != null) {
-            Log.d("onConnected", "last location is available");
+            Log.d(TAG, "onConnected: last location is available");
+            Log.d(TAG, "Location: " + location);
         // If last location is not available
         }else{
             // If permissions have been granted
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Log.d("onConnected", "PERMISSION GRANTED");
+                Log.d(TAG, "onConnected: Permission granted");
                 permissionsGranted = true;
                 // get current location
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, (LocationListener) this);
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest,
+                        (LocationListener) this);
+                location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             // If permissions have not been granted
             }else{
-                Log.d("onConnected", "PERMISSION NOT GRANTED");
+                Log.d(TAG, "onConnected: Permission not granted");
                 // request permission
                 checkLocationPermission();
             }
         }
+        // Populating location search field (home screen) with user's current location
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        currentLocation = Geocoder(latitude, longitude);
+        editTextSearchLocation.setText(currentLocation);
     }
 
     @Override

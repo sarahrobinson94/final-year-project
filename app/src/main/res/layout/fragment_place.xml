@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutFragmentPlace"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sarahrobinson.finalyearproject.PlaceFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/textViewPlaceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="16dp"
+            android:textColor="@color/grey"
+            android:text="Name"/>
+
+        <TextView
+            android:id="@+id/textViewPlaceAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="16dp"
+            android:textColor="@color/grey"
+            android:text="Address"/>
+
+        <TextView
+            android:id="@+id/textViewPlacePhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="16dp"
+            android:textColor="@color/grey"
+            android:text="Phone Number"/>
+
+        <TextView
+            android:id="@+id/textViewPlaceWebsite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="16dp"
+            android:textColor="@color/grey"
+            android:text="Website"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

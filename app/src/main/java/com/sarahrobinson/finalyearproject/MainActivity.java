@@ -57,6 +57,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
+import static android.R.id.toggle;
 import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLocation;
 
 public class MainActivity extends AppCompatActivity implements

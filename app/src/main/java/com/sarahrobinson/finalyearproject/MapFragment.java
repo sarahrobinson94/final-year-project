@@ -1,5 +1,6 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Address;
@@ -11,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -41,19 +46,25 @@ import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
 import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.placeAddress;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.placeName;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.placePhoneNo;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.placeWebsite;
 
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,
         LocationListener {
 
     private static final String TAG = "MapFragment ******* ";
+    private FragmentManager fragmentManager;
 
     private GoogleMap googleMap;
+    private LatLng latLng;
+    private double latitude, longitude;
     private Marker currLocationMarker; // TODO: 17/04/2017 needed ??
     private Marker selectedMarker;
 
-    private LatLng latLng;
-    private double latitude, longitude;
+    public static String thePlaceId;
 
     public MapFragment() {
         // Required empty public constructor
@@ -62,9 +73,15 @@ public class MapFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // inflating layout
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+
+        // changing actionBar title
+        getActivity().setTitle("Results");
+
+        fragmentManager = getFragmentManager();
+
+        return rootView;
     }
 
     @Override
@@ -75,7 +92,6 @@ public class MapFragment extends Fragment implements
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
         mapFragment.getMapAsync(this);
     }
-
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                               MAP INITIALIZATION                              //
@@ -106,6 +122,21 @@ public class MapFragment extends Fragment implements
             setMarker(location);
             findPlaces(location);
         }
+        // marker info window onclick listener
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Log.d(TAG, "info window clicked");
+                selectedMarker = marker;
+                thePlaceId = selectedMarker.getSnippet();
+                PlaceFragment placeFragment = new PlaceFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_main, placeFragment)
+                        // TODO: 17/04/2017 fix crash when navigating back to this fragment
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     // add map marker and zoom to location
@@ -145,7 +176,7 @@ public class MapFragment extends Fragment implements
 
 
     ///////////////////////////////////////////////////////////////////////////////////
-    //                                FINDING PLACES                                 //
+    //                                  NEARBY SEARCH                                //
     ///////////////////////////////////////////////////////////////////////////////////
 
     public void findPlaces(Location mLocation){

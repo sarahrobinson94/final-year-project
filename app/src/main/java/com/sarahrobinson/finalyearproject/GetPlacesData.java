@@ -57,16 +57,15 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
             Log.d(TAG, "googlePlace: " + googlePlace);
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
-            //String placeId = googlePlace.get("reference");
+            String placeId = googlePlace.get("place_id");
             String placeName = googlePlace.get("place_name");
             String vicinity = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName);
-            markerOptions.snippet(vicinity);
-            //markerOptions.snippet(placeId);
+            markerOptions.snippet(placeId);
+            //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             googleMap.addMarker(markerOptions);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
             //move map camera
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

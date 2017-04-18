@@ -7,8 +7,14 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
 
 import static com.sarahrobinson.finalyearproject.PlaceFragment.ivPlaceIcon;
 import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceAddress;
@@ -53,8 +59,6 @@ public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
     protected void onPostExecute(String result) {
         Log.d(TAG, "onPostExecute entered");
         try {
-            Log.d("Place", "parse");
-
             // Create a JSON object hierarchy from the results
             JSONObject jsonObject = new JSONObject((String)result);
             JSONObject placeDetailsJsonArray = jsonObject.getJSONObject("result");
@@ -63,9 +67,19 @@ public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
             if (!placeDetailsJsonArray.isNull("icon")) {
                 selectedPlaceImage = placeDetailsJsonArray.getString("icon");
             }
-            if (!placeDetailsJsonArray.isNull("type")) {
-                Log.d(TAG, "PLACE TYPE: " + placeDetailsJsonArray.getJSONArray("type"));
-                selectedPlaceType = placeDetailsJsonArray.getString("type");
+            if (!placeDetailsJsonArray.isNull("types")) {
+                JSONArray types = new JSONArray();
+                types = placeDetailsJsonArray.getJSONArray("types");
+                String strTypes = "";
+                for (int i = 0; i < types.length(); ++i) {
+                    String type = types.getString(i);
+                    strTypes = strTypes + (type + ", ");
+                }
+                // removing underscores
+                strTypes = strTypes.replaceAll("_", " ");
+                // removing comma at end of string // TODO: 18/04/2017 fix 
+                strTypes = strTypes.substring(0, strTypes.length()- 1);
+                selectedPlaceType = strTypes;
             }
             if (!placeDetailsJsonArray.isNull("name")) {
                 selectedPlaceName = placeDetailsJsonArray.getString("name");

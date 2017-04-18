@@ -102,7 +102,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
             firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
                     child(selectedPlaceId).setValue(true);
             // show success toast
-            Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT).show();
         }
     }
 }

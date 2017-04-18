@@ -130,7 +130,8 @@ public class MapFragment extends Fragment implements
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // permission not granted
-            // TODO: 17/04/2017 toast error
+            Toast.makeText(getActivity(), "Permission to access the device's location has not been" +
+                    "granted", Toast.LENGTH_LONG).show();
         }else{
             googleMap.setMyLocationEnabled(true);
             setMarker(location);

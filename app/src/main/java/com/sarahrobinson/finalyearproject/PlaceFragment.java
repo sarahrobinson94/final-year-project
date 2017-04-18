@@ -21,6 +21,7 @@ import java.util.List;
 import static com.sarahrobinson.finalyearproject.HomeFragment.sLocation;
 import static com.sarahrobinson.finalyearproject.HomeFragment.sRadius;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
+import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
 
 public class PlaceFragment extends Fragment {
@@ -47,7 +48,7 @@ public class PlaceFragment extends Fragment {
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
         tvPlaceWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
 
-        //getPlaceDetails();
+        getPlaceDetails();
 
         return rootView;
     }
@@ -57,7 +58,6 @@ public class PlaceFragment extends Fragment {
     //                             GETTING PLACE DETAILS                             //
     ///////////////////////////////////////////////////////////////////////////////////
 
-    /*
     public void getPlaceDetails(){
         Log.d(TAG, "getPlaceDetails");
 
@@ -65,18 +65,17 @@ public class PlaceFragment extends Fragment {
         Object[] DataTransfer = new Object[1];
         //DataTransfer[0] = googleMap;
         DataTransfer[0] = url;
-        GetPlaceDetails getPlaceDetails = new GetPlaceDetails();
-        getPlaceDetails.execute(DataTransfer);
+        GetSinglePlaceData getSinglePlaceData = new GetSinglePlaceData();
+        getSinglePlaceData.execute(DataTransfer);
 
         // TODO: 16/04/2017 place current location marker ??
     }
 
     private String getUrl() {
         StringBuilder placeDetailsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
-        placeDetailsUrl.append("placeid=" + thePlaceId);
+        placeDetailsUrl.append("placeid=" + selectedPlaceId);
         placeDetailsUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
         Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
         return (placeDetailsUrl.toString());
     }
-    */
 }

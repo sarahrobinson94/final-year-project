@@ -64,6 +64,7 @@ public class MapFragment extends Fragment implements
     private Marker selectedMarker;
 
     public static String thePlaceId, thePlaceName, thePlaceAddress, thePlacePhoneNo;
+    public static String selectedPlaceId;
 
     private FloatingActionButton fabMap;
 
@@ -141,7 +142,7 @@ public class MapFragment extends Fragment implements
             public void onInfoWindowClick(Marker marker) {
                 Log.d(TAG, "info window clicked");
                 selectedMarker = marker;
-                thePlaceId = selectedMarker.getSnippet();
+                selectedPlaceId = selectedMarker.getSnippet();
                 PlaceFragment placeFragment = new PlaceFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_main, placeFragment)

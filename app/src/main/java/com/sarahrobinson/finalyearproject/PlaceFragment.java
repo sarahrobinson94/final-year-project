@@ -4,6 +4,7 @@ package com.sarahrobinson.finalyearproject;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -28,7 +30,8 @@ public class PlaceFragment extends Fragment {
 
     private static final String TAG = "PlaceFragment ******* ";
 
-    public static TextView tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
+    public static TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
+    public static ImageView ivPlaceIcon;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -43,6 +46,8 @@ public class PlaceFragment extends Fragment {
         // changing actionBar title
         getActivity().setTitle("Place Details");
 
+        ivPlaceIcon = (ImageView)rootView.findViewById(R.id.imageViewPlaceIcon);
+        tvPlaceType = (TextView)rootView.findViewById(R.id.textViewPlaceType);
         tvPlaceName = (TextView)rootView.findViewById(R.id.textViewPlaceName);
         tvPlaceAddress = (TextView)rootView.findViewById(R.id.textViewPlaceAddress);
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);

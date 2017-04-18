@@ -3,22 +3,19 @@ package com.sarahrobinson.finalyearproject;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.List;
-
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceAddress;
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceName;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.ivPlaceIcon;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceAddress;
 import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceName;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlacePhoneNo;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceType;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceWebsite;
 
 /**
  * Created by sarahrobinson on 18/04/2017.
@@ -31,10 +28,8 @@ public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
     String googlePlaceData;
     String url;
 
-    public static String selectedPlaceName;
-
-    //public static List<HashMap<String, String>> placeDetailsList;
-    //public static String placeDetailsString;
+    public static String selectedPlaceImage, selectedPlaceType, selectedPlaceName,
+            selectedPlaceAddress, selectedPlacePhoneNo, selectedPlaceWebsite;
 
     private Context getContext() {
         return MainActivity.getContext();
@@ -65,18 +60,46 @@ public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
             JSONObject placeDetailsJsonArray = jsonObject.getJSONObject("result");
 
             // Extract the place details from the results
-            selectedPlaceName = placeDetailsJsonArray.getString("name");
+            if (!placeDetailsJsonArray.isNull("icon")) {
+                selectedPlaceImage = placeDetailsJsonArray.getString("icon");
+            }
+            if (!placeDetailsJsonArray.isNull("type")) {
+                Log.d(TAG, "PLACE TYPE: " + placeDetailsJsonArray.getJSONArray("type"));
+                selectedPlaceType = placeDetailsJsonArray.getString("type");
+            }
+            if (!placeDetailsJsonArray.isNull("name")) {
+                selectedPlaceName = placeDetailsJsonArray.getString("name");
+            }
+            if (!placeDetailsJsonArray.isNull("formatted_address")) {
+                selectedPlaceAddress = placeDetailsJsonArray.getString("formatted_address");
+            }
+            if (!placeDetailsJsonArray.isNull("formatted_phone_number")) {
+                selectedPlacePhoneNo = placeDetailsJsonArray.getString("formatted_phone_number");
+            }
+            if (!placeDetailsJsonArray.isNull("website")) {
+                selectedPlaceWebsite = placeDetailsJsonArray.getString("website");
+            }
 
         } catch (JSONException e) {
             Log.d(TAG, "Error parsing json results");
             e.printStackTrace();
         }
-        ShowPlaceDetails(selectedPlaceName);
+        ShowPlaceDetails(selectedPlaceImage, selectedPlaceType, selectedPlaceName,
+                selectedPlaceAddress, selectedPlacePhoneNo, selectedPlaceWebsite);
     }
 
-    private void ShowPlaceDetails(String name) {
+    private void ShowPlaceDetails(String image, String type, String name, String address,
+                                  String phoneNo, String website) {
         Log.d(TAG, "ShowPlaceDetails entered");
-        Log.d(TAG, "PlaceDetails: " + name);
+        // load image from url
+        Picasso.with(getContext())
+                .load(image)
+                .into(ivPlaceIcon);
+        // set string details
+        tvPlaceType.setText(type);
         tvPlaceName.setText(name);
+        tvPlaceAddress.setText(address);
+        tvPlacePhoneNo.setText(phoneNo);
+        tvPlaceWebsite.setText(website);
     }
 }

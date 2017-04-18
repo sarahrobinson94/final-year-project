@@ -11,15 +11,32 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp">
 
+        <ImageView
+            android:id="@+id/imageViewPlaceIcon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewPlaceType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:textColor="@color/grey" />
+
         <TextView
             android:id="@+id/textViewPlaceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:gravity="center"
             android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:text="Name"/>
+            android:textColor="@color/grey" />
 
         <TextView
             android:id="@+id/textViewPlaceAddress"
@@ -27,9 +44,9 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:gravity="center"
             android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:text="Address"/>
+            android:textColor="@color/grey" />
 
         <TextView
             android:id="@+id/textViewPlacePhoneNumber"
@@ -37,9 +54,9 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:gravity="center"
             android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:text="Phone Number"/>
+            android:textColor="@color/grey" />
 
         <TextView
             android:id="@+id/textViewPlaceWebsite"
@@ -47,9 +64,9 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+            android:gravity="center"
             android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:text="Website"/>
+            android:textColor="@color/grey" />
 
     </LinearLayout>
 

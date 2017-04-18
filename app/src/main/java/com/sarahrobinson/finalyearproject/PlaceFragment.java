@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -22,16 +24,19 @@ import java.util.List;
 
 import static com.sarahrobinson.finalyearproject.HomeFragment.sLocation;
 import static com.sarahrobinson.finalyearproject.HomeFragment.sRadius;
+import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
 
-public class PlaceFragment extends Fragment {
+public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "PlaceFragment ******* ";
 
     public static TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     public static ImageView ivPlaceIcon;
+    private Button btnAddToFavourites;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -46,12 +51,17 @@ public class PlaceFragment extends Fragment {
         // changing actionBar title
         getActivity().setTitle("Place Details");
 
+        // textviews to be populated from json response
         ivPlaceIcon = (ImageView)rootView.findViewById(R.id.imageViewPlaceIcon);
         tvPlaceType = (TextView)rootView.findViewById(R.id.textViewPlaceType);
         tvPlaceName = (TextView)rootView.findViewById(R.id.textViewPlaceName);
         tvPlaceAddress = (TextView)rootView.findViewById(R.id.textViewPlaceAddress);
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
         tvPlaceWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
+
+        // add to favourites button
+        btnAddToFavourites = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
+        btnAddToFavourites.setOnClickListener(this);
 
         getPlaceDetails();
 
@@ -63,6 +73,8 @@ public class PlaceFragment extends Fragment {
     //                             GETTING PLACE DETAILS                             //
     ///////////////////////////////////////////////////////////////////////////////////
 
+    // TODO: 18/04/2017 move to seperate class and pass in the relevant placeId
+
     public void getPlaceDetails(){
         Log.d(TAG, "getPlaceDetails");
 
@@ -72,8 +84,6 @@ public class PlaceFragment extends Fragment {
         DataTransfer[0] = url;
         GetSinglePlaceData getSinglePlaceData = new GetSinglePlaceData();
         getSinglePlaceData.execute(DataTransfer);
-
-        // TODO: 16/04/2017 place current location marker ??
     }
 
     private String getUrl() {
@@ -82,5 +92,17 @@ public class PlaceFragment extends Fragment {
         placeDetailsUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
         Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
         return (placeDetailsUrl.toString());
+    }
+
+    @Override
+    public void onClick(View view) {
+        // TODO: 18/04/2017 change to switch statements (in all fragments/activities)
+        if (view == btnAddToFavourites){
+            // add to favourites list
+            firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
+                    child(selectedPlaceId).setValue(true);
+            // show success toast
+            Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT);
+        }
     }
 }

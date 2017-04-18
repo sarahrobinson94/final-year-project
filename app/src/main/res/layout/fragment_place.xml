@@ -68,6 +68,17 @@
             android:textSize="16dp"
             android:textColor="@color/grey" />
 
+        <Button
+            android:id="@+id/buttonAddToFavourites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:textColor="@color/grey"
+            android:text="Add to favourites"/>
+
     </LinearLayout>
 
 </RelativeLayout>

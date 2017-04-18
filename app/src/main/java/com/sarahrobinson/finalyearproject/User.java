@@ -1,5 +1,7 @@
 package com.sarahrobinson.finalyearproject;
 
+import java.util.List;
+
 /**
  * Created by sarahrobinson on 19/03/2017.
  */
@@ -10,16 +12,18 @@ public class User {
     private String name;
     private String email;
     private String image;
+    private List<String> favouritePlaces;
 
     public User() {
 
     }
 
-    public User(String id, String name, String email, String image) {
+    public User(String id, String name, String email, String image, List<String> favouritePlaces) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.image = image;
+        this.favouritePlaces = favouritePlaces;
     }
 
     public String getId() {
@@ -52,5 +56,13 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public List<String> getFavouritePlaces() {
+        return favouritePlaces;
+    }
+
+    public void setFavouritePlaces(List<String> favouritePlaces) {
+        this.favouritePlaces = favouritePlaces;
     }
 }

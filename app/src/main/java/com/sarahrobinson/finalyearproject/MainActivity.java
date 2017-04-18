@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.facebook.internal.LoginAuthorizationType;
 import com.facebook.login.LoginManager;
+import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -48,6 +49,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -73,8 +76,10 @@ public class MainActivity extends AppCompatActivity implements
 
     FragmentManager fragmentManager;
 
+    public static Firebase firebaseRef;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    public static String currentUserId;
 
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
@@ -100,6 +105,11 @@ public class MainActivity extends AppCompatActivity implements
 
         mContext = getApplicationContext();
 
+        firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        currentUserId = (firebaseUser.getUid().toString());
+
         ///// navigation drawer /////
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,9 +120,6 @@ public class MainActivity extends AppCompatActivity implements
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
 
         navHeaderProfilePic = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.navHeaderProfilePic);
         navHeaderUserName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.navHeaderUserName);

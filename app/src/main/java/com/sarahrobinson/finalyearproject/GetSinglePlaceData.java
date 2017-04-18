@@ -77,7 +77,7 @@ public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
                 }
                 // removing underscores
                 strTypes = strTypes.replaceAll("_", " ");
-                // removing comma at end of string // TODO: 18/04/2017 fix 
+                // removing comma at end of string // TODO: 18/04/2017 fix
                 strTypes = strTypes.substring(0, strTypes.length()- 1);
                 selectedPlaceType = strTypes;
             }

@@ -39,6 +39,9 @@ public class PlaceFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_place, container, false);
 
+        // changing actionBar title
+        getActivity().setTitle("Place Details");
+
         tvPlaceName = (TextView)rootView.findViewById(R.id.textViewPlaceName);
         tvPlaceAddress = (TextView)rootView.findViewById(R.id.textViewPlaceAddress);
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);

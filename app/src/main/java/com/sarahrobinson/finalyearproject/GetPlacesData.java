@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceAddress;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceName;
-import static com.sarahrobinson.finalyearproject.PlacesListFragment.placesListView;
 
 /**
  * Created by sarahrobinson on 16/04/2017.
@@ -33,15 +32,10 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
     GoogleMap googleMap;
     String url;
 
-    // ListItems data
-    ArrayList<HashMap<String, String>> placesListItems = new ArrayList<>();
+    public static List<HashMap<String, String>> placesList;
 
-    // variable to hold context
-    private Context context;
-
-    //save the context recievied via constructor in a local variable
-    public void GetPlacesData(Context context){
-        this.context=context;
+    private Context getContext() {
+        return MainActivity.getContext();
     }
 
     @Override
@@ -62,7 +56,7 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d(TAG, "onPostExecute entered");
-        List<HashMap<String, String>> placesList = null;
+        placesList = null;
         PlacesDataParser dataParser = new PlacesDataParser();
         placesList = dataParser.parse(result);
         ShowPlaces(placesList);
@@ -91,13 +85,5 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
         }
-        // list adapter
-        ListAdapter adapter = new SimpleAdapter(context, placesList,
-                R.layout.places_list_item,
-                new String[] { thePlaceId, thePlaceName}, new int[] {
-                R.id.placesListItemPlaceId, R.id.placesListItemPlaceName });
-
-        // Adding data into listview
-        placesListView.setAdapter(adapter);
     }
 }

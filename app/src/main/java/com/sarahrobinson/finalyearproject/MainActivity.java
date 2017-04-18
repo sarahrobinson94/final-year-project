@@ -30,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,13 +69,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity ******* ";
 
+    private static Context mContext;
+
     FragmentManager fragmentManager;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
     private NavigationView navigationView;
-
     private ImageView navHeaderProfilePic;
     private TextView navHeaderUserName;
     private TextView navHeaderUserEmail;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mContext = getApplicationContext();
 
         ///// navigation drawer /////
 
@@ -152,6 +156,10 @@ public class MainActivity extends AppCompatActivity implements
         fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
     }
 
+    public static Context getContext() {
+        return mContext;
+    }
+
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
@@ -207,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // TODO: 18/04/2017 check for null
         String addressLine1 = addresses.get(0).getAddressLine(0);
         String addressLine2 = addresses.get(0).getAddressLine(1);
         String addressLine3 = addresses.get(0).getAddressLine(2);

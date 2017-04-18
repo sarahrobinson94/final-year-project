@@ -13,14 +13,21 @@
     <TextView
         android:id="@+id/placesListItemPlaceName"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:text="Name"/>
 
     <TextView
         android:id="@+id/placesListItemPlaceAddress"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:textColor="@color/grey"
         android:textStyle="bold"
-        android:textSize="16dp"/>
+        android:textSize="16dp"
+        android:text="Address"/>
 
 </LinearLayout>

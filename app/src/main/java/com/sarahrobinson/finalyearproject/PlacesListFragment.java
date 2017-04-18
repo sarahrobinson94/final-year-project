@@ -5,21 +5,29 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import static com.sarahrobinson.finalyearproject.GetPlacesData.placesList;
+import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceAddress;
 import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
+import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceName;
 
 public class PlacesListFragment extends Fragment {
 
-    private static final String TAG = "PlacesListFragment ******* ";
+    private static final String TAG = "PlacesListFrag ******* ";
+
     private FragmentManager fragmentManager;
     private OnFragmentInteractionListener mListener;
-    public static ListView placesListView;
+
+    private ListView placesListView;
 
     public PlacesListFragment() {
         // Required empty public constructor
@@ -39,9 +47,12 @@ public class PlacesListFragment extends Fragment {
         // changing actionBar title
         getActivity().setTitle("Results List");
 
-        fragmentManager = getFragmentManager();
-
         placesListView = (ListView)rootView.findViewById(R.id.listViewPlaces);
+
+        // populating list with places
+        populateList();
+
+        fragmentManager = getFragmentManager();
 
         // listItem click event
         placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,27 +73,21 @@ public class PlacesListFragment extends Fragment {
         return rootView;
     }
 
+    public void populateList(){
+        // list adapter
+        SimpleAdapter adapter = new SimpleAdapter(getContext(), placesList,
+                R.layout.places_list_item,
+                new String[] { thePlaceId, thePlaceName, thePlaceAddress},
+                new int[] { R.id.placesListItemPlaceId, R.id.placesListItemPlaceName, R.id.placesListItemPlaceAddress });
+
+        // Adding data into listview
+        placesListView.setAdapter(adapter);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     /**

@@ -54,7 +54,6 @@ public class PlacesDataParser {
         String latitude = "";
         String longitude = "";
         String place_id = "";
-        String website = "";
 
         Log.d("getPlace", "Entered");
         try {

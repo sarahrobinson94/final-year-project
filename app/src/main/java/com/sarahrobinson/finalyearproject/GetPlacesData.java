@@ -1,8 +1,12 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,17 +16,33 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceAddress;
+import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
+import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceName;
+import static com.sarahrobinson.finalyearproject.PlacesListFragment.placesListView;
+
 /**
  * Created by sarahrobinson on 16/04/2017.
  */
 
 public class GetPlacesData extends AsyncTask<Object, String, String> {
 
+    private static final String TAG = "GetPlacesData ******* ";
+
     String googlePlacesData;
     GoogleMap googleMap;
     String url;
 
-    private static final String TAG = "GetPlacesData ******* ";
+    // ListItems data
+    ArrayList<HashMap<String, String>> placesListItems = new ArrayList<>();
+
+    // variable to hold context
+    private Context context;
+
+    //save the context recievied via constructor in a local variable
+    public void GetPlacesData(Context context){
+        this.context=context;
+    }
 
     @Override
     protected String doInBackground(Object... params) {
@@ -57,13 +77,13 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
             Log.d(TAG, "googlePlace: " + googlePlace);
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
-            String placeId = googlePlace.get("place_id");
-            String placeName = googlePlace.get("place_name");
-            String vicinity = googlePlace.get("vicinity");
+            thePlaceId = googlePlace.get("place_id");
+            thePlaceName = googlePlace.get("place_name");
+            thePlaceAddress = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName);
-            markerOptions.snippet(placeId);
+            markerOptions.title(thePlaceName);
+            markerOptions.snippet(thePlaceId);
             //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             googleMap.addMarker(markerOptions);
 
@@ -71,5 +91,13 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
         }
+        // list adapter
+        ListAdapter adapter = new SimpleAdapter(context, placesList,
+                R.layout.places_list_item,
+                new String[] { thePlaceId, thePlaceName}, new int[] {
+                R.id.placesListItemPlaceId, R.id.placesListItemPlaceName });
+
+        // Adding data into listview
+        placesListView.setAdapter(adapter);
     }
 }

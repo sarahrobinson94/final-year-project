@@ -27,8 +27,7 @@ public class PlaceFragment extends Fragment {
 
     private static final String TAG = "PlaceFragment ******* ";
 
-    public static String thePlaceName, thePlacePhoneNo;
-    public static TextView placeName, placeAddress, placePhoneNo, placeWebsite;
+    public static TextView tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -40,12 +39,12 @@ public class PlaceFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_place, container, false);
 
-        placeName = (TextView)rootView.findViewById(R.id.textViewPlaceName);
-        placeAddress = (TextView)rootView.findViewById(R.id.textViewPlaceAddress);
-        placePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
-        placeWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
+        tvPlaceName = (TextView)rootView.findViewById(R.id.textViewPlaceName);
+        tvPlaceAddress = (TextView)rootView.findViewById(R.id.textViewPlaceAddress);
+        tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
+        tvPlaceWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
 
-        getPlaceDetails();
+        //getPlaceDetails();
 
         return rootView;
     }
@@ -55,7 +54,7 @@ public class PlaceFragment extends Fragment {
     //                             GETTING PLACE DETAILS                             //
     ///////////////////////////////////////////////////////////////////////////////////
 
-
+    /*
     public void getPlaceDetails(){
         Log.d(TAG, "getPlaceDetails");
 
@@ -76,4 +75,5 @@ public class PlaceFragment extends Fragment {
         Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
         return (placeDetailsUrl.toString());
     }
+    */
 }

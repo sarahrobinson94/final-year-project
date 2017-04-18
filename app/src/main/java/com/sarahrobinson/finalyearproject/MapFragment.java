@@ -1,5 +1,6 @@
 package com.sarahrobinson.finalyearproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
@@ -46,16 +47,13 @@ import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
 import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.placeAddress;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.placeName;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.placePhoneNo;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.placeWebsite;
 
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,
         LocationListener {
 
     private static final String TAG = "MapFragment ******* ";
+
     private FragmentManager fragmentManager;
 
     private GoogleMap googleMap;
@@ -64,7 +62,7 @@ public class MapFragment extends Fragment implements
     private Marker currLocationMarker; // TODO: 17/04/2017 needed ??
     private Marker selectedMarker;
 
-    public static String thePlaceId;
+    public static String thePlaceId, thePlaceName, thePlaceAddress, thePlacePhoneNo;
 
     public MapFragment() {
         // Required empty public constructor

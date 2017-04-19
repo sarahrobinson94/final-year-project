@@ -9,16 +9,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
+import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 
 public class FavouritesFragment extends Fragment implements View.OnClickListener{
+
+    private static final String TAG = "FavouritesFragment ******* ";
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private static final String TAG = "FavouritesFragment ******* ";
+    public ArrayList<String> arr;
+    public ArrayAdapter adapter;
 
     public FavouritesFragment() {
         // Required empty public constructor

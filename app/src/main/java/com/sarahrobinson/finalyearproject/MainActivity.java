@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     // location services
     private int REQUEST_LOCATION;
     private GoogleMap googleMap;
-    double latitude, longitude;
+    Double latitude, longitude;
     public static GoogleApiClient googleApiClient;
     public static Location location;
     public static LocationRequest locationRequest;
@@ -217,16 +217,20 @@ public class MainActivity extends AppCompatActivity implements
     public String Geocoder(double latitude, double longitude){
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
+        String addressToShow;
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // TODO: 18/04/2017 check for null
-        String addressLine1 = addresses.get(0).getAddressLine(0);
-        String addressLine2 = addresses.get(0).getAddressLine(1);
-        String addressLine3 = addresses.get(0).getAddressLine(2);
-        String addressToShow = addressLine1 + ", " + addressLine2;
+        if(addresses != null){
+            String addressLine1 = addresses.get(0).getAddressLine(0);
+            String addressLine2 = addresses.get(0).getAddressLine(1);
+            String addressLine3 = addresses.get(0).getAddressLine(2);
+            addressToShow = addressLine1 + ", " + addressLine2;
+        }else{
+            addressToShow = "";
+        }
         return addressToShow;
     }
 
@@ -405,8 +409,12 @@ public class MainActivity extends AppCompatActivity implements
         // Populating location search field (home screen) with user's current location
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        currentLocation = Geocoder(latitude, longitude);
-        editTextSearchLocation.setText(currentLocation);
+        if (latitude != null && longitude != null){
+            Log.d(TAG, "latitude: " + latitude);
+            Log.d(TAG, "longitude: " + longitude);
+            currentLocation = Geocoder(latitude, longitude);
+            editTextSearchLocation.setText(currentLocation);
+        }
     }
 
     @Override

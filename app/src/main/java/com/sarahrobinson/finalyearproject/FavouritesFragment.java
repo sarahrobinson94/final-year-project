@@ -11,14 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
@@ -27,13 +33,12 @@ import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 
 public class FavouritesFragment extends Fragment implements View.OnClickListener{
 
-    private static final String TAG = "FavouritesFragment ******* ";
+    private static final String TAG = "FavsFragment ******* ";
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    public ArrayList<String> arr;
-    public ArrayAdapter adapter;
+    private ListView listView;
 
     public FavouritesFragment() {
         // Required empty public constructor
@@ -64,6 +69,37 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
         // changing actionBar title
         getActivity().setTitle("Favourites");
+
+        listView = (ListView)rootView.findViewById(R.id.listViewFavs);
+        final ArrayList<String> favPlacesList = new ArrayList<String>();
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
+
+        favPlacesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Result will be holded Here
+                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "GETTING CHILD");
+                    favPlacesList.add(String.valueOf(dsp.getKey())); //add result into array list
+                    Log.d(TAG, "Favourite Places: " + favPlacesList);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                favPlacesList);
+
+        listView.setAdapter(arrayAdapter);
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 

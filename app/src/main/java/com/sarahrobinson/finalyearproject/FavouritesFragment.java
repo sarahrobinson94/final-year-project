@@ -39,6 +39,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
     private FirebaseUser firebaseUser;
 
     private ListView listView;
+    private ArrayList<String> favPlacesList = new ArrayList<>();
 
     public FavouritesFragment() {
         // Required empty public constructor
@@ -71,7 +72,6 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         getActivity().setTitle("Favourites");
 
         listView = (ListView)rootView.findViewById(R.id.listViewFavs);
-        final ArrayList<String> favPlacesList = new ArrayList<String>();
 
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
@@ -79,11 +79,11 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         favPlacesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Result will be holded Here
                 for (DataSnapshot dsp : dataSnapshot.getChildren()) {
                     Log.d(TAG, "GETTING CHILD");
                     favPlacesList.add(String.valueOf(dsp.getKey())); //add result into array list
                     Log.d(TAG, "Favourite Places: " + favPlacesList);
+                    populateList();
                 }
             }
             @Override
@@ -91,19 +91,21 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                favPlacesList);
-
-        listView.setAdapter(arrayAdapter);
-
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
+    }
+
+    private void populateList(){
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                R.layout.favourites_list_item, R.id.favsListItemPlaceName,
+                favPlacesList);
+
+        listView.setAdapter(arrayAdapter);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.sarahrobinson.finalyearproject;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
@@ -20,12 +24,22 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "PlaceFragment ******* ";
 
-    public static TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
-    public static ImageView ivPlaceIcon;
+    public static FragmentActivity placeFragmentContext;
+    private Fragment fromFragment;
+
+    private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
+    private ImageView ivPlaceIcon;
     private Button btnAddToFavourites;
 
     public PlaceFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        fromFragment = ((MainActivity) getActivity()).placeFragment;
     }
 
     @Override
@@ -36,6 +50,9 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
         // changing actionBar title
         getActivity().setTitle("Place Details");
+
+        // getting fragment context
+        placeFragmentContext = getActivity();
 
         // textviews to be populated from json response
         ivPlaceIcon = (ImageView)rootView.findViewById(R.id.imageViewPlaceIcon);
@@ -49,9 +66,24 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         btnAddToFavourites = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
         btnAddToFavourites.setOnClickListener(this);
 
-        ((MainActivity)getActivity()).getPlaceDetails(selectedPlaceId);
+        ((MainActivity)getActivity()).getDetails(selectedPlaceId, fromFragment);
 
         return rootView;
+    }
+
+    public void ShowPlaceDetails(String image, String type, String name, String address,
+                                  String phoneNo, String website) {
+        Log.d(TAG, "ShowPlaceDetails entered");
+        // load image from url
+        Picasso.with(getContext())
+                .load(image)
+                .into(ivPlaceIcon);
+        // set string details
+        tvPlaceType.setText(type);
+        tvPlaceName.setText(name);
+        tvPlaceAddress.setText(address);
+        tvPlacePhoneNo.setText(phoneNo);
+        tvPlaceWebsite.setText(website);
     }
 
     @Override

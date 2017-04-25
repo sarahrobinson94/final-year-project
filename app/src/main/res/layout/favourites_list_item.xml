@@ -2,39 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/favsListItemPlaceIcon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"/>
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/favsListItemPlaceName"
+        <ImageView
+            android:id="@+id/favsListItemPlaceIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/grey"
-            android:textStyle="bold"
-            android:textSize="16dp"
-            android:text="Name"/>
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/favsListItemPlaceAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/grey"
-            android:textStyle="bold"
-            android:textSize="16dp"
-            android:text="Address"/>
+            <TextView
+                android:id="@+id/favsListItemPlaceName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textColor="@color/grey"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                android:text="Name"/>
+
+            <TextView
+                android:id="@+id/favsListItemPlaceAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textColor="@color/grey"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                android:text="Address"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

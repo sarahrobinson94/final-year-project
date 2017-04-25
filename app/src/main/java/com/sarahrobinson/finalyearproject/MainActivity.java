@@ -87,6 +87,14 @@ public class MainActivity extends AppCompatActivity implements
     private TextView navHeaderUserName;
     private TextView navHeaderUserEmail;
 
+    public static HomeFragment homeFragment;
+    public static FavouritesFragment favouritesFragment;
+    public static FriendsFragment friendsFragment;
+    public static EventsFragment eventsFragment;
+    public static SettingsFragment settingsFragment;
+
+    public static PlaceFragment placeFragment;
+
     // location services
     private int REQUEST_LOCATION;
     private GoogleMap googleMap;
@@ -277,22 +285,23 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_find) {
-            HomeFragment homeFragment = new HomeFragment();
+            homeFragment = new HomeFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
         } else if (id == R.id.nav_favs) {
-            FavouritesFragment favouritesFragment = new FavouritesFragment();
+            favouritesFragment = new FavouritesFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, favouritesFragment).commit();
         } else if (id == R.id.nav_friends) {
-            FriendsFragment friendsFragment = new FriendsFragment();
+            friendsFragment = new FriendsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, friendsFragment).commit();
         } else if (id == R.id.nav_events) {
-            EventsFragment eventsFragment = new EventsFragment();
+            eventsFragment = new EventsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, eventsFragment).commit();
         } else if (id == R.id.nav_settings) {
-            SettingsFragment settingsFragment = new SettingsFragment();
+            settingsFragment = new SettingsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_main, settingsFragment).commit();
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
@@ -482,13 +491,14 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    public void getPlaceDetails(String placeId){
+    public void getDetails(String placeId, Fragment fromFragment){
         Log.d(TAG, "getPlaceDetails");
 
         String url = getUrl(placeId);
-        Object[] DataTransfer = new Object[1];
+        Object[] DataTransfer = new Object[2];
         //DataTransfer[0] = googleMap;
         DataTransfer[0] = url;
+        DataTransfer[1] = fromFragment;
         GetPlaceDetails getPlaceDetails = new GetPlaceDetails();
         getPlaceDetails.execute(DataTransfer);
     }

@@ -47,12 +47,11 @@ public class PlacesListFragment extends Fragment {
         // changing actionBar title
         getActivity().setTitle("Results List");
 
+        fragmentManager = getFragmentManager();
         placesListView = (ListView)rootView.findViewById(R.id.listViewPlaces);
 
         // populating list with places
         populateList();
-
-        fragmentManager = getFragmentManager();
 
         // listItem click event
         placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,27 +1,18 @@
 package com.sarahrobinson.finalyearproject;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
-
-import static com.sarahrobinson.finalyearproject.PlaceFragment.ivPlaceIcon;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceAddress;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceName;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlacePhoneNo;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceType;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceWebsite;
+import static com.sarahrobinson.finalyearproject.FavouritesFragment.favouritesFragmentContext;
+import static com.sarahrobinson.finalyearproject.MainActivity.favouritesFragment;
+import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
+import static com.sarahrobinson.finalyearproject.PlaceFragment.placeFragmentContext;
 
 /**
  * Created by sarahrobinson on 18/04/2017.
@@ -33,19 +24,17 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
     String googlePlaceData;
     String url;
+    Fragment fromFragment;
 
-    public static String selectedPlaceImage, selectedPlaceType, selectedPlaceName,
-            selectedPlaceAddress, selectedPlacePhoneNo, selectedPlaceWebsite;
-
-    private Context getContext() {
-        return MainActivity.getContext();
-    }
+    private String placeImage, placeType, placeName,
+            placeAddress, placePhoneNo, placeWebsite;
 
     @Override
     protected String doInBackground(Object... params) {
         try {
             Log.d(TAG, "doInBackground entered");
             url = (String) params[0];
+            fromFragment = (Fragment) params[1];
             DownloadUrl downloadUrl = new DownloadUrl();
             googlePlaceData = downloadUrl.readUrl(url);
             Log.d(TAG, "doInBackground Exit");
@@ -65,7 +54,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
             // Extract the place details from the results
             if (!placeDetailsJsonArray.isNull("icon")) {
-                selectedPlaceImage = placeDetailsJsonArray.getString("icon");
+                placeImage = placeDetailsJsonArray.getString("icon");
             }
             if (!placeDetailsJsonArray.isNull("types")) {
                 JSONArray types = new JSONArray();
@@ -79,41 +68,38 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
                 strTypes = strTypes.replaceAll("_", " ");
                 // removing comma at end of string // TODO: 18/04/2017 fix
                 strTypes = strTypes.substring(0, strTypes.length()- 1);
-                selectedPlaceType = strTypes;
+                placeType = strTypes;
             }
             if (!placeDetailsJsonArray.isNull("name")) {
-                selectedPlaceName = placeDetailsJsonArray.getString("name");
+                placeName = placeDetailsJsonArray.getString("name");
             }
             if (!placeDetailsJsonArray.isNull("formatted_address")) {
-                selectedPlaceAddress = placeDetailsJsonArray.getString("formatted_address");
+                placeAddress = placeDetailsJsonArray.getString("formatted_address");
             }
             if (!placeDetailsJsonArray.isNull("formatted_phone_number")) {
-                selectedPlacePhoneNo = placeDetailsJsonArray.getString("formatted_phone_number");
+                placePhoneNo = placeDetailsJsonArray.getString("formatted_phone_number");
             }
             if (!placeDetailsJsonArray.isNull("website")) {
-                selectedPlaceWebsite = placeDetailsJsonArray.getString("website");
+                placeWebsite = placeDetailsJsonArray.getString("website");
             }
 
         } catch (JSONException e) {
             Log.d(TAG, "Error parsing json results");
             e.printStackTrace();
         }
-        ShowPlaceDetails(selectedPlaceImage, selectedPlaceType, selectedPlaceName,
-                selectedPlaceAddress, selectedPlacePhoneNo, selectedPlaceWebsite);
-    }
 
-    private void ShowPlaceDetails(String image, String type, String name, String address,
-                                  String phoneNo, String website) {
-        Log.d(TAG, "ShowPlaceDetails entered");
-        // load image from url
-        Picasso.with(getContext())
-                .load(image)
-                .into(ivPlaceIcon);
-        // set string details
-        tvPlaceType.setText(type);
-        tvPlaceName.setText(name);
-        tvPlaceAddress.setText(address);
-        tvPlacePhoneNo.setText(phoneNo);
-        tvPlaceWebsite.setText(website);
+        // checking which fragment is requesting place details
+        if (fromFragment instanceof PlaceFragment)
+        {
+            // calling the ShowPlaceDetails method, passing in the place details
+            placeFragment.ShowPlaceDetails(placeImage, placeType, placeName,
+                    placeAddress, placePhoneNo, placeWebsite);
+        }
+        else if (fromFragment instanceof FavouritesFragment)
+        {
+            // calling the inflateNewListItem method, passing in the place details
+            favouritesFragment.inflateNewListItem(placeImage, placeType, placeName,
+                    placeAddress);
+        }
     }
 }

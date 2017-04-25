@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +39,14 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
     private static final String TAG = "FavsFragment ******* ";
 
+    public static FragmentActivity favouritesFragmentContext;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private ListView listView;
+    private Fragment fromFragment;
     private ArrayList<String> favPlacesList = new ArrayList<>();
+    LinearLayout linearLayout;
 
     public FavouritesFragment() {
         // Required empty public constructor
@@ -48,6 +55,8 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fromFragment = ((MainActivity) getActivity()).favouritesFragment;
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -59,7 +68,6 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         }else {
             // stay in fragment
         }
-
     }
 
     @Override
@@ -71,7 +79,20 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // changing actionBar title
         getActivity().setTitle("Favourites");
 
-        listView = (ListView)rootView.findViewById(R.id.listViewFavs);
+        // getting fragment context
+        favouritesFragmentContext = getActivity();
+
+        linearLayout = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesItem);
+
+        getFavPlaceDetails();
+
+        // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
+
+        return rootView;
+    }
+
+
+    public void getFavPlaceDetails(){
 
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
@@ -83,19 +104,48 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
                     Log.d(TAG, "GETTING CHILD");
                     favPlacesList.add(String.valueOf(dsp.getKey())); //add result into array list
                     Log.d(TAG, "Favourite Places: " + favPlacesList);
-                    populateList();
+                    //populateList();
+                    getFavPlaceIds();
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-        // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
-
-        return rootView;
     }
 
+    // method to get favourite place details from placeId
+    public void getFavPlaceIds(){
+        for(int i=0; i<favPlacesList.size(); i++){
+            String id = favPlacesList.get(i);
+            ((MainActivity)getActivity()).getDetails(id, fromFragment);
+        }
+    }
+
+    // method which inflates a new layout for each favPlaceId in favPlacesList array
+    public void inflateNewListItem(String image, String type, String name, String address){
+        // inflate layout to be used as a list item
+        // assign place details to textviews
+
+        LayoutInflater inflator = (LayoutInflater)favouritesFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View listItem = inflator.inflate(R.layout.favourites_list_item, linearLayout, false);
+
+        linearLayout.addView(listItem, linearLayout.getChildCount() - 1);
+
+        ImageView imgIcon = (ImageView) listItem.findViewById(R.id.favsListItemPlaceIcon);
+        TextView txtName = (TextView) listItem.findViewById(R.id.favsListItemPlaceName);
+        TextView txtAddress = (TextView) listItem.findViewById(R.id.favsListItemPlaceAddress);
+
+        Picasso.with(getContext())
+                .load(image)
+                .into(imgIcon);
+        // set string details
+        txtName.setText(name);
+        txtAddress.setText(address);
+    }
+
+    /*
     private void populateList(){
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter, the textview
@@ -108,6 +158,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
         listView.setAdapter(arrayAdapter);
     }
+    */
 
     @Override
     public void onClick(View view) {

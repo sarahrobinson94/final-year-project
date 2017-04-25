@@ -97,8 +97,8 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
                     // adding fav place id into array list
                     favPlacesList.add(String.valueOf(dsp.getKey()));
                     Log.d(TAG, "Favourite Places: " + favPlacesList);
-                    getFavPlaceIds();
                 }
+                getFavPlaceIds();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

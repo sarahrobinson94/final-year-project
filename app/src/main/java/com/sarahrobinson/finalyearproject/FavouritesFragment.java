@@ -39,14 +39,14 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
     private static final String TAG = "FavsFragment ******* ";
 
-    public static FragmentActivity favouritesFragmentContext;
+    private FragmentActivity favouritesFragmentContext;
+    private Fragment fromFragment;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private Fragment fromFragment;
     private ArrayList<String> favPlacesList = new ArrayList<>();
-    LinearLayout linearLayout;
+    private LinearLayout layoutFavouritesList;
 
     public FavouritesFragment() {
         // Required empty public constructor
@@ -82,7 +82,8 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // getting fragment context
         favouritesFragmentContext = getActivity();
 
-        linearLayout = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesItem);
+        // getting layout to be inflated
+        layoutFavouritesList = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesList);
 
         getFavPlaceDetails();
 
@@ -101,10 +102,10 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "GETTING CHILD");
-                    favPlacesList.add(String.valueOf(dsp.getKey())); //add result into array list
+                    Log.d(TAG, "Getting favPlaceId");
+                    // adding fav place id into array list
+                    favPlacesList.add(String.valueOf(dsp.getKey()));
                     Log.d(TAG, "Favourite Places: " + favPlacesList);
-                    //populateList();
                     getFavPlaceIds();
                 }
             }
@@ -122,43 +123,27 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    // method which inflates a new layout for each favPlaceId in favPlacesList array
+    // method to inflate a new layout for each place saved to user's favourites
     public void inflateNewListItem(String image, String type, String name, String address){
-        // inflate layout to be used as a list item
-        // assign place details to textviews
 
+        // inflating layout to be used as a list item
         LayoutInflater inflator = (LayoutInflater)favouritesFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listItem = inflator.inflate(R.layout.favourites_list_item, layoutFavouritesList, false);
 
-        View listItem = inflator.inflate(R.layout.favourites_list_item, linearLayout, false);
-
-        linearLayout.addView(listItem, linearLayout.getChildCount() - 1);
+        // adding inflated item layout to favourites list layout
+        layoutFavouritesList.addView(listItem, layoutFavouritesList.getChildCount() - 1);
 
         ImageView imgIcon = (ImageView) listItem.findViewById(R.id.favsListItemPlaceIcon);
         TextView txtName = (TextView) listItem.findViewById(R.id.favsListItemPlaceName);
         TextView txtAddress = (TextView) listItem.findViewById(R.id.favsListItemPlaceAddress);
 
+        // populating views with place details
         Picasso.with(getContext())
                 .load(image)
                 .into(imgIcon);
-        // set string details
         txtName.setText(name);
         txtAddress.setText(address);
     }
-
-    /*
-    private void populateList(){
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter, the textview
-        // id as the third parameter and your array as a fourth parameter.
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.favourites_list_item,
-                R.id.favsListItemPlaceName,
-                favPlacesList);
-
-        listView.setAdapter(arrayAdapter);
-    }
-    */
 
     @Override
     public void onClick(View view) {

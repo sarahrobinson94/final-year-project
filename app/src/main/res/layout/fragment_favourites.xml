@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.FavouritesFragment">
 
-    <!--  List Item -->
+    <!--  Favourites layout (inflated with list item layouts) -->
     <LinearLayout
-        android:id="@+id/layoutFavouritesItem"
+        android:id="@+id/layoutFavouritesList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"/>

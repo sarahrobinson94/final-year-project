@@ -82,13 +82,15 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // getting layout to be inflated
         layoutFavouritesList = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesList);
 
+        layoutFavouritesList.removeAllViews();
+        favPlacesList.clear();
+
         getFavPlaceDetails();
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
     }
-
 
     public void getFavPlaceDetails(){
 

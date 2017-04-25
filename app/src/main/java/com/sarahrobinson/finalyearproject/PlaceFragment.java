@@ -13,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
@@ -31,7 +37,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     private ImageView ivPlaceIcon;
-    private Button btnAddToFavourites;
+    private Button btnFavourite;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -65,9 +71,9 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
         tvPlaceWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
 
-        // add to favourites button
-        btnAddToFavourites = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
-        btnAddToFavourites.setOnClickListener(this);
+        // favourite button
+        btnFavourite = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
+        btnFavourite.setOnClickListener(this);
 
         // retrieving place details based on place id
         if (fromFragmentString == "MapFragment") {
@@ -77,7 +83,33 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         }
         ((MainActivity)getActivity()).getDetails(placeId, fromFragment);
 
+        // check if place is in favourites
+        checkIfFavourite();
+
         return rootView;
+    }
+
+    public void checkIfFavourite(){
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference favPlaceRef = databaseRef.child("users").child(currentUserId)
+                .child("favouritePlaces").child(placeId);
+
+        favPlaceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    btnFavourite.setText("Remove from favourites");
+                }
+                else {
+                    btnFavourite.setText("Add to favourites");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+
     }
 
     public void ShowPlaceDetails(String id, String image, String type, String name, String address,
@@ -98,12 +130,22 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         // TODO: 18/04/2017 change to switch statements (in all fragments/activities)
-        if (view == btnAddToFavourites){
-            // add to favourites list
-            firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
-                    child(selectedPlaceId).setValue(true);
-            // show success toast
-            Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT).show();
+        if (view == btnFavourite){
+            if (btnFavourite.getText() == "Add to favourites") {
+                // add to favourites list
+                firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
+                        child(placeId).setValue(true);
+                btnFavourite.setText("Remove from favourites");
+                // show success toast
+                Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT).show();
+            } else if (btnFavourite.getText() == "Remove from favourites") {
+                // remove from favourites list
+                firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
+                        child(placeId).removeValue();
+                btnFavourite.setText("Add to favourites");
+                // show success toast
+                Toast.makeText(getActivity(), "Removed from favourites", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

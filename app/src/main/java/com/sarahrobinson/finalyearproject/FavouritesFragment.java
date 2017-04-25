@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,12 +27,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
 
 public class FavouritesFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "FavsFragment ******* ";
 
     private FragmentActivity favouritesFragmentContext;
+    private FragmentManager fragmentManager;
     private Fragment fromFragment;
 
     private FirebaseAuth firebaseAuth;
@@ -47,6 +52,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fragmentManager = getFragmentManager();
         fromFragment = ((MainActivity) getActivity()).favouritesFragment;
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -115,7 +121,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
     }
 
     // method to inflate a new layout for each place saved to user's favourites
-    public void inflateNewListItem(String image, String type, String name, String address){
+    public void inflateNewListItem(String id, String image, String type, String name, String address){
 
         // inflating layout to be used as a list item
         LayoutInflater inflator = (LayoutInflater)favouritesFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -127,6 +133,12 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         ImageView imgIcon = (ImageView) listItem.findViewById(R.id.favsListItemPlaceIcon);
         TextView txtName = (TextView) listItem.findViewById(R.id.favsListItemPlaceName);
         TextView txtAddress = (TextView) listItem.findViewById(R.id.favsListItemPlaceAddress);
+        // invisible textView for storing id
+        TextView txtId = (TextView) listItem.findViewById(R.id.favsListItemPlaceId);
+
+        // view more button
+        Button btnView = (Button) listItem.findViewById(R.id.favsListItemBtnMore);
+
 
         // populating views with place details
         Picasso.with(getContext())
@@ -134,10 +146,10 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
                 .into(imgIcon);
         txtName.setText(name);
         txtAddress.setText(address);
+        txtId.setText(id);
     }
 
     @Override
     public void onClick(View view) {
-        
     }
 }

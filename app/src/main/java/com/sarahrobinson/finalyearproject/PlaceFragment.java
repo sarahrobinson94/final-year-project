@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
 
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
+import static com.sarahrobinson.finalyearproject.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.MainActivity.selectedFavPlaceId;
 import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 
 public class PlaceFragment extends Fragment implements View.OnClickListener{
@@ -25,6 +27,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private FragmentActivity placeFragmentContext;
     private Fragment fromFragment;
+    private String placeId;
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     private ImageView ivPlaceIcon;
@@ -66,12 +69,18 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         btnAddToFavourites = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
         btnAddToFavourites.setOnClickListener(this);
 
-        ((MainActivity)getActivity()).getDetails(selectedPlaceId, fromFragment);
+        // retrieving place details based on place id
+        if (fromFragmentString == "MapFragment") {
+            placeId = selectedPlaceId;
+        } else if (fromFragmentString == "FavouritesFragment") {
+            placeId = selectedFavPlaceId;
+        }
+        ((MainActivity)getActivity()).getDetails(placeId, fromFragment);
 
         return rootView;
     }
 
-    public void ShowPlaceDetails(String image, String type, String name, String address,
+    public void ShowPlaceDetails(String id, String image, String type, String name, String address,
                                   String phoneNo, String website) {
         Log.d(TAG, "ShowPlaceDetails entered");
         // load image from url

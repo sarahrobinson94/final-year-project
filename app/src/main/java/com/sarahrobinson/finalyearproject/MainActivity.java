@@ -27,7 +27,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewParent;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,14 +71,20 @@ public class MainActivity extends AppCompatActivity implements
     private static Context mContext;
 
     FragmentManager fragmentManager;
+    // for indicating which fragment is navigating to PlaceFragment
+    public static String fromFragmentString;
 
     // public reference to firebase for adding favourite places
     public static Firebase firebaseRef;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+
     // to store id of current user
     public static String currentUserId;
+
+    // to store id of selected favourite place
+    public static String selectedFavPlaceId;
 
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
@@ -470,5 +479,20 @@ public class MainActivity extends AppCompatActivity implements
         placeDetailsUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
         Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
         return (placeDetailsUrl.toString());
+    }
+
+    public void favPlaceOnClick(View view){
+        View parent = (LinearLayout)view.getParent().getParent();
+        TextView tvId = (TextView)parent.findViewById(R.id.favsListItemPlaceId);
+        String placeId = tvId.getText().toString();
+        selectedFavPlaceId = placeId;
+
+        fromFragmentString = "FavouritesFragment";
+
+        placeFragment = new PlaceFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_main, placeFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

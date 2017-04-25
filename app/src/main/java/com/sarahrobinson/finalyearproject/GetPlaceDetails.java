@@ -24,7 +24,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
     String googlePlaceData;
     String url;
 
-    private String placeImage, placeType, placeName,
+    private String placeId, placeImage, placeType, placeName,
             placeAddress, placePhoneNo, placeWebsite;
 
     @Override
@@ -80,6 +80,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             if (!placeDetailsJsonArray.isNull("website")) {
                 placeWebsite = placeDetailsJsonArray.getString("website");
             }
+            placeId = placeDetailsJsonArray.getString("place_id");
 
         } catch (JSONException e) {
             Log.d(TAG, "Error parsing json results");
@@ -91,14 +92,14 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
         {
             Log.d(TAG, "fromFragment = PlaceFragment");
             // calling the ShowPlaceDetails method, passing in the place details
-            placeFragment.ShowPlaceDetails(placeImage, placeType, placeName,
+            placeFragment.ShowPlaceDetails(placeId, placeImage, placeType, placeName,
                     placeAddress, placePhoneNo, placeWebsite);
         }
         else if (fromFragment instanceof FavouritesFragment)
         {
             Log.d(TAG, "fromFragment = FavouritesFragment");
             // calling the inflateNewListItem method, passing in the place details
-            favouritesFragment.inflateNewListItem(placeImage, placeType, placeName,
+            favouritesFragment.inflateNewListItem(placeId, placeImage, placeType, placeName,
                     placeAddress);
         }
     }

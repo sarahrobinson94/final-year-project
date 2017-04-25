@@ -1,34 +1,20 @@
 package com.sarahrobinson.finalyearproject;
 
-
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-import java.util.List;
-
-import static com.sarahrobinson.finalyearproject.HomeFragment.sLocation;
-import static com.sarahrobinson.finalyearproject.HomeFragment.sRadius;
 import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
-import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
 
 public class PlaceFragment extends Fragment implements View.OnClickListener{
 
@@ -63,35 +49,9 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         btnAddToFavourites = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
         btnAddToFavourites.setOnClickListener(this);
 
-        getPlaceDetails();
+        ((MainActivity)getActivity()).getPlaceDetails(selectedPlaceId);
 
         return rootView;
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                             GETTING PLACE DETAILS                             //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-    // TODO: 18/04/2017 move to seperate class and pass in the relevant placeId
-
-    public void getPlaceDetails(){
-        Log.d(TAG, "getPlaceDetails");
-
-        String url = getUrl();
-        Object[] DataTransfer = new Object[1];
-        //DataTransfer[0] = googleMap;
-        DataTransfer[0] = url;
-        GetSinglePlaceData getSinglePlaceData = new GetSinglePlaceData();
-        getSinglePlaceData.execute(DataTransfer);
-    }
-
-    private String getUrl() {
-        StringBuilder placeDetailsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
-        placeDetailsUrl.append("placeid=" + selectedPlaceId);
-        placeDetailsUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
-        Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
-        return (placeDetailsUrl.toString());
     }
 
     @Override

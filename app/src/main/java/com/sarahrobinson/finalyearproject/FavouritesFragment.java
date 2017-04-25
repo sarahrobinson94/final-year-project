@@ -98,11 +98,12 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
     private void populateList(){
         // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
+        // first parameter, the type of list view as a second parameter, the textview
+        // id as the third parameter and your array as a fourth parameter.
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(
                 getActivity(),
-                R.layout.favourites_list_item, R.id.favsListItemPlaceName,
+                R.layout.favourites_list_item,
+                R.id.favsListItemPlaceName,
                 favPlacesList);
 
         listView.setAdapter(arrayAdapter);

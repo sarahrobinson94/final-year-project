@@ -64,6 +64,7 @@ import java.util.Locale;
 
 import static android.R.id.toggle;
 import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLocation;
+import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -473,5 +474,30 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
         }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                             GETTING PLACE DETAILS                             //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    public void getPlaceDetails(String placeId){
+        Log.d(TAG, "getPlaceDetails");
+
+        String url = getUrl(placeId);
+        Object[] DataTransfer = new Object[1];
+        //DataTransfer[0] = googleMap;
+        DataTransfer[0] = url;
+        GetPlaceDetails getPlaceDetails = new GetPlaceDetails();
+        getPlaceDetails.execute(DataTransfer);
+    }
+
+    private String getUrl(String placeId) {
+        StringBuilder placeDetailsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
+        placeDetailsUrl.append("placeid=" + placeId);
+        placeDetailsUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
+        Log.d(TAG, "getUrl: " + placeDetailsUrl.toString());
+        return (placeDetailsUrl.toString());
     }
 }

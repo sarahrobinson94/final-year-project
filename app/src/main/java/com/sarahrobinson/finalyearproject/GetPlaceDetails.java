@@ -27,7 +27,7 @@ import static com.sarahrobinson.finalyearproject.PlaceFragment.tvPlaceWebsite;
  * Created by sarahrobinson on 18/04/2017.
  */
 
-public class GetSinglePlaceData extends AsyncTask<Object, String, String> {
+public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
     private static final String TAG = "GetPlaceData ******* ";
 

@@ -2,17 +2,14 @@ package com.sarahrobinson.finalyearproject;
 
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.sarahrobinson.finalyearproject.FavouritesFragment.favouritesFragmentContext;
 import static com.sarahrobinson.finalyearproject.MainActivity.favouritesFragment;
 import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
-import static com.sarahrobinson.finalyearproject.PlaceFragment.placeFragmentContext;
 
 /**
  * Created by sarahrobinson on 18/04/2017.
@@ -22,9 +19,10 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
     private static final String TAG = "GetPlaceData ******* ";
 
+    Fragment fromFragment;
+
     String googlePlaceData;
     String url;
-    Fragment fromFragment;
 
     private String placeImage, placeType, placeName,
             placeAddress, placePhoneNo, placeWebsite;
@@ -91,12 +89,14 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
         // checking which fragment is requesting place details
         if (fromFragment instanceof PlaceFragment)
         {
+            Log.d(TAG, "fromFragment = PlaceFragment");
             // calling the ShowPlaceDetails method, passing in the place details
             placeFragment.ShowPlaceDetails(placeImage, placeType, placeName,
                     placeAddress, placePhoneNo, placeWebsite);
         }
         else if (fromFragment instanceof FavouritesFragment)
         {
+            Log.d(TAG, "fromFragment = FavouritesFragment");
             // calling the inflateNewListItem method, passing in the place details
             favouritesFragment.inflateNewListItem(placeImage, placeType, placeName,
                     placeAddress);

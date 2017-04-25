@@ -1,6 +1,5 @@
 package com.sarahrobinson.finalyearproject;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,11 +28,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.internal.LoginAuthorizationType;
 import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.Auth;
@@ -49,11 +45,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +55,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
-import static android.R.id.toggle;
 import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLocation;
 import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
 
@@ -77,9 +69,12 @@ public class MainActivity extends AppCompatActivity implements
 
     FragmentManager fragmentManager;
 
+    // public reference to firebase for adding favourite places
     public static Firebase firebaseRef;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    // to store id of current user
     public static String currentUserId;
 
     private NavigationView navigationView;
@@ -87,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements
     private TextView navHeaderUserName;
     private TextView navHeaderUserEmail;
 
+    // to store instance of current fragment
     public static HomeFragment homeFragment;
     public static FavouritesFragment favouritesFragment;
     public static FriendsFragment friendsFragment;
     public static EventsFragment eventsFragment;
     public static SettingsFragment settingsFragment;
-
     public static PlaceFragment placeFragment;
 
     // location services
@@ -113,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         mContext = getApplicationContext();
+
+        ///// firebase /////
 
         firebaseRef = new Firebase("https://final-year-project-12698.firebaseio.com/");
         firebaseAuth = FirebaseAuth.getInstance();
@@ -186,42 +183,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onStop();
     }
 
-    // TODO: 11/04/2017 delete if not needed (using Picasso instead)
-    // getting profile picture if user logs in with facebook or google
-    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-        private String url;
-        private ImageView imageView;
-
-        public ImageLoadTask(String url, ImageView imageView) {
-            this.url = url;
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                URL urlConnection = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlConnection
-                        .openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            imageView.setImageBitmap(result);
-        }
-    }
-
     // Method for getting location address from co-ordinates
     public String Geocoder(double latitude, double longitude){
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -242,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         return addressToShow;
     }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                                   NAVIGATION                                  //
@@ -286,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        // Handle navigation view item clicks here.
+        // handling navigation view item clicks
         int id = item.getItemId();
         if (id == R.id.nav_find) {
             homeFragment = new HomeFragment();
@@ -496,7 +458,6 @@ public class MainActivity extends AppCompatActivity implements
 
         String url = getUrl(placeId);
         Object[] DataTransfer = new Object[2];
-        //DataTransfer[0] = googleMap;
         DataTransfer[0] = url;
         DataTransfer[1] = fromFragment;
         GetPlaceDetails getPlaceDetails = new GetPlaceDetails();

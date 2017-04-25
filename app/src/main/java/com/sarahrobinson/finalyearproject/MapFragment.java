@@ -48,6 +48,7 @@ import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
 import static com.sarahrobinson.finalyearproject.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
 import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
+import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
 
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,
@@ -144,7 +145,7 @@ public class MapFragment extends Fragment implements
                 Log.d(TAG, "info window clicked");
                 selectedMarker = marker;
                 selectedPlaceId = selectedMarker.getSnippet();
-                PlaceFragment placeFragment = new PlaceFragment();
+                placeFragment = new PlaceFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_main, placeFragment)
                         // TODO: 17/04/2017 fix crash when navigating back to this fragment

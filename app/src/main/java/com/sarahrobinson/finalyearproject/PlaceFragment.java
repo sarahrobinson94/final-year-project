@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "PlaceFragment ******* ";
 
-    public static FragmentActivity placeFragmentContext;
+    private FragmentActivity placeFragmentContext;
     private Fragment fromFragment;
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
@@ -40,6 +39,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         fromFragment = ((MainActivity) getActivity()).placeFragment;
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.sarahrobinson.finalyearproject.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -15,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,9 +24,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,7 +51,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
-import com.sarahrobinson.finalyearproject.fragments.CreateEventFragment;
+import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
@@ -57,6 +61,7 @@ import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements
     // to store id of selected favourite place
     public static String selectedFavPlaceId;
 
+    // to store list of event invitees
+    public static List<String> eventInviteeList = new ArrayList<>();
+
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
     private TextView navHeaderUserName;
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements
     public static EventsFragment eventsFragment;
     public static SettingsFragment settingsFragment;
     public static PlaceFragment placeFragment;
-    public static CreateEventFragment createEventFragment;
+    public static EventFragment eventFragment;
 
     // location services
     private int REQUEST_LOCATION;
@@ -483,9 +491,11 @@ public class MainActivity extends AppCompatActivity implements
         return (placeDetailsUrl.toString());
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////
     //                                ON CLICK METHODS                               //
     ///////////////////////////////////////////////////////////////////////////////////
+
 
     // fav places list item onclick
     public void favPlaceOnClick(View view){
@@ -505,10 +515,78 @@ public class MainActivity extends AppCompatActivity implements
 
     // action bar create event button onclick
     public void createEvent(MenuItem menuItem){
-        createEventFragment = new CreateEventFragment();
+        fromFragmentString = "Create event";
+        eventFragment = new EventFragment();
         fragmentManager.beginTransaction()
-                .replace(R.id.content_main, createEventFragment)
+                .replace(R.id.content_main, eventFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // select friends dialog
+    public void selectFriends(View view){
+
+        eventInviteeList.clear();
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_select_friends, null);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setTitle("Select friends to add");
+        dialogBuilder.setView(dialogView);
+
+
+        ////////// for loop /////////
+
+        LinearLayout friendWrapper = (LinearLayout)dialogView.findViewById(R.id.dialogFriendWrapper);
+
+        final CheckBox chkFriend = (CheckBox)friendWrapper.findViewById(R.id.friendCheckbox);
+
+        final TextView tvFriendName = (TextView)friendWrapper.findViewById(R.id.friendTextView);
+
+        // set TextView text (friend name)
+
+        /////////////////////////////
+
+        dialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Invite friends",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // invite friends to event
+                                Log.d(TAG, "Friends invited");
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        alertDialog.show();
+
+    }
+
+    // event invitee list toggle invite
+    public void toggleEventInvite(View view) {
+        int id = view.getId();
+
+        CheckBox chkFriend = (CheckBox)view;
+
+        if (chkFriend.isChecked()) {
+            // add to invite list
+            Log.d(TAG, "Added to invite list");
+        } else {
+            // remove from invite list
+            Log.d(TAG, "Removed from invite list");
+        }
+
     }
 }

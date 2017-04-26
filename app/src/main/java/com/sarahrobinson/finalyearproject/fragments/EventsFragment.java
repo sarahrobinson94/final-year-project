@@ -29,6 +29,9 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // adding 'create event' action item
+        setHasOptionsMenu(true);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -39,7 +42,6 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         }else {
             // stay in fragment
         }
-
     }
 
     @Override
@@ -54,6 +56,15 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
+    }
+
+    // changing action bar button
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // hide setting action item
+        menu.findItem(R.id.action_settings).setVisible(false);
+        // inflate event action item
+        inflater.inflate(R.menu.action_create_event, menu);
     }
 
     @Override

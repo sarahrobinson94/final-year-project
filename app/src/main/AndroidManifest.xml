@@ -45,13 +45,13 @@
 
         <!-- App activities -->
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".activities.WelcomeActivity"
             android:theme="@style/ThemeLogin" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".activities.SignUpActivity"
             android:theme="@style/ThemeLogin" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:theme="@style/ThemeLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,10 +60,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/ThemeMain" />
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".activities.OnboardingActivity"
             android:theme="@style/ThemeLogin" />
 
     </application>

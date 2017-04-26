@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="com.sarahrobinson.finalyearproject.PlacesListFragment">
+    tools:context="com.sarahrobinson.finalyearproject.fragments.PlacesListFragment">
 
     <!--  List view -->
     <ListView

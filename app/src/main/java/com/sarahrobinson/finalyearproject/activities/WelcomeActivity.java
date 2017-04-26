@@ -1,4 +1,4 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +8,8 @@ import android.widget.Button;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.sarahrobinson.finalyearproject.R;
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener{
 

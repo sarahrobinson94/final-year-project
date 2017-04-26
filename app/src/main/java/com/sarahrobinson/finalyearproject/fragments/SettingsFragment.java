@@ -1,17 +1,16 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sarahrobinson.finalyearproject.activities.LoginActivity;
+import com.sarahrobinson.finalyearproject.R;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener{
 

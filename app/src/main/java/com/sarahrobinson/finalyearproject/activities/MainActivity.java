@@ -1,15 +1,12 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.activities;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,7 +25,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,17 +45,21 @@ import com.google.android.gms.maps.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
+import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
+import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
+import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
+import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
+import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
+import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sarahrobinson.finalyearproject.HomeFragment.editTextSearchLocation;
-import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.editTextSearchLocation;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,

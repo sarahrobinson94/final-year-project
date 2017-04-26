@@ -1,26 +1,25 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sarahrobinson.finalyearproject.activities.LoginActivity;
+import com.sarahrobinson.finalyearproject.R;
 
-public class EventsFragment extends Fragment implements View.OnClickListener{
+public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
     private static final String TAG = "FavouritesFragment ******* ";
 
-    public EventsFragment() {
+    public FriendsFragment() {
         // Required empty public constructor
     }
 
@@ -48,7 +47,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
 
         // changing actionBar title
-        getActivity().setTitle("Events");
+        getActivity().setTitle("Friends");
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 

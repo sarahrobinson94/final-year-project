@@ -1,4 +1,4 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.classes;
 
 import java.util.List;
 

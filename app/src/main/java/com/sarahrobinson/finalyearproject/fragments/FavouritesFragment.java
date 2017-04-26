@@ -1,4 +1,4 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,12 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.sarahrobinson.finalyearproject.activities.LoginActivity;
+import com.sarahrobinson.finalyearproject.activities.MainActivity;
+import com.sarahrobinson.finalyearproject.R;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
-import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
-import static com.sarahrobinson.finalyearproject.MainActivity.fromFragmentString;
-import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 
 public class FavouritesFragment extends Fragment implements View.OnClickListener{
 

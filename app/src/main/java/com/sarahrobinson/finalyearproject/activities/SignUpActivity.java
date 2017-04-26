@@ -1,4 +1,4 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +20,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-
-import org.w3c.dom.Text;
+import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.classes.User;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 

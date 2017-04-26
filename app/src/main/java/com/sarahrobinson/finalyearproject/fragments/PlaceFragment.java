@@ -1,4 +1,4 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,19 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sarahrobinson.finalyearproject.activities.MainActivity;
+import com.sarahrobinson.finalyearproject.R;
 import com.squareup.picasso.Picasso;
 
-import static com.sarahrobinson.finalyearproject.MainActivity.currentUserId;
-import static com.sarahrobinson.finalyearproject.MainActivity.firebaseRef;
-import static com.sarahrobinson.finalyearproject.MainActivity.fromFragmentString;
-import static com.sarahrobinson.finalyearproject.MainActivity.selectedFavPlaceId;
-import static com.sarahrobinson.finalyearproject.MapFragment.selectedPlaceId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
 
 public class PlaceFragment extends Fragment implements View.OnClickListener{
 

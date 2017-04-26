@@ -1,12 +1,6 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -17,27 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sarahrobinson.finalyearproject.activities.LoginActivity;
+import com.sarahrobinson.finalyearproject.R;
 
-import org.w3c.dom.Text;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static com.sarahrobinson.finalyearproject.MainActivity.currentLocation;
-import static com.sarahrobinson.finalyearproject.MainActivity.location;
-import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentLocation;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.permissionsGranted;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
 

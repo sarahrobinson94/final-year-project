@@ -1,55 +1,42 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.fragments;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
 import android.os.Bundle;
 import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.sarahrobinson.finalyearproject.classes.GetPlacesData;
+import com.sarahrobinson.finalyearproject.R;
 
 import java.io.IOException;
 import java.util.List;
 
-import static com.sarahrobinson.finalyearproject.HomeFragment.sLocation;
-import static com.sarahrobinson.finalyearproject.HomeFragment.sRadius;
-import static com.sarahrobinson.finalyearproject.MainActivity.fromFragmentString;
-import static com.sarahrobinson.finalyearproject.MainActivity.googleApiClient;
-import static com.sarahrobinson.finalyearproject.MainActivity.location;
-import static com.sarahrobinson.finalyearproject.MainActivity.locationRequest;
-import static com.sarahrobinson.finalyearproject.MainActivity.permissionsGranted;
-import static com.sarahrobinson.finalyearproject.MainActivity.placeFragment;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.sLocation;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.sRadius;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.googleApiClient;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.location;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
 
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,

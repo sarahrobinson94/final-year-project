@@ -1,24 +1,21 @@
-package com.sarahrobinson.finalyearproject;
+package com.sarahrobinson.finalyearproject.classes;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sarahrobinson.finalyearproject.activities.MainActivity;
 
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceAddress;
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceId;
-import static com.sarahrobinson.finalyearproject.MapFragment.thePlaceName;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceAddress;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceName;
 
 /**
  * Created by sarahrobinson on 16/04/2017.

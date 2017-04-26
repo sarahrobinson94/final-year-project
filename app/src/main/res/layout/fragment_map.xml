@@ -3,7 +3,7 @@
     android:id="@+id/layoutFragmentMap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sarahrobinson.finalyearproject.MapFragment">
+    tools:context="com.sarahrobinson.finalyearproject.fragments.MapFragment">
 
     <fragment
         android:id="@+id/fragmentMap"

@@ -3,7 +3,7 @@
     android:id="@+id/layoutFragmentFavourites"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sarahrobinson.finalyearproject.FavouritesFragment">
+    tools:context="com.sarahrobinson.finalyearproject.fragments.FavouritesFragment">
 
     <!--  Favourites layout (inflated with list item layouts) -->
     <LinearLayout

@@ -47,6 +47,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.fragments.CreateEventFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
     public static EventsFragment eventsFragment;
     public static SettingsFragment settingsFragment;
     public static PlaceFragment placeFragment;
+    public static CreateEventFragment createEventFragment;
 
     // location services
     private int REQUEST_LOCATION;
@@ -481,6 +483,11 @@ public class MainActivity extends AppCompatActivity implements
         return (placeDetailsUrl.toString());
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                                ON CLICK METHODS                               //
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    // fav places list item onclick
     public void favPlaceOnClick(View view){
         View parent = (LinearLayout)view.getParent().getParent();
         TextView tvId = (TextView)parent.findViewById(R.id.favsListItemPlaceId);
@@ -492,6 +499,15 @@ public class MainActivity extends AppCompatActivity implements
         placeFragment = new PlaceFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_main, placeFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // action bar create event button onclick
+    public void createEvent(MenuItem menuItem){
+        createEventFragment = new CreateEventFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_main, createEventFragment)
                 .addToBackStack(null)
                 .commit();
     }

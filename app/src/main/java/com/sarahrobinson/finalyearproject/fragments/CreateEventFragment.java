@@ -15,23 +15,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
 
-public class EventsFragment extends Fragment implements View.OnClickListener{
+public class CreateEventFragment extends Fragment implements View.OnClickListener{
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private static final String TAG = "FavouritesFragment ******* ";
+    private static final String TAG = "CreateEventFrag ******* ";
 
-    public EventsFragment() {
+    public CreateEventFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // adding 'create event' action item
-        setHasOptionsMenu(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -49,23 +46,14 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_event, container, false);
 
         // changing actionBar title
-        getActivity().setTitle("Events");
+        getActivity().setTitle("Create Event");
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
-    }
-
-    // changing action bar button
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // hide setting action item
-        menu.findItem(R.id.action_settings).setVisible(false);
-        // inflate event action item
-        inflater.inflate(R.menu.action_create_event, menu);
     }
 
     @Override

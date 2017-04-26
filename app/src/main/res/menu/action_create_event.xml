@@ -5,6 +5,7 @@
         android:id="@+id/action_create_event"
         android:orderInCategory="200"
         android:title="Create event"
+        android:icon="@drawable/ic_add_24dp"
         app:showAsAction="always"
-        android:icon="@drawable/ic_add_24dp" />
+        android:onClick="createEvent" />
 </menu>

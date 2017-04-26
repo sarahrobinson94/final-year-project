@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
-        dialogBuilder.setTitle("Select friends to add");
+        dialogBuilder.setTitle("Select friends to invite");
         dialogBuilder.setView(dialogView);
 
 
@@ -551,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements
 
         dialogBuilder
                 .setCancelable(false)
-                .setPositiveButton("Invite friends",
+                .setPositiveButton("Invite",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -571,6 +571,8 @@ public class MainActivity extends AppCompatActivity implements
         AlertDialog alertDialog = dialogBuilder.create();
 
         alertDialog.show();
+        alertDialog.getWindow().setLayout(1000, 1300); //Controlling width and height.
+
 
     }
 

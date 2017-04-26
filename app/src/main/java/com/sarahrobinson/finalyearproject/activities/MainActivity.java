@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    // fav places list item onclick
+    // fav places list item -> view place details
     public void favPlaceOnClick(View view){
         View parent = (LinearLayout)view.getParent().getParent();
         TextView tvId = (TextView)parent.findViewById(R.id.favsListItemPlaceId);
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
-    // action bar create event button onclick
+    // action bar create event button -> create event
     public void createEvent(MenuItem menuItem){
         fromFragmentString = "Create event";
         eventFragment = new EventFragment();
@@ -523,8 +523,8 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
-    // select friends dialog
-    public void selectFriends(View view){
+    // invite friends to event -> select invitees dialog
+    public void selectEventInvitees(View view){
 
         eventInviteeList.clear();
 
@@ -589,6 +589,11 @@ public class MainActivity extends AppCompatActivity implements
             // remove from invite list
             Log.d(TAG, "Removed from invite list");
         }
-
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    //                                  OTHER METHODS                                //
+    ///////////////////////////////////////////////////////////////////////////////////
+
 }

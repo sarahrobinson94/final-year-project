@@ -92,7 +92,7 @@
             android:padding="10dp"
             android:text=""
             android:textColor="@color/white"
-            android:onClick="selectFriends"/>
+            android:onClick="selectEventInvitees"/>
 
         <Button
             android:id="@+id/eventButton"

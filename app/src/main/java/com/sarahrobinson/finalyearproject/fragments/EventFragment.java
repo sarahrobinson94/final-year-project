@@ -38,8 +38,8 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "CreateEventF ******* ";
 
     // views
-    private EditText txtEventName;
-    private Button eventButton;
+    private EditText txtEventName, txtEventDsc, txtEventDateTime, txtEventLocation;
+    private Button btnEvent, btnInvite;
 
     // event details
     private String strEventName;
@@ -78,8 +78,12 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
 
         txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
-        eventButton = (Button) rootView.findViewById(R.id.eventButton);
-        eventButton.setOnClickListener(this);
+        txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
+        txtEventDateTime = (EditText)rootView.findViewById(R.id.txtEventDate);
+        txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
+        btnEvent = (Button) rootView.findViewById(R.id.eventButton);
+        btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
+        btnEvent.setOnClickListener(this);
 
         // checking where the user is coming from
         if (fromFragmentString == "Create event") {
@@ -87,13 +91,16 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             // changing actionBar title
             getActivity().setTitle("Create Event");
 
-            txtEventName.setHint("Event Name");
-            eventButton.setText("SAVE");
+            btnEvent.setText("SAVE");
 
         } else {
 
             Log.d(TAG, "not create event");
 
+            // changing actionBar title
+            getActivity().setTitle("Event Details");
+
+            btnInvite.setVisibility(rootView.GONE);
         }
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
@@ -103,17 +110,23 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == eventButton) {
-            Log.d(TAG, "CREATING EVENT");
-            if (eventButton.getText() == "SAVE") {
-
+        if (view == btnEvent) {
+            if (btnEvent.getText() == "SAVE") {
+                Log.d(TAG, "CREATING EVENT");
                 // get event details from user input
                 getEventDetails();
                 // set up a new instance of event
                 setNewEvent();
                 // add event to firebase database
-                writeNewEvent();
-
+                writeNewEvent(view);
+            } else if (btnEvent.getText() == "EDIT") {
+                btnEvent.setText("SAVE");
+                // make editTexts editable
+                txtEventName.setEnabled(true);
+                txtEventDsc.setEnabled(true);
+                txtEventDateTime.setEnabled(true);
+                txtEventLocation.setEnabled(true);
+                btnInvite.setVisibility(view.VISIBLE);
             }
         }
     }
@@ -122,11 +135,23 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     private void getEventDetails(){
         // getting event details
-        strEventName = txtEventName.getText().toString();
-        strEventDsc = null;
+        if (txtEventName.getText().toString() != null) {
+            strEventName = txtEventName.getText().toString();
+        } else {
+            strEventName = null;
+        }
+        if (txtEventDsc.getText().toString() != null) {
+            strEventDsc = txtEventDsc.getText().toString();
+        } else {
+            strEventDsc = null;
+        }
         strEventDate = null;
         strEventTime = null;
-        strLocation = null;
+        if (txtEventLocation.getText().toString() != null) {
+            strLocation = txtEventLocation.getText().toString();
+        } else {
+            strLocation = null;
+        }
         strEventImage = null;
         strEventCreator = currentUserId;
         listEventInvited = null;
@@ -145,13 +170,17 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         event.setInvited(listEventInvited);
     }
 
-    private void writeNewEvent(){
+    private void writeNewEvent(View view){
         // saving new event to firebase database
         firebaseRef.child("events").push().setValue(event);
-        Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT);
-        eventButton.setText("EDIT");
+        Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT).show();
+        btnEvent.setText("EDIT");
         // make editTexts not editable
         txtEventName.setEnabled(false);
+        txtEventDsc.setEnabled(false);
+        txtEventDateTime.setEnabled(false);
+        txtEventLocation.setEnabled(false);
+        btnInvite.setVisibility(view.GONE);
 
         /*
         firebaseRef.child("events").push().setValue((event), new DatabaseReference.CompletionListener() {
@@ -160,7 +189,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                     Toast.makeText(getActivity(), "There was an error creating the event", Toast.LENGTH_SHORT);
                 } else {
                     Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT);
-                    eventButton.setText("EDIT");
+                    btnEvent.setText("EDIT");
                     // make editTexts not editable
                     txtEventName.setEnabled(false);
                 }

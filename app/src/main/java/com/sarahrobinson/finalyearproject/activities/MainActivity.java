@@ -642,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements
         for(int i=0; i<friendList.size(); i++){
             // get user id and name
             String friendId = friendList.get(i);
-            String friendName = firebaseRef.child("users").child(friendId).child("name").getKey();
+            String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
 
             // inflate list with friend item
             inflateFriendListItem(friendId, friendName);

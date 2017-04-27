@@ -44,7 +44,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favourites_list, container, false);
 
         // changing actionBar title
         getActivity().setTitle("Friends");

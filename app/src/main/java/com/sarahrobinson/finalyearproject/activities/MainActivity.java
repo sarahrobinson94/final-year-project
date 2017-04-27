@@ -1,6 +1,7 @@
 package com.sarahrobinson.finalyearproject.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,6 +51,11 @@ import com.google.android.gms.maps.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
@@ -59,6 +66,8 @@ import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static Context mContext;
 
+    private ProgressDialog progressDialog;
+
     FragmentManager fragmentManager;
     // for indicating which fragment is navigating to PlaceFragment
     public static String fromFragmentString;
@@ -92,8 +103,18 @@ public class MainActivity extends AppCompatActivity implements
     // to store id of selected favourite place
     public static String selectedFavPlaceId;
 
+    // to store a list of friends (active users for now)
+    private List<String> friendList = new ArrayList<>();
+
+    // layout to be inflated with friend items
+    private LinearLayout layoutFriendList;
+
     // to store list of event invitees
     public static List<String> eventInviteeList = new ArrayList<>();
+
+    // for checking when all data received by event listener
+    public int friendCount;
+    public int canContinue = 0;
 
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
@@ -127,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         mContext = getApplicationContext();
+
+        progressDialog = new ProgressDialog(this);
 
         ///// firebase /////
 
@@ -526,28 +549,25 @@ public class MainActivity extends AppCompatActivity implements
     // invite friends to event -> select invitees dialog
     public void selectEventInvitees(View view){
 
-        eventInviteeList.clear();
+        // showing progress dialog
+        progressDialog.setMessage("Retrieving friends");
+        progressDialog.show();
 
+        // inflating layout to be used as dialog
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View dialogView = layoutInflater.inflate(R.layout.dialog_select_friends, null);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_event_invitees, null);
 
+        // building dialog and setting custom layout
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-
         dialogBuilder.setTitle("Select friends to invite");
         dialogBuilder.setView(dialogView);
 
+        // getting layout to be inflated with list items (event -> friends to invite list)
+        layoutFriendList = (LinearLayout)dialogView.findViewById(R.id.layoutEventFriendList);
+        //layoutFriendList = (LinearLayout)findViewById(R.id.layoutEventFriendList);
 
-        ////////// for loop /////////
-
-        LinearLayout friendWrapper = (LinearLayout)dialogView.findViewById(R.id.dialogFriendWrapper);
-
-        final CheckBox chkFriend = (CheckBox)friendWrapper.findViewById(R.id.friendCheckbox);
-
-        final TextView tvFriendName = (TextView)friendWrapper.findViewById(R.id.friendTextView);
-
-        // set TextView text (friend name)
-
-        /////////////////////////////
+        layoutFriendList.removeAllViews();
+        friendList.clear();
 
         dialogBuilder
                 .setCancelable(false)
@@ -570,18 +590,13 @@ public class MainActivity extends AppCompatActivity implements
 
         AlertDialog alertDialog = dialogBuilder.create();
 
-        alertDialog.show();
-        alertDialog.getWindow().setLayout(1000, 1300); //Controlling width and height.
-
-
+        // getting list of friends (active users for now)
+        getActiveUsers(alertDialog);
     }
 
     // event invitee list toggle invite
     public void toggleEventInvite(View view) {
-        int id = view.getId();
-
         CheckBox chkFriend = (CheckBox)view;
-
         if (chkFriend.isChecked()) {
             // add to invite list
             Log.d(TAG, "Added to invite list");
@@ -595,5 +610,66 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////////////////////////////////////////////////////////////
     //                                  OTHER METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
+
+
+    // TODO: 26/04/2017 change to getFriends
+    public void getActiveUsers(final AlertDialog alertDialog){
+        Log.d(TAG, "getActiveUsers entered");
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference usersRef = databaseRef.child("users");
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "Getting active users by id");
+                    friendCount++;
+                    // adding users ids to list
+                    friendList.add(String.valueOf(snapshot.getKey()));
+                    Log.d(TAG, "Active users: " + friendList);
+                }
+                // wait until finished retrieving ids then continue
+                setStrValues(alertDialog);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void setStrValues(AlertDialog alertDialog){
+        for(int i=0; i<friendList.size(); i++){
+            // get user id and name
+            String friendId = friendList.get(i);
+            String friendName = firebaseRef.child("users").child(friendId).child("name").getKey();
+
+            // inflate list with friend item
+            inflateFriendListItem(friendId, friendName);
+        }
+        // show alert dialog when everything else is complete
+        progressDialog.dismiss();
+        alertDialog.show();
+        // setting dialog width and height
+        alertDialog.getWindow().setLayout(1000, 1300);
+    }
+
+    public void inflateFriendListItem(String friendId, String friendName){
+
+        // inflating layout to be used as a list item
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View listItem = inflater.inflate(R.layout.event_invitee_wrapper, layoutFriendList, false);
+
+        // adding inflated item to list
+        layoutFriendList.addView(listItem, layoutFriendList.getChildCount() - 1);
+
+        TextView tvFriendName = (TextView)listItem.findViewById(R.id.eventInviteeTvName);
+        // invisible textView for storing user id
+        TextView tvFriendId = (TextView)listItem.findViewById(R.id.eventInviteeId);
+
+        // populating views with friend name
+        tvFriendName.setText(friendName);
+        tvFriendId.setText(friendId);
+    }
 
 }

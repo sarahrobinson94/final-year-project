@@ -72,7 +72,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favourites_list, container, false);
 
         // changing actionBar title
         getActivity().setTitle("Favourites");
@@ -141,7 +141,6 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
         // view more button
         Button btnView = (Button) listItem.findViewById(R.id.favsListItemBtnMore);
-
 
         // populating views with place details
         Picasso.with(getContext())

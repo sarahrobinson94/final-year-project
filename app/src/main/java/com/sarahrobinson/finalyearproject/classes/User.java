@@ -12,18 +12,16 @@ public class User {
     private String name;
     private String email;
     private String image;
-    private List<String> favouritePlaces;
 
     public User() {
 
     }
 
-    public User(String id, String name, String email, String image, List<String> favouritePlaces) {
+    public User(String id, String name, String email, String image) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.image = image;
-        this.favouritePlaces = favouritePlaces;
     }
 
     public String getId() {
@@ -58,11 +56,4 @@ public class User {
         this.image = image;
     }
 
-    public List<String> getFavouritePlaces() {
-        return favouritePlaces;
-    }
-
-    public void setFavouritePlaces(List<String> favouritePlaces) {
-        this.favouritePlaces = favouritePlaces;
-    }
 }

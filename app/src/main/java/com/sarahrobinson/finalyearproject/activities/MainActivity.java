@@ -310,17 +310,6 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
             firebaseAuth.signOut();
-            // google sign out - seems to work without this code?
-            if (googleApiClient != null){
-                Log.d(TAG, "onClick: signing out google user");
-                Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                Log.d(TAG, "onClick: sign out successful");
-                            }
-                        });
-            }
             // firebase user facebook sign out
             LoginManager.getInstance().logOut();
             // start loginActivity

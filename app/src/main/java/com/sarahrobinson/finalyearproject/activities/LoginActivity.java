@@ -453,17 +453,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         user.setEmail(email);
         user.setName(name);
         user.setImage(image);
-        user.setFavouritePlaces(null);
     }
 
     // successful firebase authentication
     private void onAuthenticationSuccess(FirebaseUser firebaseUser){
-        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail(), user.getImage(), user.getFavouritePlaces());
+        saveNewUser(firebaseUser.getUid(), user.getName(), user.getEmail(), user.getImage());
     }
 
     // saving new user to firebase realtime database
-    private void saveNewUser(String userId, String name, String email, String image, List<String> favouritePlaces) {
-        User user = new User(userId, name, email, image, favouritePlaces);
+    private void saveNewUser(String userId, String name, String email, String image) {
+        User user = new User(userId, name, email, image);
         firebaseRef.child("users").child(userId).setValue(user);
     }
 

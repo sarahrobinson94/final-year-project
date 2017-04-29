@@ -42,14 +42,17 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private Button btnEvent, btnInvite;
 
     // event details
+    private String strEventId;
     private String strEventName;
     private String strEventDsc;
     private String strEventDate;
     private String strEventTime;
     private String strLocation;
     private String strEventImage;
-    private String strEventCreator;
-    private ArrayList<String> listEventInvited;
+
+    // user - event details
+    public static ArrayList<String> eventInviteeList = new ArrayList<>();
+
 
     public EventFragment() {
         // Required empty public constructor
@@ -77,6 +80,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
 
+        // get data passed from MainActivity
+        =getArguments().getString("message");
+
         txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
         txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
         txtEventDateTime = (EditText)rootView.findViewById(R.id.txtEventDate);
@@ -85,7 +91,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
         btnEvent.setOnClickListener(this);
 
-        // checking where the user is coming from
+        // user creating an event
         if (fromFragmentString == "Create event") {
 
             // changing actionBar title
@@ -93,13 +99,15 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
             btnEvent.setText("SAVE");
 
+        // user viewing an event
         } else {
 
-            Log.d(TAG, "not create event");
+            Log.d(TAG, "Not create event");
 
             // changing actionBar title
             getActivity().setTitle("Event Details");
 
+            // hiding invite button
             btnInvite.setVisibility(rootView.GONE);
         }
 
@@ -153,8 +161,6 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             strLocation = null;
         }
         strEventImage = null;
-        strEventCreator = currentUserId;
-        listEventInvited = null;
     }
 
     private void setNewEvent(){
@@ -166,22 +172,15 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         event.setTime(strEventTime);
         event.setLocation(strLocation);
         event.setImage(strEventImage);
-        event.setCreator(strEventCreator);
-        event.setInvited(listEventInvited);
     }
 
     private void writeNewEvent(View view){
-        // saving new event to firebase database
-        firebaseRef.child("events").push().setValue(event);
-        Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT).show();
-        btnEvent.setText("EDIT");
-        // make editTexts not editable
-        txtEventName.setEnabled(false);
-        txtEventDsc.setEnabled(false);
-        txtEventDateTime.setEnabled(false);
-        txtEventLocation.setEnabled(false);
-        btnInvite.setVisibility(view.GONE);
-
+        // fetching unique key in advance
+        String strEventId = firebaseRef.child("events").push().getKey();
+        // writing event to database
+        firebaseRef.child("events").child(strEventId).setValue(event);
+        // updating users
+        updateUsers(view);
         /*
         firebaseRef.child("events").push().setValue((event), new DatabaseReference.CompletionListener() {
             public void onComplete(DatabaseError error, DatabaseReference ref) {
@@ -196,6 +195,37 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             }
         });
         */
+    }
+
+    private void updateUsers(View view){
+        // updating event creator
+        firebaseRef.child("users").child(currentUserId).child("events").child(strEventId).setValue("creator");
+        // updating event invitees
+        // for each user selected in list, write to database
+        // show confirmation message
+        Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT).show();
+        // update UI state
+        viewState(view);
+    }
+
+    private void editState(View view){
+        btnEvent.setText("SAVE");
+        // make editTexts editable
+        txtEventName.setEnabled(true);
+        txtEventDsc.setEnabled(true);
+        txtEventDateTime.setEnabled(true);
+        txtEventLocation.setEnabled(true);
+        btnInvite.setVisibility(view.VISIBLE);
+    }
+
+    private void viewState(View view){
+        btnEvent.setText("EDIT");
+        // make editTexts not editable
+        txtEventName.setEnabled(false);
+        txtEventDsc.setEnabled(false);
+        txtEventDateTime.setEnabled(false);
+        txtEventLocation.setEnabled(false);
+        btnInvite.setVisibility(view.GONE);
     }
 
     ///////////////////////////////////////////////////////////////////

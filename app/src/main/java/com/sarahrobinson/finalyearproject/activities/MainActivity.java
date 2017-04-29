@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.R.id.message;
 import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.editTextSearchLocation;
 
 public class MainActivity extends AppCompatActivity implements
@@ -104,13 +105,16 @@ public class MainActivity extends AppCompatActivity implements
     public static String selectedFavPlaceId;
 
     // to store a list of friends (active users for now)
-    private List<String> friendList = new ArrayList<>();
+    private ArrayList<String> friendIdList = new ArrayList<>();
+
+    // to store id of selected friend
+    private String friendId;
 
     // layout to be inflated with friend items
     private LinearLayout layoutFriendList;
 
     // to store list of event invitees
-    public static List<String> eventInviteeList = new ArrayList<>();
+    private ArrayList<String> eventInviteeList = new ArrayList<>();
 
     // for checking when all data received by event listener
     public int friendCount;
@@ -505,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     ///////////////////////////////////////////////////////////////////////////////////
-    //                                ON CLICK METHODS                               //
+    //                                ONCLICK METHODS                               //
     ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -556,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements
         //layoutFriendList = (LinearLayout)findViewById(R.id.layoutEventFriendList);
 
         layoutFriendList.removeAllViews();
-        friendList.clear();
+        friendIdList.clear();
 
         dialogBuilder
                 .setCancelable(false)
@@ -580,18 +584,25 @@ public class MainActivity extends AppCompatActivity implements
         AlertDialog alertDialog = dialogBuilder.create();
 
         // getting list of friends (active users for now)
-        getActiveUsers(alertDialog);
+        retrieveFriends(alertDialog);
     }
 
     // event invitee list toggle invite
     public void toggleEventInvite(View view) {
+        // checkbox
         CheckBox chkFriend = (CheckBox)view;
+        // friend id
+        View parent = (LinearLayout)view.getParent().getParent();
+        TextView tvFriendId = (TextView)parent.findViewById(R.id.eventInviteeId);
+        String friendId = tvFriendId.getText().toString();
         if (chkFriend.isChecked()) {
             // add to invite list
+            eventInviteeList.add(friendId);
             Log.d(TAG, "Added to invite list");
         } else {
             // remove from invite list
             Log.d(TAG, "Removed from invite list");
+            eventInviteeList.remove(friendId);
         }
     }
 
@@ -602,8 +613,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     // TODO: 26/04/2017 change to getFriends
-    public void getActiveUsers(final AlertDialog alertDialog){
-        Log.d(TAG, "getActiveUsers entered");
+    public void retrieveFriends(final AlertDialog alertDialog){
+        Log.d(TAG, "retrieveFriends entered");
 
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference usersRef = databaseRef.child("users");
@@ -615,10 +626,10 @@ public class MainActivity extends AppCompatActivity implements
                     Log.d(TAG, "Getting active users by id");
                     friendCount++;
                     // adding users ids to list
-                    friendList.add(String.valueOf(snapshot.getKey()));
-                    Log.d(TAG, "Active users: " + friendList);
+                    friendIdList.add(String.valueOf(snapshot.getKey()));
+                    Log.d(TAG, "Active users: " + friendIdList);
                 }
-                // wait until finished retrieving ids then continue
+                // continue dialog creation
                 setStrValues(alertDialog);
             }
             @Override
@@ -628,9 +639,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setStrValues(AlertDialog alertDialog){
-        for(int i=0; i<friendList.size(); i++){
+        for(int i=0; i<friendIdList.size(); i++){
             // get user id and name
-            String friendId = friendList.get(i);
+            String friendId = friendIdList.get(i);
             String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
 
             // inflate list with friend item
@@ -659,6 +670,15 @@ public class MainActivity extends AppCompatActivity implements
         // populating views with friend name
         tvFriendName.setText(friendName);
         tvFriendId.setText(friendId);
+
+        ////// move
+        //
+        // pass eventInviteeList to EventFragment
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("eventInviteeList", eventInviteeList);
+        // set EventFragment arguments
+        EventFragment eventFragment =new EventFragment();
+        eventFragment.setArguments(bundle);
     }
 
 }

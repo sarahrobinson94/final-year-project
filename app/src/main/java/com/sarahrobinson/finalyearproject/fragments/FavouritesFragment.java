@@ -139,9 +139,6 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // invisible textView for storing id
         TextView txtId = (TextView) listItem.findViewById(R.id.favsListItemPlaceId);
 
-        // view more button
-        Button btnView = (Button) listItem.findViewById(R.id.favsListItemBtnMore);
-
         // populating views with place details
         Picasso.with(getContext())
                 .load(image)

@@ -1,15 +1,21 @@
 package com.sarahrobinson.finalyearproject.fragments;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,10 +30,15 @@ import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.User;
 
+import org.w3c.dom.Text;
+
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import static android.support.design.R.id.time;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
@@ -49,8 +60,12 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private FirebaseUser firebaseUser;
 
     // views
-    private EditText txtEventName, txtEventDsc, txtEventDateTime, txtEventLocation;
-    private Button btnEventSaveEdit, btnEventCancel, btnInvite;
+    private EditText txtEventName, txtEventDsc, txtEventLocation;
+    private TextView tvEventDate, tvEventTime;
+    private Button btnDatePicker, btnTimePicker, btnInvite, btnEventSaveEdit, btnEventCancel;
+
+    // for datetime pickers
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     // event details
     private String strEventId;
@@ -90,15 +105,24 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
 
         // getting views
+        //
+        // editTexts
         txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
         txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
-        txtEventDateTime = (EditText)rootView.findViewById(R.id.txtEventDate);
         txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
+        // textViews
+        tvEventDate = (TextView)rootView.findViewById(R.id.tvEventDate);
+        tvEventTime = (TextView)rootView.findViewById(R.id.tvEventTime);
+        // buttons
+        btnDatePicker = (Button)rootView.findViewById(R.id.btnEventDatePicker);
+        btnTimePicker = (Button)rootView.findViewById(R.id.btnEventTimePicker);
+        btnInvite = (Button)rootView.findViewById(R.id.btnInvite);
         btnEventSaveEdit = (Button)rootView.findViewById(R.id.eventButtonSaveEdit);
         btnEventCancel = (Button)rootView.findViewById(R.id.eventButtonCancel);
-        btnInvite = (Button)rootView.findViewById(R.id.btnInvite);
 
         // setting onclick listeners
+        btnDatePicker.setOnClickListener(this);
+        btnTimePicker.setOnClickListener(this);
         btnEventSaveEdit.setOnClickListener(this);
         btnEventCancel.setOnClickListener(this);
 
@@ -128,7 +152,48 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == btnEventSaveEdit) {
+        // if onclick datepicker
+        if (view == btnDatePicker)
+        {
+            // get current date
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            // launch datepicker dialog
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+                            tvEventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        // if onclick timepicker
+        }
+        else if (view == btnTimePicker)
+        {
+            // get current time
+            final Calendar c = Calendar.getInstance();
+            mHour = c.get(Calendar.HOUR_OF_DAY);
+            mMinute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+                            tvEventTime.setText(hourOfDay + ":" + minute);
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        // if onclick save/edit
+        }
+        else if (view == btnEventSaveEdit)
+        {
             // if onclick save
             if (btnEventSaveEdit.getText() == "SAVE") {
                 if (fromFragmentString == "Create Event"){
@@ -140,7 +205,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                 editState(view);
             }
         // if onclick cancel
-        } else if (view == btnEventCancel) {
+        }
+        else if (view == btnEventCancel)
+        {
             Log.d(TAG, "CANCELLING");
             Log.d(TAG, "fromFragmentString: " + fromFragmentString);
             if (fromFragmentString == "Create event"){
@@ -164,35 +231,42 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         if (!txtEventName.getText().toString().equals(null)) {
             strEventName = txtEventName.getText().toString();
         } else {
-            strEventName = null;
+            strEventName = "";
         }
         // description
         if (!txtEventDsc.getText().toString().equals(null)) {
             strEventDsc = txtEventDsc.getText().toString();
         } else {
-            strEventDsc = null;
+            strEventDsc = "";
         }
-        // date & time
-        if (!txtEventDateTime.getText().toString().equals(null)) {
-            // TODO: 30/04/2017 split string into date and time
-            strEventDate = txtEventDateTime.getText().toString();
-            strEventTime = txtEventDateTime.getText().toString();
+        // date
+        if (!tvEventDate.getText().toString().equals(null)) {
+            strEventDate = tvEventDate.getText().toString();
         } else {
-            strEventDate = null;
-            strEventTime = null;
+            strEventDate = "";
+        }
+        // time
+        if (!tvEventTime.getText().toString().equals(null)) {
+            strEventTime = tvEventTime.getText().toString();
+        } else {
+            strEventTime = "";
         }
         // location
         if (txtEventLocation.getText().toString() != null) {
             strLocation = txtEventLocation.getText().toString();
         } else {
-            strLocation = null;
+            strLocation = "";
         }
         // image
-        strEventImage = null;
+        strEventImage = "";
 
-        // ensuring user enters a name
-        if (strEventName.equals(null) || strEventName.equals("")|| strEventName.equals(" ")) {
+        // ensuring user enters required fields
+        if (strEventName.equals("") || strEventName.equals(" ")) {
             Toast.makeText(getActivity(), "Please enter an event name", Toast.LENGTH_SHORT).show();
+        } else if (strEventDate.equals("")) {
+            Toast.makeText(getActivity(), "Please select an event date", Toast.LENGTH_SHORT).show();
+        } else if (strEventTime.equals("")) {
+            Toast.makeText(getActivity(), "Please select an event time", Toast.LENGTH_SHORT).show();
         } else {
             // set event values
             setEvent(view);
@@ -279,8 +353,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // make editTexts editable
         txtEventName.setEnabled(true);
         txtEventDsc.setEnabled(true);
-        txtEventDateTime.setEnabled(true);
         txtEventLocation.setEnabled(true);
+        btnDatePicker.setVisibility(view.VISIBLE);
+        btnTimePicker.setVisibility(view.VISIBLE);
         btnInvite.setVisibility(view.VISIBLE);
         btnEventCancel.setVisibility(view.VISIBLE);
     }
@@ -290,8 +365,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // make editTexts not editable
         txtEventName.setEnabled(false);
         txtEventDsc.setEnabled(false);
-        txtEventDateTime.setEnabled(false);
         txtEventLocation.setEnabled(false);
+        btnDatePicker.setVisibility(view.GONE);
+        btnTimePicker.setVisibility(view.GONE);
         btnInvite.setVisibility(view.GONE);
         btnEventCancel.setVisibility(view.GONE);
     }
@@ -308,7 +384,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                 Event event = dataSnapshot.getValue(Event.class);
                 txtEventName.setText(event.getName());
                 txtEventDsc.setText(event.getDescription());
-                txtEventDateTime.setText(event.getDate() + " " + event.getTime());
+                // TODO: 30/04/2017 set date & time pickers to selected date/time
+                tvEventDate.setText(event.getDate());
+                tvEventTime.setText(event.getTime());
                 txtEventLocation.setText(event.getLocation());
                 eventInviteeList = event.getInvited();
                 displayInvitees();

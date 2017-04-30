@@ -3,6 +3,7 @@ package com.sarahrobinson.finalyearproject.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,21 +26,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 
 public class EventFragment extends Fragment implements View.OnClickListener{
+
+    private static final String TAG = "CreateEventF ******* ";
+
+    private FragmentManager fragmentManager;
 
     public Event event;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private static final String TAG = "CreateEventF ******* ";
-
     // views
     private EditText txtEventName, txtEventDsc, txtEventDateTime, txtEventLocation;
-    private Button btnEvent, btnInvite;
+    private Button btnEventSaveEdit, btnEventCancel, btnInvite;
 
     // event details
     private String strEventId;
@@ -50,10 +54,6 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private String strLocation;
     private String strEventImage;
 
-    // user - event details
-    public static ArrayList<String> eventInviteeList = new ArrayList<>();
-
-
     public EventFragment() {
         // Required empty public constructor
     }
@@ -61,6 +61,8 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fragmentManager = getFragmentManager();
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -80,16 +82,16 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
 
-        // get data passed from MainActivity
-        =getArguments().getString("message");
-
+        // getting views
         txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
         txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
         txtEventDateTime = (EditText)rootView.findViewById(R.id.txtEventDate);
         txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
-        btnEvent = (Button) rootView.findViewById(R.id.eventButton);
+        btnEventSaveEdit = (Button) rootView.findViewById(R.id.eventButtonSaveEdit);
+        btnEventCancel = (Button) rootView.findViewById(R.id.eventButtonCancel);
         btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
-        btnEvent.setOnClickListener(this);
+        btnEventSaveEdit.setOnClickListener(this);
+        btnEventCancel.setOnClickListener(this);
 
         // user creating an event
         if (fromFragmentString == "Create event") {
@@ -97,7 +99,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             // changing actionBar title
             getActivity().setTitle("Create Event");
 
-            btnEvent.setText("SAVE");
+            btnEventSaveEdit.setText("SAVE");
 
         // user viewing an event
         } else {
@@ -118,52 +120,74 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == btnEvent) {
-            if (btnEvent.getText() == "SAVE") {
+        if (view == btnEventSaveEdit)
+        {
+            if (btnEventSaveEdit.getText() == "SAVE")
+            {
                 Log.d(TAG, "CREATING EVENT");
                 // get event details from user input
-                getEventDetails();
-                // set up a new instance of event
-                setNewEvent();
-                // add event to firebase database
-                writeNewEvent(view);
-            } else if (btnEvent.getText() == "EDIT") {
-                btnEvent.setText("SAVE");
-                // make editTexts editable
-                txtEventName.setEnabled(true);
-                txtEventDsc.setEnabled(true);
-                txtEventDateTime.setEnabled(true);
-                txtEventLocation.setEnabled(true);
-                btnInvite.setVisibility(view.VISIBLE);
+                getEventDetails(view);
             }
+            else if (btnEventSaveEdit.getText() == "EDIT")
+            {
+                editState(view);
+            }
+        }
+        else if (view == btnEventCancel)
+        {
+            Log.d(TAG, "CANCELLING EVENT CREATION");
+            // go back to events list
+            EventsFragment eventsFragment = new EventsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, eventsFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
     //////////// SAVING EVENT TO FIREBASE REALTIME DATABASE ////////////
 
-    private void getEventDetails(){
-        // getting event details
-        if (txtEventName.getText().toString() != null) {
+    private void getEventDetails(View view){
+        // name
+        if (!txtEventName.getText().toString().equals(null)) {
             strEventName = txtEventName.getText().toString();
         } else {
             strEventName = null;
         }
-        if (txtEventDsc.getText().toString() != null) {
+        // description
+        if (!txtEventDsc.getText().toString().equals(null)) {
             strEventDsc = txtEventDsc.getText().toString();
         } else {
             strEventDsc = null;
         }
-        strEventDate = null;
-        strEventTime = null;
+        // date & time
+        if (!txtEventDateTime.getText().toString().equals(null)) {
+            // TODO: 30/04/2017 split string into date and time
+            strEventDate = txtEventDateTime.getText().toString();
+            strEventTime = txtEventDateTime.getText().toString();
+        } else {
+            strEventDate = null;
+            strEventTime = null;
+        }
+        // location
         if (txtEventLocation.getText().toString() != null) {
             strLocation = txtEventLocation.getText().toString();
         } else {
             strLocation = null;
         }
+        // image
         strEventImage = null;
+
+        // ensuring user enters a name
+        if (strEventName.equals(null) || strEventName.equals("")|| strEventName.equals(" ")) {
+            Toast.makeText(getActivity(), "Please enter an event name", Toast.LENGTH_SHORT).show();
+        } else {
+            // set up a new instance of event
+            setNewEvent(view);
+        }
     }
 
-    private void setNewEvent(){
+    private void setNewEvent(View view){
         // setting up new event
         event = new Event();
         event.setName(strEventName);
@@ -172,11 +196,13 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         event.setTime(strEventTime);
         event.setLocation(strLocation);
         event.setImage(strEventImage);
+        // add event to firebase database
+        writeNewEvent(view);
     }
 
     private void writeNewEvent(View view){
         // fetching unique key in advance
-        String strEventId = firebaseRef.child("events").push().getKey();
+        strEventId = firebaseRef.child("events").push().getKey();
         // writing event to database
         firebaseRef.child("events").child(strEventId).setValue(event);
         // updating users
@@ -197,11 +223,17 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         */
     }
 
+    // updating event creator & invitees on database
     private void updateUsers(View view){
         // updating event creator
         firebaseRef.child("users").child(currentUserId).child("events").child(strEventId).setValue("creator");
         // updating event invitees
-        // for each user selected in list, write to database
+        for (int i=0; i<eventInviteeList.size(); i++) {
+            // get user id
+            String friendId = eventInviteeList.get(i);
+            // updating user node
+            firebaseRef.child("users").child(friendId).child("events").child(strEventId).setValue("pending");
+        }
         // show confirmation message
         Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT).show();
         // update UI state
@@ -209,7 +241,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     }
 
     private void editState(View view){
-        btnEvent.setText("SAVE");
+        btnEventSaveEdit.setText("SAVE");
         // make editTexts editable
         txtEventName.setEnabled(true);
         txtEventDsc.setEnabled(true);
@@ -219,7 +251,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     }
 
     private void viewState(View view){
-        btnEvent.setText("EDIT");
+        btnEventSaveEdit.setText("EDIT");
         // make editTexts not editable
         txtEventName.setEnabled(false);
         txtEventDsc.setEnabled(false);

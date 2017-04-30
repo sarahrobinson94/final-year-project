@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,9 +82,11 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // getting layout to be inflated
         layoutFavouritesList = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesList);
 
+        // clearing list when fragment is first loaded
         layoutFavouritesList.removeAllViews();
         favPlacesList.clear();
 
+        // retrieving user's favourite places
         getFavPlaceDetails();
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
@@ -128,7 +129,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
         // inflating layout to be used as a list item
         LayoutInflater inflator = (LayoutInflater)favouritesFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View listItem = inflator.inflate(R.layout.favourites_list_item, layoutFavouritesList, false);
+        View listItem = inflator.inflate(R.layout.list_item_favourite, layoutFavouritesList, false);
 
         // adding inflated item layout to favourites list layout
         layoutFavouritesList.addView(listItem, layoutFavouritesList.getChildCount() - 1);

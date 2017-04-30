@@ -462,7 +462,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // saving new user to firebase realtime database
     private void saveNewUser(String userId, String name, String email, String image) {
-        User user = new User(userId, name, email, image);
+        User user = new User(userId, name, email, image, null, null);
         firebaseRef.child("users").child(userId).setValue(user);
     }
 

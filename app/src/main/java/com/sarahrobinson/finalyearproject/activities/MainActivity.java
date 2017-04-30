@@ -114,11 +114,7 @@ public class MainActivity extends AppCompatActivity implements
     private LinearLayout layoutFriendList;
 
     // to store list of event invitees
-    private ArrayList<String> eventInviteeList = new ArrayList<>();
-
-    // for checking when all data received by event listener
-    public int friendCount;
-    public int canContinue = 0;
+    public static ArrayList<String> eventInviteeList = new ArrayList<>();
 
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
@@ -489,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void getDetails(String placeId, Fragment fromFragment){
-        Log.d(TAG, "getPlaceDetails");
+        Log.d(TAG, "getPlaceDetails method");
 
         String url = getUrl(placeId);
         Object[] DataTransfer = new Object[2];
@@ -560,6 +556,8 @@ public class MainActivity extends AppCompatActivity implements
         //layoutFriendList = (LinearLayout)findViewById(R.id.layoutEventFriendList);
 
         layoutFriendList.removeAllViews();
+
+        // TODO: 29/04/2017 only clear if user has saved/cancelled event creation
         friendIdList.clear();
 
         dialogBuilder
@@ -568,9 +566,7 @@ public class MainActivity extends AppCompatActivity implements
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                // invite friends to event
-                                Log.d(TAG, "Friends invited");
-
+                                dialogInterface.dismiss();
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -578,6 +574,7 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
+                                Toast.makeText(MainActivity.this, "Event creation cancelled", Toast.LENGTH_SHORT);
                             }
                         });
 
@@ -596,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
         TextView tvFriendId = (TextView)parent.findViewById(R.id.eventInviteeId);
         String friendId = tvFriendId.getText().toString();
         if (chkFriend.isChecked()) {
-            // add to invite list
+            // add friend to invite list
             eventInviteeList.add(friendId);
             Log.d(TAG, "Added to invite list");
         } else {
@@ -611,8 +608,6 @@ public class MainActivity extends AppCompatActivity implements
     //                                  OTHER METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
 
-
-    // TODO: 26/04/2017 change to getFriends
     public void retrieveFriends(final AlertDialog alertDialog){
         Log.d(TAG, "retrieveFriends entered");
 
@@ -624,7 +619,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "Getting active users by id");
-                    friendCount++;
                     // adding users ids to list
                     friendIdList.add(String.valueOf(snapshot.getKey()));
                     Log.d(TAG, "Active users: " + friendIdList);
@@ -639,7 +633,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setStrValues(AlertDialog alertDialog){
-        for(int i=0; i<friendIdList.size(); i++){
+        for (int i=0; i<friendIdList.size(); i++){
             // get user id and name
             String friendId = friendIdList.get(i);
             String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
@@ -670,15 +664,6 @@ public class MainActivity extends AppCompatActivity implements
         // populating views with friend name
         tvFriendName.setText(friendName);
         tvFriendId.setText(friendId);
-
-        ////// move
-        //
-        // pass eventInviteeList to EventFragment
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("eventInviteeList", eventInviteeList);
-        // set EventFragment arguments
-        EventFragment eventFragment =new EventFragment();
-        eventFragment.setArguments(bundle);
     }
 
 }

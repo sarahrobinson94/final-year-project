@@ -12,16 +12,21 @@ public class User {
     private String name;
     private String email;
     private String image;
+    private List<String> favouritePlaces;
+    private List<String> events;
+
 
     public User() {
 
     }
 
-    public User(String id, String name, String email, String image) {
+    public User(String id, String name, String email, String image, List<String> favouritePlaces, List<String> events) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.image = image;
+        this.favouritePlaces = favouritePlaces;
+        this.events = events;
     }
 
     public String getId() {
@@ -54,6 +59,22 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public List<String> getFavouritePlaces() {
+        return favouritePlaces;
+    }
+
+    public void setFavouritePlaces(List<String> favouritePlaces) {
+        this.favouritePlaces = favouritePlaces;
+    }
+
+    public List<String> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<String> events) {
+        this.events = events;
     }
 
 }

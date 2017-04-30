@@ -1,69 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutEventsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.fragments.EventsFragment">
 
-    <!-- Event list item -->
+    <!--  Events layout (inflated with list item layouts) -->
     <LinearLayout
-        android:id="@+id/layoutEventListItem"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:id="@+id/layoutEventsList"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="5"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp">
+        android:orientation="vertical"/>
 
-        <!-- date/time -->
-        <LinearLayout
-            android:id="@+id/eventListItemDateTime"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-            <TextView
-                android:id="@+id/eventListItemDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Date"
-                android:textSize="16dp"
-                android:textColor="@color/grey"
-                android:textAllCaps="true"/>
-
-            <TextView
-                android:id="@+id/eventListItemTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Time"
-                android:textSize="16dp"
-                android:textColor="@color/grey"
-                android:textAllCaps="true"/>
-
-        </LinearLayout>
-
-        <!-- title/location -->
-        <LinearLayout
-            android:id="@+id/eventListItemDetails"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-        </LinearLayout>
-
-        <!-- see more button -->
-        <LinearLayout
-            android:id="@+id/eventListItemMore"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</FrameLayout>
+</ScrollView>

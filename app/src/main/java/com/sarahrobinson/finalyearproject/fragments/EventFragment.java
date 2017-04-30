@@ -194,11 +194,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         }
         else if (view == btnEventSaveEdit)
         {
+            Log.d(TAG, "SAVING");
             // if onclick save
             if (btnEventSaveEdit.getText() == "SAVE") {
-                if (fromFragmentString == "Create Event"){
-                    fromFragmentString = "EventsFragment";
-                }
                 getEventDetails(view);
             // if onclick edit
             } else if (btnEventSaveEdit.getText() == "EDIT") {
@@ -284,10 +282,12 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         event.setImage(strEventImage);
 
         // if creating a new event
-        if (fromFragmentString == "Create Event") {
+        if (fromFragmentString == "Create event") {
             Log.d(TAG, "SAVING NEW EVENT");
             // save event to database
             writeNewEvent(view);
+            // change fromFragmentString in order to view created event
+            fromFragmentString = "EventsFragment";
         // if editing an existing event
         } else if (fromFragmentString == "EventsFragment") {
             Log.d(TAG, "UPDATING EXISTING EVENT");

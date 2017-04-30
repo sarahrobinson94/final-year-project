@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,15 +38,21 @@ import java.util.ArrayList;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventsFragmentTabPending;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventsFragmentTabUpcoming;
 
 public class EventsFragment extends Fragment implements View.OnClickListener{
+
+    private static final String TAG = "EventsFragment ******* ";
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private static final String TAG = "EventsFragment ******* ";
-
+    private FragmentManager fragmentManager;
     private FragmentActivity eventsFragmentContext;
+    private FragmentTabHost tabHost;
+
+    private LinearLayout layoutEventsList;
 
     private ArrayList<String> eventsListUpcoming = new ArrayList<>();
     private ArrayList<String> eventsListPending = new ArrayList<>();
@@ -53,8 +62,6 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
 
     private String eventId, eventDate, eventTime, eventName,
             eventLocation;
-
-    private LinearLayout layoutEventsList;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -88,21 +95,22 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         // changing actionBar title
         getActivity().setTitle("Events");
 
-        // getting fragment context
-        eventsFragmentContext = getActivity();
+        // setting up tabs
+        tabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
+        tabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_events_list);
 
-        // getting layout to be inflated
-        layoutEventsList = (LinearLayout)rootView.findViewById(R.id.layoutEventsList);
-
-        // clearing lists when fragment is first loaded
-        layoutEventsList.removeAllViews();
-        eventsListUpcoming.clear();
-        eventsListPending.clear();
-
-        // retrieving user's events
-        retrieveEvents();
+        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("UPCOMING"),
+                EventsFragmentTabUpcoming.class, null);
+        tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("PENDING"),
+                EventsFragmentTabPending.class, null);
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
+
+        // clearing lists when fragment is first loaded
+        //eventsListUpcoming.clear();
+        //eventsListPending.clear();
+
+        //retrieveEvents();
 
         return rootView;
     }
@@ -118,6 +126,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
 
     // method to get user's events from database
     public void retrieveEvents(){
+        Log.d(TAG, "retrieveEvents() entered");
 
         DatabaseReference eventsRef = databaseRef.child("users").child(currentUserId).child("events");
 
@@ -145,6 +154,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
 
     // method to get event details from event ID
     public void retrieveEventDetails(){
+        Log.d(TAG, "retrieveEventDetails() entered");
 
         // getting upcoming event details
         for(int i=0; i<eventsListUpcoming.size(); i++){
@@ -164,7 +174,8 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
                         upcomingName = event.getName();
                         upcomingLocation = event.getLocation();
                         upcomingId = (String.valueOf(dataSnapshot.getKey()));
-                        inflateNewListItem(upcomingId, upcomingDate, upcomingTime, upcomingName, upcomingLocation);
+                        eventsFragmentTabUpcoming.inflateNewUpcomingListItem(upcomingId,
+                                upcomingDate, upcomingTime, upcomingName, upcomingLocation);
                     }
                 }
                 @Override
@@ -191,6 +202,8 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
                         pendingName = event.getName();
                         pendingLocation = event.getLocation();
                         pendingId = (String.valueOf(dataSnapshot.getKey()));
+                        eventsFragmentTabPending.inflateNewPendingListItem(pendingId,
+                                pendingDate, pendingTime, pendingName, pendingLocation);
                     }
                 }
                 @Override
@@ -198,32 +211,6 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
                 }
             });
         }
-    }
-
-    // method to inflate a new layout for each event
-    public void inflateNewListItem(String id, String date, String time, String name, String location){
-
-        // inflating layout to be used as a list item
-        LayoutInflater inflator = (LayoutInflater)eventsFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View listItem = inflator.inflate(R.layout.list_item_event, layoutEventsList, false);
-
-        // adding inflated item layout to favourites list layout
-        layoutEventsList.addView(listItem, layoutEventsList.getChildCount() - 1);
-
-        TextView tvEventDate = (TextView)listItem.findViewById(R.id.eventsListItemDate);
-        TextView tvEventTime = (TextView) listItem.findViewById(R.id.eventsListItemTime);
-        TextView tvEventName = (TextView) listItem.findViewById(R.id.eventsListItemName);
-        TextView tvEventLocation = (TextView) listItem.findViewById(R.id.eventsListItemLocation);
-
-        // invisible textView for storing id
-        TextView tvEventId = (TextView) listItem.findViewById(R.id.eventsListItemId);
-
-        // populating views with place details
-        tvEventDate.setText(date);
-        tvEventTime.setText(time);
-        tvEventName.setText(name);
-        tvEventLocation.setText(location);
-        tvEventId.setText(id);
     }
 
     @Override

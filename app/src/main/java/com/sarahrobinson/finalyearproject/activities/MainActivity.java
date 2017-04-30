@@ -60,6 +60,8 @@ import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
+import com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabPending;
+import com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabUpcoming;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
 import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
@@ -131,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements
     public static SettingsFragment settingsFragment;
     public static PlaceFragment placeFragment;
     public static EventFragment eventFragment;
+    public static EventsFragmentTabUpcoming eventsFragmentTabUpcoming;
+    public static EventsFragmentTabPending eventsFragmentTabPending;
 
     // location services
     private int REQUEST_LOCATION;

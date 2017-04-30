@@ -155,15 +155,17 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
             eventRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "Getting upcoming event details");
-                    // getting and storing upcoming event details
-                    Event event = dataSnapshot.getValue(Event.class);
-                    upcomingDate = event.getDate();
-                    upcomingTime = event.getTime();
-                    upcomingName = event.getName();
-                    upcomingLocation = event.getLocation();
-                    upcomingId = (String.valueOf(dataSnapshot.getKey()));
-                    inflateNewListItem(upcomingId, upcomingDate, upcomingTime, upcomingName, upcomingLocation);
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, "Getting upcoming event details");
+                        // getting and storing upcoming event details
+                        Event event = dataSnapshot.getValue(Event.class);
+                        upcomingDate = event.getDate();
+                        upcomingTime = event.getTime();
+                        upcomingName = event.getName();
+                        upcomingLocation = event.getLocation();
+                        upcomingId = (String.valueOf(dataSnapshot.getKey()));
+                        inflateNewListItem(upcomingId, upcomingDate, upcomingTime, upcomingName, upcomingLocation);
+                    }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -180,14 +182,16 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
             eventRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "Getting pending event details");
-                    // getting and storing pending event details
-                    Event event = dataSnapshot.getValue(Event.class);
-                    pendingDate = event.getDate();
-                    pendingTime = event.getTime();
-                    pendingName = event.getName();
-                    pendingLocation = event.getLocation();
-                    pendingId = (String.valueOf(dataSnapshot.getKey()));
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, "Getting pending event details");
+                        // getting and storing pending event details
+                        Event event = dataSnapshot.getValue(Event.class);
+                        pendingDate = event.getDate();
+                        pendingTime = event.getTime();
+                        pendingName = event.getName();
+                        pendingLocation = event.getLocation();
+                        pendingId = (String.valueOf(dataSnapshot.getKey()));
+                    }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

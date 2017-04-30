@@ -5,298 +5,304 @@
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.fragments.HomeFragment">
 
-    <!-- section 1 -->
-    <LinearLayout
-        android:id="@+id/layoutHomeSection1"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
-        android:background="@drawable/border_bottom"
-        android:backgroundTint="@color/lightGrey">
+        android:layout_height="match_parent">
 
-        <!-- option breakfast -->
-        <RelativeLayout
-            android:id="@+id/optionBreakfast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/imageViewOptionBreakfast"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="true"
-                android:src="@drawable/ic_cup_selector"
-                android:background="@drawable/circle_white_border_grey"
-                android:padding="8dp" />
-
-            <TextView
-                android:id="@+id/textViewOptionBreakfast"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
-                android:text="Breakfast"
-                style="@style/textHome"/>
-
-        </RelativeLayout>
-
-        <!-- option lunch -->
-        <RelativeLayout
-            android:id="@+id/optionLunch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/imageViewOptionLunch"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_dining_24dp"
-                android:tint="@color/grey"
-                android:background="@drawable/circle_white_border_grey"
-                android:padding="8dp"/>
-
-            <TextView
-                android:id="@+id/textViewOptionLunch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
-                android:text="Lunch"
-                style="@style/textHome"/>
-
-        </RelativeLayout>
-
-        <!-- option dinner -->
-        <RelativeLayout
-            android:id="@+id/optionDinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/imageViewOptionDinner"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_pizza_24dp"
-                android:tint="@color/grey"
-                android:background="@drawable/circle_white_border_grey"
-                android:padding="8dp"/>
-
-            <TextView
-                android:id="@+id/textViewOptionDinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
-                android:text="Dinner"
-                style="@style/textHome"/>
-
-        </RelativeLayout>
-
-        <!-- option drinks -->
-        <RelativeLayout
-            android:id="@+id/optionDrinks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/imageViewOptionDrinks"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_bar_24dp"
-                android:tint="@color/grey"
-                android:background="@drawable/circle_white_border_grey"
-                android:padding="8dp"/>
-
-            <TextView
-                android:id="@+id/textViewOptionDrinks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
-                android:text="Drinks"
-                style="@style/textHome"/>
-
-        </RelativeLayout>
-
-        <!-- select all -->
-        <RelativeLayout
-            android:id="@+id/optionAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/imageViewOptionAll"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_tick_24dp"
-                android:tint="@color/grey"
-                android:background="@drawable/circle_white_border_grey"
-                android:padding="8dp"/>
-
-            <TextView
-                android:id="@+id/textViewOptionAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
-                android:text="All"
-                style="@style/textHome"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <!-- section 2 -->
-    <LinearLayout
-        android:id="@+id/layoutHomeSection2"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutHomeSection1"
-        android:paddingRight="20dp"
-        android:paddingTop="35dp"
-        android:paddingBottom="35dp">
-
-        <ImageView
-            android:id="@+id/imageViewHomeRadius"
-            android:layout_width="0px"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:src="@drawable/ic_nearby_24dp"
-            android:tint="@color/colorPrimary" />
-
-        <EditText
-            android:id="@+id/editTextHomeRadius"
-            android:layout_width="0px"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/grey"
-            android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:inputType="numberDecimal" />
-
-        <TextView
-            android:id="@+id/textViewHomeRadius"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:layout_gravity="bottom"
-            android:text="metres radius of:"
-            android:textSize="16dp"
-            android:textColor="@color/grey"/>
-
-    </LinearLayout>
-
-    <!-- section 3 -->
-    <LinearLayout
-        android:id="@+id/layoutHomeSection3"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutHomeSection2"
-        android:paddingRight="20dp"
-        android:paddingBottom="35dp"
-        android:background="@drawable/border_bottom"
-        android:backgroundTint="@color/lightGrey">
-
-        <ImageView
-            android:id="@+id/imageViewHomeLocation"
-            android:layout_width="0px"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_menu_location_24dp"
-            android:tint="@color/colorPrimary" />
-
-        <EditText
-            android:id="@+id/editTextHomeLocation"
-            android:layout_width="0px"
-            android:layout_height="40dp"
-            android:layout_weight="5"
-            android:background="@drawable/border_bottom"
-            android:backgroundTint="@color/grey"
-            android:hint="Enter a location"
-            android:textSize="16dp"
-            android:textColor="@color/grey"/>
-
-    </LinearLayout>
-
-    <!-- section 4 (find or add more) -->
-    <LinearLayout
-        android:id="@+id/layoutHomeSection4"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutHomeSection3"
-        android:paddingTop="30dp"
-        android:paddingBottom="0dp"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/btnFind"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/button_standard"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="FIND"
-            style="@style/BtnBlue" />
-
-        <TextView
-            android:id="@+id/textViewOr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="or"
-            android:textSize="14sp"
-            android:textColor="@color/grey"
-            android:textStyle="normal" />
-
+        <!-- section 1 -->
         <LinearLayout
-            android:id="@+id/layoutAddMoreDetails"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:id="@+id/layoutHomeSection1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:orientation="horizontal"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:background="@drawable/border_bottom"
+            android:backgroundTint="@color/lightGrey">
 
-            <TextView
-                android:id="@+id/textViewAddMoreDetails"
+            <!-- option breakfast -->
+            <RelativeLayout
+                android:id="@+id/optionBreakfast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
-                android:text="Add more details"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="normal" />
+                android:layout_weight="1"
+                android:padding="3dp">
 
-            <ImageView
-                android:id="@+id/imageViewAddMoreDetails"
+                <ImageView
+                    android:id="@+id/imageViewOptionBreakfast"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="true"
+                    android:src="@drawable/ic_cup_selector"
+                    android:background="@drawable/circle_white_border_grey"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/textViewOptionBreakfast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="55dp"
+                    android:text="Breakfast"
+                    style="@style/textHome"/>
+
+            </RelativeLayout>
+
+            <!-- option lunch -->
+            <RelativeLayout
+                android:id="@+id/optionLunch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:src="@drawable/ic_arrow_drop_down_circle_24dp"
-                android:tint="@color/colorPrimary" />
+                android:layout_weight="1"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/imageViewOptionLunch"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_dining_24dp"
+                    android:tint="@color/grey"
+                    android:background="@drawable/circle_white_border_grey"
+                    android:padding="8dp"/>
+
+                <TextView
+                    android:id="@+id/textViewOptionLunch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="55dp"
+                    android:text="Lunch"
+                    style="@style/textHome"/>
+
+            </RelativeLayout>
+
+            <!-- option dinner -->
+            <RelativeLayout
+                android:id="@+id/optionDinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/imageViewOptionDinner"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_pizza_24dp"
+                    android:tint="@color/grey"
+                    android:background="@drawable/circle_white_border_grey"
+                    android:padding="8dp"/>
+
+                <TextView
+                    android:id="@+id/textViewOptionDinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="55dp"
+                    android:text="Dinner"
+                    style="@style/textHome"/>
+
+            </RelativeLayout>
+
+            <!-- option drinks -->
+            <RelativeLayout
+                android:id="@+id/optionDrinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/imageViewOptionDrinks"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_bar_24dp"
+                    android:tint="@color/grey"
+                    android:background="@drawable/circle_white_border_grey"
+                    android:padding="8dp"/>
+
+                <TextView
+                    android:id="@+id/textViewOptionDrinks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="55dp"
+                    android:text="Drinks"
+                    style="@style/textHome"/>
+
+            </RelativeLayout>
+
+            <!-- select all -->
+            <RelativeLayout
+                android:id="@+id/optionAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/imageViewOptionAll"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_tick_24dp"
+                    android:tint="@color/grey"
+                    android:background="@drawable/circle_white_border_grey"
+                    android:padding="8dp"/>
+
+                <TextView
+                    android:id="@+id/textViewOptionAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="55dp"
+                    android:text="All"
+                    style="@style/textHome"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <!-- section 2 -->
+        <LinearLayout
+            android:id="@+id/layoutHomeSection2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutHomeSection1"
+            android:paddingRight="20dp"
+            android:paddingTop="35dp"
+            android:paddingBottom="35dp">
+
+            <ImageView
+                android:id="@+id/imageViewHomeRadius"
+                android:layout_width="0px"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:src="@drawable/ic_nearby_24dp"
+                android:tint="@color/colorPrimary" />
+
+            <EditText
+                android:id="@+id/editTextHomeRadius"
+                android:layout_width="0px"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/grey"
+                android:textSize="16dp"
+                android:textColor="@color/grey"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/textViewHomeRadius"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:layout_gravity="bottom"
+                android:text="metres radius of:"
+                android:textSize="16dp"
+                android:textColor="@color/grey"/>
+
+        </LinearLayout>
+
+        <!-- section 3 -->
+        <LinearLayout
+            android:id="@+id/layoutHomeSection3"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutHomeSection2"
+            android:paddingRight="20dp"
+            android:paddingBottom="35dp"
+            android:background="@drawable/border_bottom"
+            android:backgroundTint="@color/lightGrey">
+
+            <ImageView
+                android:id="@+id/imageViewHomeLocation"
+                android:layout_width="0px"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_location_24dp"
+                android:tint="@color/colorPrimary" />
+
+            <EditText
+                android:id="@+id/editTextHomeLocation"
+                android:layout_width="0px"
+                android:layout_height="40dp"
+                android:layout_weight="5"
+                android:background="@drawable/border_bottom"
+                android:backgroundTint="@color/grey"
+                android:hint="Enter a location"
+                android:textSize="16dp"
+                android:textColor="@color/grey"/>
+
+        </LinearLayout>
+
+        <!-- section 4 (find or add more) -->
+        <LinearLayout
+            android:id="@+id/layoutHomeSection4"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutHomeSection3"
+            android:paddingTop="30dp"
+            android:paddingBottom="0dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnFind"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_standard"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="FIND"
+                style="@style/BtnBlue" />
+
+            <TextView
+                android:id="@+id/textViewOr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="or"
+                android:textSize="14sp"
+                android:textColor="@color/grey"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:id="@+id/layoutAddMoreDetails"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textViewAddMoreDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="Add more details"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal" />
+
+                <ImageView
+                    android:id="@+id/imageViewAddMoreDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/ic_arrow_drop_down_circle_24dp"
+                    android:tint="@color/colorPrimary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </ScrollView>

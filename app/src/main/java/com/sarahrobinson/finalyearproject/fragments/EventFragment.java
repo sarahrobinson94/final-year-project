@@ -141,8 +141,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             }
         // if onclick cancel
         } else if (view == btnEventCancel) {
-            Log.d(TAG, "CANCELLING EVENT CREATION");
-            if (fromFragmentString == "Create Event"){
+            Log.d(TAG, "CANCELLING");
+            Log.d(TAG, "fromFragmentString: " + fromFragmentString);
+            if (fromFragmentString == "Create event"){
                 Toast.makeText(getActivity(), "Event creation cancelled", Toast.LENGTH_SHORT).show();
                 // go back to events list
                 EventsFragment eventsFragment = new EventsFragment();

@@ -187,6 +187,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
                     pendingTime = event.getTime();
                     pendingName = event.getName();
                     pendingLocation = event.getLocation();
+                    pendingId = (String.valueOf(dataSnapshot.getKey()));
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

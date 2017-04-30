@@ -92,8 +92,9 @@ public class MainActivity extends AppCompatActivity implements
     // for indicating which fragment is navigating to PlaceFragment
     public static String fromFragmentString;
 
-    // public reference to firebase for adding favourite places
+    // public references to firebase
     public static Firebase firebaseRef;
+    public static DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -101,8 +102,9 @@ public class MainActivity extends AppCompatActivity implements
     // to store id of current user
     public static String currentUserId;
 
-    // to store id of selected favourite place
+    // to store id of selected list items
     public static String selectedFavPlaceId;
+    public static String selectedEventId;
 
     // to store a list of friends (active users for now)
     private ArrayList<String> friendIdList = new ArrayList<>();
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
     private LinearLayout layoutFriendList;
 
     // to store list of event invitees
-    public static ArrayList<String> eventInviteeList = new ArrayList<>();
+    public static List<String> eventInviteeList = new ArrayList<>();
 
     private NavigationView navigationView;
     private ImageView navHeaderProfilePic;
@@ -525,6 +527,23 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    // events list item -> view event details
+    public void eventOnClick(View view){
+        View parent = (LinearLayout)view.getParent().getParent();
+        TextView tvId = (TextView)parent.findViewById(R.id.eventsListItemId);
+        String eventId = tvId.getText().toString();
+        // TODO: 30/04/2017 check correct eventId being assigned
+        selectedEventId = eventId;
+
+        fromFragmentString = "EventsFragment";
+
+        EventFragment eventFragment = new EventFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_main, eventFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     // action bar create event button -> create event
     public void createEvent(MenuItem menuItem){
         fromFragmentString = "Create event";
@@ -557,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements
 
         layoutFriendList.removeAllViews();
 
-        // TODO: 29/04/2017 only clear if user has saved/cancelled event creation
+        // TODO: 29/04/2017 if not a new event, tick already invited friends when dialog is opened
         friendIdList.clear();
 
         dialogBuilder
@@ -574,7 +593,6 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
-                                Toast.makeText(MainActivity.this, "Event creation cancelled", Toast.LENGTH_SHORT);
                             }
                         });
 

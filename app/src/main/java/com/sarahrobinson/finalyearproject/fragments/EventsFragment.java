@@ -34,6 +34,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 
 public class EventsFragment extends Fragment implements View.OnClickListener{
 
@@ -43,8 +44,6 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "EventsFragment ******* ";
 
     private FragmentActivity eventsFragmentContext;
-
-    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
     private ArrayList<String> eventsListUpcoming = new ArrayList<>();
     private ArrayList<String> eventsListPending = new ArrayList<>();

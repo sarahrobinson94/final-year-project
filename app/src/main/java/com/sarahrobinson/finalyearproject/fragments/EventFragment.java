@@ -14,10 +14,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.User;
 
@@ -26,9 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedEventId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
 
 public class EventFragment extends Fragment implements View.OnClickListener{
 
@@ -87,30 +94,31 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
         txtEventDateTime = (EditText)rootView.findViewById(R.id.txtEventDate);
         txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
-        btnEventSaveEdit = (Button) rootView.findViewById(R.id.eventButtonSaveEdit);
-        btnEventCancel = (Button) rootView.findViewById(R.id.eventButtonCancel);
-        btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
+        btnEventSaveEdit = (Button)rootView.findViewById(R.id.eventButtonSaveEdit);
+        btnEventCancel = (Button)rootView.findViewById(R.id.eventButtonCancel);
+        btnInvite = (Button)rootView.findViewById(R.id.btnInvite);
+
+        // setting onclick listeners
         btnEventSaveEdit.setOnClickListener(this);
         btnEventCancel.setOnClickListener(this);
 
-        // user creating an event
+        // if user is creating an event
         if (fromFragmentString == "Create event") {
-
-            // changing actionBar title
+            Log.d(TAG, "Create event");
+            // change actionBar title
             getActivity().setTitle("Create Event");
-
-            btnEventSaveEdit.setText("SAVE");
-
-        // user viewing an event
-        } else {
-
-            Log.d(TAG, "Not create event");
-
-            // changing actionBar title
+            // set UI state
+            editState(rootView);
+        // if user is viewing an event
+        } else if (fromFragmentString == "EventsFragment"){
+            Log.d(TAG, "View event");
+            // change actionBar title
             getActivity().setTitle("Event Details");
-
-            // hiding invite button
-            btnInvite.setVisibility(rootView.GONE);
+            // retrieve event details
+            strEventId = selectedEventId;
+            retrieveSelectedEventDetails();
+            // set UI state
+            viewState(rootView);
         }
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
@@ -120,28 +128,31 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == btnEventSaveEdit)
-        {
-            if (btnEventSaveEdit.getText() == "SAVE")
-            {
-                Log.d(TAG, "CREATING EVENT");
-                // get event details from user input
+        if (view == btnEventSaveEdit) {
+            // if onclick save
+            if (btnEventSaveEdit.getText() == "SAVE") {
+                if (fromFragmentString == "Create Event"){
+                    fromFragmentString = "EventsFragment";
+                }
                 getEventDetails(view);
-            }
-            else if (btnEventSaveEdit.getText() == "EDIT")
-            {
+            // if onclick edit
+            } else if (btnEventSaveEdit.getText() == "EDIT") {
                 editState(view);
             }
-        }
-        else if (view == btnEventCancel)
-        {
+        // if onclick cancel
+        } else if (view == btnEventCancel) {
             Log.d(TAG, "CANCELLING EVENT CREATION");
-            // go back to events list
-            EventsFragment eventsFragment = new EventsFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_main, eventsFragment)
-                    .addToBackStack(null)
-                    .commit();
+            if (fromFragmentString == "Create Event"){
+                Toast.makeText(getActivity(), "Event creation cancelled", Toast.LENGTH_SHORT).show();
+                // go back to events list
+                EventsFragment eventsFragment = new EventsFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_main, eventsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else if (fromFragmentString == "EventsFragment") {
+                viewState(view);
+            }
         }
     }
 
@@ -182,13 +193,13 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         if (strEventName.equals(null) || strEventName.equals("")|| strEventName.equals(" ")) {
             Toast.makeText(getActivity(), "Please enter an event name", Toast.LENGTH_SHORT).show();
         } else {
-            // set up a new instance of event
-            setNewEvent(view);
+            // set event values
+            setEvent(view);
         }
     }
 
-    private void setNewEvent(View view){
-        // setting up new event
+    private void setEvent(View view){
+        // setting event values
         event = new Event();
         event.setName(strEventName);
         event.setDescription(strEventDsc);
@@ -196,8 +207,18 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         event.setTime(strEventTime);
         event.setLocation(strLocation);
         event.setImage(strEventImage);
-        // add event to firebase database
-        writeNewEvent(view);
+
+        // if creating a new event
+        if (fromFragmentString == "Create Event") {
+            Log.d(TAG, "SAVING NEW EVENT");
+            // save event to database
+            writeNewEvent(view);
+        // if editing an existing event
+        } else if (fromFragmentString == "EventsFragment") {
+            Log.d(TAG, "UPDATING EXISTING EVENT");
+            // update event on database
+            writeUpdatedEvent(view);
+        }
     }
 
     private void writeNewEvent(View view){
@@ -223,7 +244,17 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         */
     }
 
-    // updating event creator & invitees on database
+    private void writeUpdatedEvent(View view){
+        // writing event to database
+        firebaseRef.child("events").child(strEventId).setValue(event);
+        // TODO: 30/04/2017  get updated eventinviteelist
+        // update user nodes
+        // show confirmation message
+        Toast.makeText(getActivity(), "Event successfully updated", Toast.LENGTH_SHORT).show();
+        // update UI state
+        viewState(view);
+    }
+
     private void updateUsers(View view){
         // updating event creator
         firebaseRef.child("users").child(currentUserId).child("events").child(strEventId).setValue("creator");
@@ -240,6 +271,8 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         viewState(view);
     }
 
+    ///////////////////////////////////////////////////////////////////
+
     private void editState(View view){
         btnEventSaveEdit.setText("SAVE");
         // make editTexts editable
@@ -248,6 +281,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         txtEventDateTime.setEnabled(true);
         txtEventLocation.setEnabled(true);
         btnInvite.setVisibility(view.VISIBLE);
+        btnEventCancel.setVisibility(view.VISIBLE);
     }
 
     private void viewState(View view){
@@ -258,7 +292,33 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         txtEventDateTime.setEnabled(false);
         txtEventLocation.setEnabled(false);
         btnInvite.setVisibility(view.GONE);
+        btnEventCancel.setVisibility(view.GONE);
     }
 
-    ///////////////////////////////////////////////////////////////////
+    private void retrieveSelectedEventDetails(){
+        // getting reference to selected event
+        DatabaseReference eventRef = databaseRef.child("events").child(strEventId);
+        // getting event details
+        eventRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Getting selected event details");
+                // getting and displaying selected event details
+                Event event = dataSnapshot.getValue(Event.class);
+                txtEventName.setText(event.getName());
+                txtEventDsc.setText(event.getDescription());
+                txtEventDateTime.setText(event.getDate() + " " + event.getTime());
+                txtEventLocation.setText(event.getLocation());
+                eventInviteeList = event.getInvited();
+                displayInvitees();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    
+    private void displayInvitees(){
+        // TODO: 30/04/2017 show list of invitee names with choice to invite more friends
+    }
 }

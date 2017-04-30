@@ -116,6 +116,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         inflater.inflate(R.menu.action_create_event, menu);
     }
 
+    // method to get user's events from database
     public void retrieveEvents(){
 
         DatabaseReference eventsRef = databaseRef.child("users").child(currentUserId).child("events");
@@ -161,6 +162,7 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
                     upcomingTime = event.getTime();
                     upcomingName = event.getName();
                     upcomingLocation = event.getLocation();
+                    upcomingId = (String.valueOf(dataSnapshot.getKey()));
                     inflateNewListItem(upcomingId, upcomingDate, upcomingTime, upcomingName, upcomingLocation);
                 }
                 @Override

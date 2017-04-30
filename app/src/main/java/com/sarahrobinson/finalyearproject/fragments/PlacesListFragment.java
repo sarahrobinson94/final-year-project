@@ -74,7 +74,7 @@ public class PlacesListFragment extends Fragment {
     public void populateList(){
         // list adapter
         SimpleAdapter adapter = new SimpleAdapter(getContext(), placesList,
-                R.layout.places_list_item,
+                R.layout.list_item_places,
                 new String[] { thePlaceId, thePlaceName, thePlaceAddress},
                 new int[] { R.id.placesListItemPlaceId, R.id.placesListItemPlaceName, R.id.placesListItemPlaceAddress });
 

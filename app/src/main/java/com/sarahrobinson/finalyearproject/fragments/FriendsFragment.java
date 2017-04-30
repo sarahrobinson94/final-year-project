@@ -3,7 +3,10 @@ package com.sarahrobinson.finalyearproject.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,10 +17,12 @@ import com.sarahrobinson.finalyearproject.R;
 
 public class FriendsFragment extends Fragment implements View.OnClickListener{
 
+    private static final String TAG = "FriendsFragment ******* ";
+
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private static final String TAG = "FavouritesFragment ******* ";
+    private FragmentTabHost tabHost;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -26,6 +31,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // adding 'find friends' action item
+        setHasOptionsMenu(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -44,14 +52,31 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favourites_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_friends_list, container, false);
 
         // changing actionBar title
         getActivity().setTitle("Friends");
 
-        // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
+        // setting up tabs
+        tabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
+        tabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_friends_list);
 
+        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("FRIENDS"),
+                FriendsFragmentTabFriends.class, null);
+        tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("REQUESTS"),
+                FriendsFragmentTabRequests.class, null);
+
+        // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
         return rootView;
+    }
+
+    // changing action bar button
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // hide setting action item
+        menu.findItem(R.id.action_settings).setVisible(false);
+        // inflate find friends action item
+        inflater.inflate(R.menu.action_find_friends, menu);
     }
 
     @Override

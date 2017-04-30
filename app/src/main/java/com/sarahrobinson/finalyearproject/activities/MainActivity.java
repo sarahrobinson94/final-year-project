@@ -63,7 +63,10 @@ import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabPending;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabUpcoming;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
+import com.sarahrobinson.finalyearproject.fragments.FindFriendsFragment;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
+import com.sarahrobinson.finalyearproject.fragments.FriendsFragmentTabFriends;
+import com.sarahrobinson.finalyearproject.fragments.FriendsFragmentTabRequests;
 import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
@@ -128,13 +131,16 @@ public class MainActivity extends AppCompatActivity implements
     // to store instance of current fragment
     public static HomeFragment homeFragment;
     public static FavouritesFragment favouritesFragment;
-    public static FriendsFragment friendsFragment;
-    public static EventsFragment eventsFragment;
-    public static SettingsFragment settingsFragment;
     public static PlaceFragment placeFragment;
-    public static EventFragment eventFragment;
+    public static FriendsFragment friendsFragment;
+    public static FriendsFragmentTabFriends friendsFragmentTabFriends;
+    public static FriendsFragmentTabRequests friendsFragmentTabRequests;
+    public static FindFriendsFragment findFriendsFragment;
+    public static EventsFragment eventsFragment;
     public static EventsFragmentTabUpcoming eventsFragmentTabUpcoming;
     public static EventsFragmentTabPending eventsFragmentTabPending;
+    public static EventFragment eventFragment;
+    public static SettingsFragment settingsFragment;
 
     // location services
     private int REQUEST_LOCATION;
@@ -511,9 +517,11 @@ public class MainActivity extends AppCompatActivity implements
 
 
     ///////////////////////////////////////////////////////////////////////////////////
-    //                                ONCLICK METHODS                               //
+    //                                ONCLICK METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
 
+
+    ////////////// ....... FAVOURITE PLACES ....... //////////////
 
     // fav places list item -> view place details
     public void favPlaceOnClick(View view){
@@ -530,6 +538,8 @@ public class MainActivity extends AppCompatActivity implements
                 .addToBackStack(null)
                 .commit();
     }
+
+    ////////////// ........... EVENTS ............ //////////////
 
     // events list item -> view event details
     public void eventOnClick(View view){
@@ -625,10 +635,23 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    ////////////// ........... FRIENDS ............ //////////////
+
+    // action bar find friends button -> find friends
+    public void findFriends(MenuItem menuItem){
+        fromFragmentString = "Find friends";
+        findFriendsFragment = new FindFriendsFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_main, findFriendsFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                                  OTHER METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
+
 
     public void retrieveFriends(final AlertDialog alertDialog){
         Log.d(TAG, "retrieveFriends entered");

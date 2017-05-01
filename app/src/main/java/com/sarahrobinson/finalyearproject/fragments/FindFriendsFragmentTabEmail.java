@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
@@ -107,6 +108,7 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                         tvEmailUserName.setText(strSearchedUserName);
                         Picasso.with(getContext())
                                 .load(strSearchedUserImg)
+                                .transform(new CircleTransform())
                                 .into(imgEmailUserImg);
                         // show user
                         layoutEmailUser.setVisibility(View.VISIBLE);

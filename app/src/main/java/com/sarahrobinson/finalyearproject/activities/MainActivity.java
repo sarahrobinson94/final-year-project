@@ -56,6 +56,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
@@ -187,12 +188,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if (firebaseUser.getPhotoUrl() != null){
             String photoUrl = firebaseUser.getPhotoUrl().toString();
-            //new MainActivity.ImageLoadTask(imageUrl, navHeaderProfilePic).execute();
             Picasso.with(getApplicationContext())
                     .load(photoUrl)
                     .placeholder(R.drawable.circle_white)
-                    .resize(100, 100)
-                    //.transform(new CircleTransform())
+                    .resize(150, 150)
+                    .transform(new CircleTransform())
                     .centerCrop()
                     .into(navHeaderProfilePic);
         }else {

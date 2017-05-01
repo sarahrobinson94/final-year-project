@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentLocation;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 
 /**
@@ -81,7 +83,7 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     private void findEmailUser() {
 
         // getting searched email
-        strSearchedEmail = txtEmailSearch.getText().toString();
+        strSearchedEmail = txtEmailSearch.getText().toString().trim();
 
         // creating search query
         Query query = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
@@ -94,25 +96,35 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
 
                     for (DataSnapshot dsp : dataSnapshot.getChildren()) {
 
-                        // retrieve user details
                         strSearchedUserId = dsp.getKey().toString();
-                        strSearchedUserName = dsp.child("name").getValue().toString();
-                        strSearchedUserImg = dsp.child("image").getValue().toString();
 
-                        Log.d(TAG, "id " + strSearchedUserId);
-                        Log.d(TAG, "name " + strSearchedUserName);
-                        Log.d(TAG, "imgUrl " + strSearchedUserImg);
+                        if (strSearchedUserId.equals(currentUserId)) {
+                            // searched email is the current user's email address
+                            Toast.makeText(getActivity(), "Email matches the email address" +
+                                    "of this account" ,Toast.LENGTH_SHORT).show();
+                        } else {
+                            strSearchedUserName = dsp.child("name").getValue().toString();
+                            strSearchedUserImg = dsp.child("image").getValue().toString();
 
-                        // populate views
-                        tvEmailUserId.setText(strSearchedUserId);
-                        tvEmailUserName.setText(strSearchedUserName);
-                        Picasso.with(getContext())
-                                .load(strSearchedUserImg)
-                                .transform(new CircleTransform())
-                                .into(imgEmailUserImg);
-                        // show user
-                        layoutEmailUser.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "id " + strSearchedUserId);
+                            Log.d(TAG, "name " + strSearchedUserName);
+                            Log.d(TAG, "imgUrl " + strSearchedUserImg);
+
+                            // populate views
+                            tvEmailUserId.setText(strSearchedUserId);
+                            tvEmailUserName.setText(strSearchedUserName);
+                            Picasso.with(getContext())
+                                    .load(strSearchedUserImg)
+                                    .transform(new CircleTransform())
+                                    .into(imgEmailUserImg);
+                            // show user
+                            layoutEmailUser.setVisibility(View.VISIBLE);
+                        }
                     }
+                } else {
+                    // searched email does not exist in database
+                    Toast.makeText(getActivity(), "Email not found" ,Toast.LENGTH_SHORT).show();
+
                 }
             }
             @Override

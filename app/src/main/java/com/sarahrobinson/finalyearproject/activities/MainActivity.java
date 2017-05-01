@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -57,6 +58,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
+import com.sarahrobinson.finalyearproject.classes.Friendship;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
@@ -76,7 +78,9 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements
 
     // to store id of selected friend
     private String friendId;
+
+    // to store id of selected email user to send friend request
+    String emailUserId;
 
     // layout to be inflated with friend items
     private LinearLayout layoutFriendList;
@@ -659,7 +666,7 @@ public class MainActivity extends AppCompatActivity implements
         // user id
         View parent = (LinearLayout)view.getParent().getParent();
         TextView tvEmailUserId = (TextView)parent.findViewById(R.id.tabEmailUserId);
-        String emailUserId = tvEmailUserId.getText().toString();
+        emailUserId = tvEmailUserId.getText().toString();
         if (chkFriend.isChecked()) {
             // send user a friend request
             sendFriendRequest();
@@ -743,10 +750,34 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////// FIND FRIENDS - EMAIL USER ////////////////////////////
 
     private void sendFriendRequest() {
+
+        setFriendship();
         Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
     }
 
     private void deleteFriendRequest () {
         Toast.makeText(this,"Friend request deleted",Toast.LENGTH_SHORT).show();
+    }
+
+    private void setFriendship() {
+
+        // getting current date
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedCurrrentDate = df.format(c.getTime());
+
+        // setting friendship
+        Friendship friendship = new Friendship();
+        friendship.setRequestBy(currentUserId);
+        friendship.setRequestDate(formattedCurrrentDate);
+        friendship.setRequestStatus("pending");
+
+        writeNewFriendship(friendship);
+    }
+
+    private void writeNewFriendship(Friendship friendship) {
+
+        firebaseRef.child("friendships").child(currentUserId).child(emailUserId)
+                .setValue(friendship);
     }
 }

@@ -77,7 +77,79 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
         // getting searched email
         searchedEmail = txtEmailSearch.getText().toString();
 
-        
+        /*
+        databaseRef.child("users").orderByChild("email").equalTo(searchedEmail).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    Log.d(TAG, name);
+
+                    Log.d(TAG, "email exists");
+
+                    // retrieve user details
+                    //tvEmailUserId.setText(user.getId());
+                    //tvEmailUserName.setText(user.getName());
+                    //Picasso.with(getContext())
+                    //        .load(user.getImage())
+                    //        .into(imgEmailUserImg);
+                    // show user
+                    //layoutEmailUser.setVisibility(View.VISIBLE);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        */
+
+        /*
+        // creating database refereence
+        DatabaseReference usersRef = databaseRef.child("users");
+        // searching for email
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<String> list = new ArrayList<String>();
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+
+                for (DataSnapshot child : children) {
+
+                    User user = new User();
+
+                    Iterable<DataSnapshot> children2 = child.getChildren();
+
+                    for (DataSnapshot child2 : children2) {
+
+                        if (child2.getKey().equals("email")) {
+
+                            if (child2.getValue().equals(searchedEmail)) {
+
+                                Log.d(TAG, "email exists");
+
+                                // retrieve user details
+                                //tvEmailUserId.setText(user.getId());
+                                //tvEmailUserName.setText(user.getName());
+                                //Picasso.with(getContext())
+                                //        .load(user.getImage())
+                                //        .into(imgEmailUserImg);
+                                // show user
+                                //layoutEmailUser.setVisibility(View.VISIBLE);
+                            } else {
+                                //Toast.makeText(getActivity(),"User does not exist",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        */
     }
 
     private void showEmailUser() {

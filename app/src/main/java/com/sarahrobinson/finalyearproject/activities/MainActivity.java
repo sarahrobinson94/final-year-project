@@ -647,12 +647,32 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    // find friend by email toggle add
+    public void toggleEmailUserAdd(View view) {
+        // checkbox
+        CheckBox chkFriend = (CheckBox)view;
+        // user id
+        View parent = (LinearLayout)view.getParent().getParent();
+        TextView tvEmailUserId = (TextView)parent.findViewById(R.id.tabEmailUserId);
+        String emailUserId = tvEmailUserId.getText().toString();
+        if (chkFriend.isChecked()) {
+            // send user a friend request
+            sendFriendRequest();
+            Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
+        } else {
+            // undo friend request
+            deleteFriendRequest();
+            Log.d(TAG, "Friend request deleted");
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                                  OTHER METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
 
 
+    // retreiving list of friends
     public void retrieveFriends(final AlertDialog alertDialog){
         Log.d(TAG, "retrieveFriends entered");
 
@@ -677,6 +697,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    // getting each friend's id and name
     private void setStrValues(AlertDialog alertDialog){
         for (int i=0; i<friendIdList.size(); i++){
             // get user id and name
@@ -693,6 +714,7 @@ public class MainActivity extends AppCompatActivity implements
         alertDialog.getWindow().setLayout(1000, 1300);
     }
 
+    // inflating friends list (invite friends to event dialog)
     public void inflateFriendListItem(String friendId, String friendName){
 
         // inflating layout to be used as a list item

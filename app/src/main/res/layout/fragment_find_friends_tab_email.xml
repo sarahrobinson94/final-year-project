@@ -69,14 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:gravity="center">
+                android:gravity="right">
 
                 <ImageView
                     android:id="@+id/tabEmailUserImg"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/circle"/>
+                    android:background="@drawable/circle_white"/>
 
             </RelativeLayout>
 
@@ -86,7 +86,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="18dp"
                 android:textColor="@color/grey"
                 android:textStyle="bold"
                 android:textSize="16dp"

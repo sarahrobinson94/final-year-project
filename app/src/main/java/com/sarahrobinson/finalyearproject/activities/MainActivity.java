@@ -521,7 +521,8 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    ////////////// ....... FAVOURITE PLACES ....... //////////////
+    //////////////////////////////// FAVOURITE PLACES /////////////////////////////////
+
 
     // fav places list item -> view place details
     public void favPlaceOnClick(View view){
@@ -539,7 +540,9 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
-    ////////////// ........... EVENTS ............ //////////////
+
+    ///////////////////////////////////// EVENTS //////////////////////////////////////
+
 
     // events list item -> view event details
     public void eventOnClick(View view){
@@ -635,7 +638,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    ////////////// ........... FRIENDS ............ //////////////
+
+    //////////////////////////////////// FRIENDS /////////////////////////////////////
+
 
     // action bar find friends button -> find friends
     public void findFriends(MenuItem menuItem){
@@ -658,11 +663,9 @@ public class MainActivity extends AppCompatActivity implements
         if (chkFriend.isChecked()) {
             // send user a friend request
             sendFriendRequest();
-            Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
         } else {
             // undo friend request
             deleteFriendRequest();
-            Log.d(TAG, "Friend request deleted");
         }
     }
 
@@ -670,6 +673,9 @@ public class MainActivity extends AppCompatActivity implements
     ///////////////////////////////////////////////////////////////////////////////////
     //                                  OTHER METHODS                                //
     ///////////////////////////////////////////////////////////////////////////////////
+
+
+    //////////////////////////// EVENT INVITE FRIENDS DIALOG //////////////////////////
 
 
     // retreiving list of friends
@@ -733,4 +739,14 @@ public class MainActivity extends AppCompatActivity implements
         tvFriendId.setText(friendId);
     }
 
+
+    ///////////////////////////// FIND FRIENDS - EMAIL USER ////////////////////////////
+
+    private void sendFriendRequest() {
+        Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
+    }
+
+    private void deleteFriendRequest () {
+        Toast.makeText(this,"Friend request deleted",Toast.LENGTH_SHORT).show();
+    }
 }

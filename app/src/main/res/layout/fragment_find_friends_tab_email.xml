@@ -104,7 +104,8 @@
                     android:id="@+id/tabEmailUserAddChkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="toggleEmailUserAdd" />
+                    android:onClick="toggleEmailUserAdd"
+                    android:buttonTint="@color/colorAccent" />
 
             </LinearLayout>
 

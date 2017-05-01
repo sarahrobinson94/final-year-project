@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.IterableSerializer;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.Event;
@@ -43,7 +44,10 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     private TextView tvEmailUserName;
     private Button btnFindEmailUser;
 
-    private String searchedEmail;
+    private String strSearchedEmail;
+    private String strSearchedUserId;
+    private String strSearchedUserName;
+    private String strSearchedUserImg;
 
     public FindFriendsFragmentTabEmail() {
         // Required empty public constructor
@@ -74,74 +78,38 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     }
 
     private void findEmailUser() {
-        // getting searched email
-        searchedEmail = txtEmailSearch.getText().toString();
 
-        /*
-        databaseRef.child("users").orderByChild("email").equalTo(searchedEmail).addValueEventListener(new ValueEventListener() {
+        // getting searched email
+        strSearchedEmail = txtEmailSearch.getText().toString();
+
+        // creating search query
+        Query query = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-
-                    String name = dataSnapshot.child("name").getValue().toString();
-                    Log.d(TAG, name);
-
                     Log.d(TAG, "email exists");
 
-                    // retrieve user details
-                    //tvEmailUserId.setText(user.getId());
-                    //tvEmailUserName.setText(user.getName());
-                    //Picasso.with(getContext())
-                    //        .load(user.getImage())
-                    //        .into(imgEmailUserImg);
-                    // show user
-                    //layoutEmailUser.setVisibility(View.VISIBLE);
-                }
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
 
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        */
+                        // retrieve user details
+                        strSearchedUserId = dsp.getKey().toString();
+                        strSearchedUserName = dsp.child("name").getValue().toString();
+                        strSearchedUserImg = dsp.child("image").getValue().toString();
 
-        /*
-        // creating database refereence
-        DatabaseReference usersRef = databaseRef.child("users");
-        // searching for email
-        usersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "id " + strSearchedUserId);
+                        Log.d(TAG, "name " + strSearchedUserName);
+                        Log.d(TAG, "imgUrl " + strSearchedUserImg);
 
-                List<String> list = new ArrayList<String>();
-                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                for (DataSnapshot child : children) {
-
-                    User user = new User();
-
-                    Iterable<DataSnapshot> children2 = child.getChildren();
-
-                    for (DataSnapshot child2 : children2) {
-
-                        if (child2.getKey().equals("email")) {
-
-                            if (child2.getValue().equals(searchedEmail)) {
-
-                                Log.d(TAG, "email exists");
-
-                                // retrieve user details
-                                //tvEmailUserId.setText(user.getId());
-                                //tvEmailUserName.setText(user.getName());
-                                //Picasso.with(getContext())
-                                //        .load(user.getImage())
-                                //        .into(imgEmailUserImg);
-                                // show user
-                                //layoutEmailUser.setVisibility(View.VISIBLE);
-                            } else {
-                                //Toast.makeText(getActivity(),"User does not exist",Toast.LENGTH_LONG).show();
-                            }
-                        }
+                        // populate views
+                        tvEmailUserId.setText(strSearchedUserId);
+                        tvEmailUserName.setText(strSearchedUserName);
+                        Picasso.with(getContext())
+                                .load(strSearchedUserImg)
+                                .into(imgEmailUserImg);
+                        // show user
+                        layoutEmailUser.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -149,11 +117,6 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        */
-    }
-
-    private void showEmailUser() {
-
     }
 
     @Override

@@ -43,6 +43,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.User;
 
+import org.w3c.dom.Text;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText editTextLogInEmail;
     private EditText editTextLogInPassword;
+    private TextView btnResetPassword;
     private Button btnLogIn;
     private Button btnLogInFacebook;
     private SignInButton btnLogInGoogle;
@@ -155,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         editTextLogInEmail = (EditText)findViewById(R.id.editTextLoginEmail);
         editTextLogInPassword = (EditText)findViewById(R.id.editTextLoginPassword);
+        btnResetPassword = (TextView)findViewById(R.id.btnResetPassword);
         btnLogIn = (Button)findViewById(R.id.btnLogIn);
         btnLogInFacebook = (Button) findViewById(R.id.btnFbLoginLarge);
         btnLogInGoogle = (SignInButton) findViewById(R.id.btnGoogleLoginLarge);
@@ -162,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressDialog = new ProgressDialog(this);
 
         // onclick listeners
+        btnResetPassword.setOnClickListener(this);
         btnLogIn.setOnClickListener(this);
         btnLogInFacebook.setOnClickListener(this);
         btnLogInGoogle.setOnClickListener(this);
@@ -488,6 +493,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
             Intent i = new Intent(LoginActivity.this,SignUpActivity.class);
             startActivity(i);
+        }
+        // if reset password clicked
+        if (view == btnResetPassword) {
+            if (!editTextLogInEmail.getText().toString().equals(""))
+            {
+                firebaseAuth.sendPasswordResetEmail(editTextLogInEmail.getText().toString());
+                Toast.makeText(this, "Password reset email sent", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "Please enter an email address", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

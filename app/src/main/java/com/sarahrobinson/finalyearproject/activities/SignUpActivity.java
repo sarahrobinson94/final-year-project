@@ -3,6 +3,7 @@ package com.sarahrobinson.finalyearproject.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.User;
+import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -51,9 +53,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         // checking if user is already logged in
         if (firebaseAuth.getCurrentUser() != null){
             // TODO: 16/03/2017 take user to home screen (create new fragment)
+            // start MainActivity
+            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(homeIntent);
+            // finish this activity
             finish();
-            // start HomeActivity
-            startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
         }
 
         editTextSignUpName = (EditText)findViewById(R.id.editTextSignUpName);
@@ -129,6 +133,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                             // keeping user logged out and opening login activity
                             signOut();
+                            firebaseAuth.signOut();
                             finish();
                             Intent intentLogin = new Intent(SignUpActivity.this, LoginActivity.class);
                             startActivity(intentLogin);
@@ -151,9 +156,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         if (view == btnSignUp){
             registerUser();
-        }
-
-        if (view == btnLogInPrompt){
+        } else if (view == btnLogInPrompt){
             // end this activity
             finish();
             // start LoginActivity

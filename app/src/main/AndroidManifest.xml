@@ -4,8 +4,10 @@
     package="com.sarahrobinson.finalyearproject">
 
     <!-- Permissions -->
+
+    <!-- to use device internet connection -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- for accessing device location -->
+    <!-- TO access device location -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.B00636922.findapharmacy.permission.MAPS_RECEIVE" />

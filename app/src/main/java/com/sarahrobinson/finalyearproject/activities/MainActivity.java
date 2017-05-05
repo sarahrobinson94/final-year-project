@@ -90,7 +90,8 @@ import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.editText
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener{
 
     private static final String TAG = "MainActivity ******* ";
 
@@ -102,12 +103,14 @@ public class MainActivity extends AppCompatActivity implements
     // for indicating which fragment is navigating to PlaceFragment
     public static String fromFragmentString;
 
-    // public references to firebase
+    // to store a public reference to firebase
     public static Firebase firebaseRef;
-    public static DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
+    // to store instances of firebaseAuth and current firebaseUser
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+
+    public static DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
     // to store id of current user
     public static String currentUserId;
@@ -164,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -235,12 +239,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     protected void onStart() {
-        googleApiClient.connect();
         super.onStart();
     }
 
     protected void onStop() {
-        googleApiClient.disconnect();
+        //googleApiClient.disconnect();
         super.onStop();
     }
 
@@ -410,6 +413,13 @@ public class MainActivity extends AppCompatActivity implements
         if (location != null) {
             Log.d(TAG, "onConnected: last location is available");
             Log.d(TAG, "Location: " + location);
+            // Populating location search field (home screen) with user's current location
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            Log.d(TAG, "latitude: " + latitude);
+            Log.d(TAG, "longitude: " + longitude);
+            currentLocation = Geocoder(latitude, longitude);
+            editTextSearchLocation.setText(currentLocation);
         // If last location is not available
         }else{
             // If permissions have been granted
@@ -427,15 +437,6 @@ public class MainActivity extends AppCompatActivity implements
                 // request permission
                 checkLocationPermission();
             }
-        }
-        // Populating location search field (home screen) with user's current location
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        if (latitude != null && longitude != null){
-            Log.d(TAG, "latitude: " + latitude);
-            Log.d(TAG, "longitude: " + longitude);
-            currentLocation = Geocoder(latitude, longitude);
-            editTextSearchLocation.setText(currentLocation);
         }
     }
 
@@ -779,5 +780,10 @@ public class MainActivity extends AppCompatActivity implements
 
         firebaseRef.child("friendships").child(currentUserId).child(emailUserId)
                 .setValue(friendship);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
     }
 }

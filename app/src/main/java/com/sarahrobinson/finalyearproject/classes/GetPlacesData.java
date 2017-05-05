@@ -56,11 +56,11 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
         placesList = null;
         PlacesDataParser dataParser = new PlacesDataParser();
         placesList = dataParser.parse(result);
-        ShowPlaces(placesList);
+        showPlaces(placesList);
         Log.d(TAG, "onPostExecute Exit");
     }
 
-    private void ShowPlaces(List<HashMap<String, String>> placesList) {
+    private void showPlaces(List<HashMap<String, String>> placesList) {
         for (int i = 0; i < placesList.size(); i++) {
             Log.d(TAG, "ShowPlaces for loop entered");
             MarkerOptions markerOptions = new MarkerOptions();

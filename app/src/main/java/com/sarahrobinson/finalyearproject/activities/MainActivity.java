@@ -122,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements
     // to store a list of friends (active users for now)
     private ArrayList<String> friendIdList = new ArrayList<>();
 
-    // to store id of selected friend
-    private String friendId;
+    // to store id of selected friend request user
+    String friendRequestUserId;
 
     // to store id of selected email user to send friend request
     String emailUserId;
@@ -677,6 +677,23 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // pending friend request toggle accept
+    public void toggleFriendRequestAccept(View view) {
+        // checkbox
+        CheckBox chkFriendRequest = (CheckBox)view;
+        // user id
+        View parent = (LinearLayout)view.getParent().getParent();
+        TextView tvUserId = (TextView)parent.findViewById(R.id.friendsListItemFriendId);
+        friendRequestUserId = tvUserId.getText().toString();
+        if (chkFriendRequest.isChecked()) {
+            // accept friend request
+            Toast.makeText(this,"test friend request accepted",Toast.LENGTH_SHORT).show();
+        } else {
+            // undo accept friend request
+            Toast.makeText(this,"test undo accepted friend request",Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                                  OTHER METHODS                                //
@@ -748,15 +765,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    ///////////////////////////// FIND FRIENDS - EMAIL USER ////////////////////////////
+    //////////////////////////// FIND FRIENDS - EMAIL USER ////////////////////////////
 
     private void sendFriendRequest() {
-
         setFriendship();
         Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
     }
 
     private void deleteFriendRequest () {
+        // TODO: 08/05/2017 add delete friend request functionality
         Toast.makeText(this,"Friend request deleted",Toast.LENGTH_SHORT).show();
     }
 

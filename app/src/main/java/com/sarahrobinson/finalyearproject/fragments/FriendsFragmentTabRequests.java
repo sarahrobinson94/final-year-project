@@ -1,6 +1,7 @@
 package com.sarahrobinson.finalyearproject.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +44,7 @@ public class FriendsFragmentTabRequests extends Fragment {
 
     private ArrayList<String> listFriendRequests = new ArrayList<>();
 
-    String userId, userName, userImg, userEmail;
+    private String userId, userName, userImg, userEmail;
 
 
     public FriendsFragmentTabRequests() {
@@ -88,8 +91,8 @@ public class FriendsFragmentTabRequests extends Fragment {
 
                     }
                 } else {
-                    // searched email does not exist in database
-                    Toast.makeText(getActivity(), "Email not found" ,Toast.LENGTH_SHORT).show();
+                    // user has no pending requests in database
+                    Toast.makeText(getActivity(), "No pending requests to show" ,Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -116,11 +119,39 @@ public class FriendsFragmentTabRequests extends Fragment {
                 userImg = (user.getImage());
 
                 // TODO: 02/05/2017 inflate pending friend list item
+                inflateFriendRequestListItem(userName, userEmail,
+                        userImg);
 
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    private void inflateFriendRequestListItem(String name, String email, String img) {
+        // inflating layout to be used as a list item
+        LayoutInflater inflator = (LayoutInflater)tabFriendRequestContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listItem = inflator.inflate(R.layout.list_item_friend, layoutFriendRequestList, false);
+
+        // adding inflated item layout to friend request list layout
+        layoutFriendRequestList.addView(listItem, layoutFriendRequestList.getChildCount() - 1);
+
+        TextView tvUserId = (TextView)listItem.findViewById(R.id.friendsListItemFriendId);
+        TextView tvUserName = (TextView)listItem.findViewById(R.id.friendsListItemFriendName);
+        //TextView tvUserEmail = (TextView)listItem.findViewById(R.id.friendsListItemFriendEmail);
+        ImageView ivUserImg = (ImageView)listItem.findViewById(R.id.friendsListItemFriendImg);
+
+        // invisible textView for storing id
+        TextView tvEventId = (TextView) listItem.findViewById(R.id.eventsListItemId);
+
+        // populating views with place details
+        tvUserName.setText(name);
+        //tvUserEmail.setText(email);
+        Picasso.with(getContext())
+                .load(img)
+                .transform(new CircleTransform())
+                .into(ivUserImg);
+        tvUserId.setText(userId);
     }
 }

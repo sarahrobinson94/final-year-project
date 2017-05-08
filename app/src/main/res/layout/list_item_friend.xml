@@ -58,7 +58,8 @@
                 android:id="@+id/friendsListItemChkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="toggleEventInvite" />
+                android:onClick="toggleFriendRequestAccept"
+                android:buttonTint="@color/colorAccent" />
 
         </LinearLayout>
 

@@ -62,7 +62,7 @@ public class FriendsFragmentTabRequests extends Fragment {
         tabFriendRequestContext = getActivity();
 
         // getting layout to be inflated
-        layoutFriendRequestList = (LinearLayout)rootView.findViewById(R.id.layoutUpcomingEventsList);
+        layoutFriendRequestList = (LinearLayout)rootView.findViewById(R.id.layoutFriendRequestsList);
 
         // clearing lists when fragment is first loaded
         layoutFriendRequestList.removeAllViews();

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -137,6 +138,7 @@ public class FriendsFragmentTabFriends extends Fragment {
         TextView tvUserName = (TextView)listItem.findViewById(R.id.friendsListItemFriendName);
         //TextView tvUserEmail = (TextView)listItem.findViewById(R.id.friendsListItemFriendEmail);
         ImageView ivUserImg = (ImageView)listItem.findViewById(R.id.friendsListItemFriendImg);
+        CheckBox chkBoxAcceptRequest = (CheckBox)listItem.findViewById(R.id.friendsListItemChkBox);
 
         // populating views with user details
         tvUserName.setText(name);
@@ -146,5 +148,8 @@ public class FriendsFragmentTabFriends extends Fragment {
                 .transform(new CircleTransform())
                 .into(ivUserImg);
         tvUserId.setText(userId);
+
+        // hiding checkbox
+        chkBoxAcceptRequest.setVisibility(listItem.GONE);
     }
 }

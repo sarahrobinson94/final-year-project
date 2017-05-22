@@ -804,13 +804,16 @@ public class MainActivity extends AppCompatActivity implements
         friendship.setRequestBy(currentUserId);
         friendship.setRequestDate(formattedCurrrentDate);
         friendship.setRequestStatus("pending");
-
+        // writing friendship
         writeNewFriendship(friendship);
     }
 
     private void writeNewFriendship(Friendship friendship) {
-
+        // requester user node
         firebaseRef.child("friendships").child(currentUserId).child(emailUserId)
+                .setValue(friendship);
+        // requested user node
+        firebaseRef.child("friendships").child(emailUserId).child(currentUserId)
                 .setValue(friendship);
     }
 

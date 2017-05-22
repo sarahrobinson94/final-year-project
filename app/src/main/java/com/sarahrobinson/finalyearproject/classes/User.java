@@ -15,7 +15,6 @@ public class User {
     private List<String> favouritePlaces;
     private List<String> events;
 
-
     public User() {
 
     }
@@ -36,11 +35,6 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
-
-
-
-
-
 
     public String getEmail() {
         return email;

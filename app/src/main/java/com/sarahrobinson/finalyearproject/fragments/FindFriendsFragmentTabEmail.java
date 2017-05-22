@@ -84,53 +84,60 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
 
         // getting searched email
         strSearchedEmail = txtEmailSearch.getText().toString().trim();
+        Log.d(TAG, "email " + strSearchedEmail);
 
-        // creating search query
-        Query query = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
+        // checking if email has been entered
+        if (strSearchedEmail.isEmpty()) {
+            Toast.makeText(getActivity(), "Please enter an email address" ,Toast.LENGTH_SHORT).show();
+        } else {
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Log.d(TAG, "email exists");
+            // creating search query
+            Query query = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
 
-                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, "email exists");
 
-                        strSearchedUserId = dsp.getKey().toString();
+                        for (DataSnapshot dsp : dataSnapshot.getChildren()) {
 
-                        if (strSearchedUserId.equals(currentUserId)) {
-                            // searched email is the current user's email address
-                            Toast.makeText(getActivity(), "Email matches the email address" +
-                                    "of this account" ,Toast.LENGTH_SHORT).show();
-                        } else {
-                            strSearchedUserName = dsp.child("name").getValue().toString();
-                            strSearchedUserImg = dsp.child("image").getValue().toString();
+                            strSearchedUserId = dsp.getKey().toString();
 
-                            Log.d(TAG, "id " + strSearchedUserId);
-                            Log.d(TAG, "name " + strSearchedUserName);
-                            Log.d(TAG, "imgUrl " + strSearchedUserImg);
+                            if (strSearchedUserId.equals(currentUserId)) {
+                                // searched email is the current user's email address
+                                Toast.makeText(getActivity(), "Email matches the email address" +
+                                        "of this account" ,Toast.LENGTH_SHORT).show();
+                            } else {
+                                strSearchedUserName = dsp.child("name").getValue().toString();
+                                strSearchedUserImg = dsp.child("image").getValue().toString();
 
-                            // populate views
-                            tvEmailUserId.setText(strSearchedUserId);
-                            tvEmailUserName.setText(strSearchedUserName);
-                            Picasso.with(getContext())
-                                    .load(strSearchedUserImg)
-                                    .transform(new CircleTransform())
-                                    .into(imgEmailUserImg);
-                            // show user
-                            layoutEmailUser.setVisibility(View.VISIBLE);
+                                Log.d(TAG, "id " + strSearchedUserId);
+                                Log.d(TAG, "name " + strSearchedUserName);
+                                Log.d(TAG, "imgUrl " + strSearchedUserImg);
+
+                                // populate views
+                                tvEmailUserId.setText(strSearchedUserId);
+                                tvEmailUserName.setText(strSearchedUserName);
+                                Picasso.with(getContext())
+                                        .load(strSearchedUserImg)
+                                        .transform(new CircleTransform())
+                                        .into(imgEmailUserImg);
+                                // show user
+                                layoutEmailUser.setVisibility(View.VISIBLE);
+                            }
                         }
-                    }
-                } else {
-                    // searched email does not exist in database
-                    Toast.makeText(getActivity(), "Email not found" ,Toast.LENGTH_SHORT).show();
+                    } else {
+                        // searched email does not exist in database
+                        Toast.makeText(getActivity(), "Email not found" ,Toast.LENGTH_SHORT).show();
 
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
     @Override

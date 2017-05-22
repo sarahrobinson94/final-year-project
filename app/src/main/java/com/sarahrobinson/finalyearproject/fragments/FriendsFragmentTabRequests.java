@@ -22,12 +22,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
+import com.sarahrobinson.finalyearproject.classes.Friendship;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
@@ -85,15 +87,29 @@ public class FriendsFragmentTabRequests extends Fragment {
         Log.d(TAG, "retrieveFriendRequests entered");
 
         // creating search query
-        Query query = databaseRef.child("friendships").child(currentUserId).orderByChild("requestStatus").equalTo("pending");
+        Query query = databaseRef.child("friendships").child(currentUserId)
+                .orderByChild("requestStatus").equalTo("pending");
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    // initially setting hasFriendRequests to false
+                    boolean hasFriendRequests = false;
                     for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                        userId = dsp.getKey().toString();
-                        retreiveUserDetails();
+                        // checking current user is not the friend requester
+                        Friendship friendship = dsp.getValue(Friendship.class);
+                        if (!friendship.getRequestBy().equals(currentUserId)) {
+                            // getting friend request details
+                            userId = dsp.getKey().toString();
+                            retreiveUserDetails();
+                            // setting hasFriendRequests to true
+                            hasFriendRequests = true;
+                        }
+                    }
+                    if (hasFriendRequests == false) {
+                        // user has no pending requests in database, show message
+                        txtNoPendingFriends.setVisibility(view.VISIBLE);
                     }
                 } else {
                     // user has no pending requests in database, show message
@@ -117,6 +133,8 @@ public class FriendsFragmentTabRequests extends Fragment {
 
                 // getting pending friend details
                 User user = dataSnapshot.getValue(User.class);
+
+                User user1 = dataSnapshot.
 
                 userName = (user.getName());
                 userEmail = (user.getEmail());

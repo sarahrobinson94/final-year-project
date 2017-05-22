@@ -65,7 +65,6 @@ public class FriendsFragmentTabRequests extends Fragment {
         layoutFriendRequestList = (LinearLayout)rootView.findViewById(R.id.layoutFriendRequestsList);
 
         // clearing lists when fragment is first loaded
-        layoutFriendRequestList.removeAllViews();
         listFriendRequests.clear();
 
         retrieveFriendRequests();

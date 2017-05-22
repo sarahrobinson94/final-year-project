@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
+import com.sarahrobinson.finalyearproject.classes.Friendship;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
 
@@ -32,6 +33,7 @@ import java.util.List;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentLocation;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +50,7 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     private Button btnFindEmailUser;
 
     private String strSearchedEmail;
+    private String searchedEmailStatusInDb;
     private String strSearchedUserId;
     private String strSearchedUserName;
     private String strSearchedUserImg;
@@ -101,16 +104,33 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                         Log.d(TAG, "email exists");
 
                         for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-
                             strSearchedUserId = dsp.getKey().toString();
+
+                            checkSearchedEmail();
 
                             if (strSearchedUserId.equals(currentUserId)) {
                                 // searched email is the current user's email address
-                                Toast.makeText(getActivity(), "Email matches the email address" +
-                                        "of this account" ,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Searched email matches the email address" +
+                                        "of this account", Toast.LENGTH_SHORT).show();
+                            } else if (searchedEmailStatusInDb.equals("pending")) {
+                                // searched email is the current user's pending friend
+                                Toast.makeText(getActivity(), "Searched user is already a pending" +
+                                        "friend", Toast.LENGTH_SHORT).show();
+                            } else if (searchedEmailStatusInDb.equals("accepted")) {
+                                // searched email is the current user's friend
+                                Toast.makeText(getActivity(), "Searched user is already on your" +
+                                        "friends list", Toast.LENGTH_SHORT).show();
                             } else {
+
+                                if (dsp.child("image").exists()) {
+                                    strSearchedUserImg = dsp.child("image").getValue().toString();
+                                    Picasso.with(getContext())
+                                            .load(strSearchedUserImg)
+                                            .transform(new CircleTransform())
+                                            .into(imgEmailUserImg);
+                                }
+
                                 strSearchedUserName = dsp.child("name").getValue().toString();
-                                strSearchedUserImg = dsp.child("image").getValue().toString();
 
                                 Log.d(TAG, "id " + strSearchedUserId);
                                 Log.d(TAG, "name " + strSearchedUserName);
@@ -119,10 +139,6 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                                 // populate views
                                 tvEmailUserId.setText(strSearchedUserId);
                                 tvEmailUserName.setText(strSearchedUserName);
-                                Picasso.with(getContext())
-                                        .load(strSearchedUserImg)
-                                        .transform(new CircleTransform())
-                                        .into(imgEmailUserImg);
                                 // show user
                                 layoutEmailUser.setVisibility(View.VISIBLE);
                             }
@@ -138,6 +154,56 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                 }
             });
         }
+    }
+
+    private String checkSearchedEmail() {
+
+        // initially setting variable to non-existent
+        searchedEmailStatusInDb = "non-existent";
+
+        // creating search query to check if searched user is pending friend
+        Query queryPending = databaseRef.child("friendships").child(currentUserId)
+                .orderByChild("requestStatus").equalTo("pending");
+
+        queryPending.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        String userId = dsp.getKey().toString();
+                        if (userId.equals(strSearchedUserId)) {
+                            searchedEmailStatusInDb = "pending";
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        // creating search query to check if searched user is accepted friend
+        Query queryAccepted = databaseRef.child("friendships").child(currentUserId)
+                .orderByChild("requestStatus").equalTo("accepted");
+
+        queryAccepted.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        String userId = dsp.getKey().toString();
+                        if (userId == strSearchedUserId) {
+                            searchedEmailStatusInDb = "accepted";
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        return searchedEmailStatusInDb;
     }
 
     @Override

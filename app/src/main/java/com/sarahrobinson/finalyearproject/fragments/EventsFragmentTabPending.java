@@ -54,9 +54,9 @@ public class EventsFragmentTabPending extends Fragment {
         // getting fragment context
         tabPendingEventsContext = getActivity();
 
-        // hiding no pending events textView on initial load
+        // showing no pending events textView on initial load
         txtNoPendingEvents = (TextView)rootView.findViewById(R.id.txtNoPendingEvents);
-        txtNoPendingEvents.setVisibility(rootView.GONE);
+        txtNoPendingEvents.setVisibility(View.VISIBLE);
 
         // getting layout to be inflated
         layoutPendingEventsList = (LinearLayout)rootView.findViewById(R.id.layoutPendingEventsList);
@@ -86,12 +86,11 @@ public class EventsFragmentTabPending extends Fragment {
                         if (dsp.getValue().equals("pending")) {
                             // add upcoming events
                             eventsListPending.add(String.valueOf(dsp.getKey()));
+                            // hide 'no events' message
+                            txtNoPendingEvents.setVisibility(view.GONE);
                         }
                     }
                     retrieveEventDetails();
-                } else {
-                    // user has no pending events in database, show message
-                    txtNoPendingEvents.setVisibility(view.VISIBLE);
                 }
             }
             @Override

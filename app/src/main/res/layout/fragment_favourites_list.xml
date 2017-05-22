@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="30dp"
-            android:textSize="28dp"
+            android:textSize="18dp"
             android:textColor="@color/lightGrey"
             android:textAlignment="center"
             android:text="Your favourites list is empty. Start adding favourite places now!"

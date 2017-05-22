@@ -701,8 +701,25 @@ public class MainActivity extends AppCompatActivity implements
         TextView tvUserId = (TextView)parent.findViewById(R.id.friendsListItemFriendId);
         friendRequestUserId = tvUserId.getText().toString();
         if (chkFriendRequest.isChecked()) {
-            // accept friend request
-            Toast.makeText(this,"test friend request accepted",Toast.LENGTH_SHORT).show();
+            // getting current date
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedCurrrentDate = df.format(c.getTime());
+            /*
+             accepting friend request
+            */
+            // updating friendship for current user
+            firebaseRef.child("friendships").child(currentUserId).child(friendRequestUserId).
+                    child("requestStatus").setValue("accepted");
+            firebaseRef.child("friendships").child(currentUserId).child(friendRequestUserId).
+                    child("acceptDate").setValue(formattedCurrrentDate);
+            // updating friendship for friend user
+            firebaseRef.child("friendships").child(friendRequestUserId).child(currentUserId).
+                    child("requestStatus").setValue("accepted");
+            firebaseRef.child("friendships").child(friendRequestUserId).child(currentUserId).
+                    child("acceptDate").setValue(formattedCurrrentDate);
+            // show confirmation message
+            Toast.makeText(this,"Friend request accepted",Toast.LENGTH_SHORT).show();
         } else {
             // undo accept friend request
             Toast.makeText(this,"test undo accepted friend request",Toast.LENGTH_SHORT).show();
@@ -793,12 +810,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setFriendship() {
-
         // getting current date
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedCurrrentDate = df.format(c.getTime());
-
         // setting friendship
         Friendship friendship = new Friendship();
         friendship.setRequestBy(currentUserId);

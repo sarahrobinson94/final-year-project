@@ -9,7 +9,7 @@
         android:id="@+id/layoutFriendsList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <!-- message to show if no friends -->
     <TextView

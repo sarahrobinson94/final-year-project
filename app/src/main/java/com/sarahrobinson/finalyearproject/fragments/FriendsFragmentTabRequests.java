@@ -45,13 +45,10 @@ public class FriendsFragmentTabRequests extends Fragment {
     private FragmentActivity tabFriendRequestContext;
 
     private LinearLayout layoutFriendRequestList;
-
-    private ArrayList<String> listFriendRequests = new ArrayList<>();
-
-    private String userId, userName, userImg, userEmail;
-
     private TextView txtNoPendingFriends;
 
+    private ArrayList<String> listFriendRequests = new ArrayList<>();
+    private String userId, userName, userImg, userEmail;
 
     public FriendsFragmentTabRequests() {
         // Required empty public constructor
@@ -162,10 +159,7 @@ public class FriendsFragmentTabRequests extends Fragment {
         //TextView tvUserEmail = (TextView)listItem.findViewById(R.id.friendsListItemFriendEmail);
         ImageView ivUserImg = (ImageView)listItem.findViewById(R.id.friendsListItemFriendImg);
 
-        // invisible textView for storing id
-        TextView tvEventId = (TextView) listItem.findViewById(R.id.eventsListItemId);
-
-        // populating views with place details
+        // populating views with user details
         tvUserName.setText(name);
         //tvUserEmail.setText(email);
         Picasso.with(getContext())

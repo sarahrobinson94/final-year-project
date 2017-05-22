@@ -35,6 +35,7 @@ public class EventsFragmentTabPending extends Fragment {
     private FragmentActivity tabPendingEventsContext;
 
     private LinearLayout layoutPendingEventsList;
+    private TextView txtNoPendingEvents;
 
     private ArrayList<String> eventsListPending = new ArrayList<>();
 
@@ -53,6 +54,10 @@ public class EventsFragmentTabPending extends Fragment {
         // getting fragment context
         tabPendingEventsContext = getActivity();
 
+        // hiding no pending events textView on initial load
+        txtNoPendingEvents = (TextView)rootView.findViewById(R.id.txtNoPendingEvents);
+        txtNoPendingEvents.setVisibility(rootView.GONE);
+
         // getting layout to be inflated
         layoutPendingEventsList = (LinearLayout)rootView.findViewById(R.id.layoutPendingEventsList);
 
@@ -60,13 +65,13 @@ public class EventsFragmentTabPending extends Fragment {
         layoutPendingEventsList.removeAllViews();
         eventsListPending.clear();
 
-        retrieveEvents();
+        retrieveEvents(rootView);
 
         return rootView;
     }
 
     // method to get user's events from database
-    public void retrieveEvents(){
+    public void retrieveEvents(final View view){
         Log.d(TAG, "retrieveEvents() entered");
 
         DatabaseReference eventsRef = databaseRef.child("users").child(currentUserId).child("events");
@@ -74,15 +79,20 @@ public class EventsFragmentTabPending extends Fragment {
         eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "Getting events");
-                    // adding events to array list
-                    if (dsp.getValue().equals("pending")) {
-                        // add upcoming events
-                        eventsListPending.add(String.valueOf(dsp.getKey()));
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "Getting events");
+                        // adding events to array list
+                        if (dsp.getValue().equals("pending")) {
+                            // add upcoming events
+                            eventsListPending.add(String.valueOf(dsp.getKey()));
+                        }
                     }
+                    retrieveEventDetails();
+                } else {
+                    // user has no pending events in database, show message
+                    txtNoPendingEvents.setVisibility(view.VISIBLE);
                 }
-                retrieveEventDetails();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

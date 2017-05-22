@@ -11,4 +11,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
 
+    <!-- message to show if no friends -->
+    <TextView
+        android:id="@+id/txtNoFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="30dp"
+        android:textSize="28dp"
+        android:textColor="@color/lightGrey"
+        android:textAlignment="center"
+        android:text="Your friends list is empty. Start adding friends now!"
+        />
+
 </FrameLayout>

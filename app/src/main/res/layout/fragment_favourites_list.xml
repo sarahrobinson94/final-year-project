@@ -3,13 +3,33 @@
     android:id="@+id/layoutFragmentFavourites"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="com.sarahrobinson.finalyearproject.fragments.FavouritesFragment">
 
-    <!--  Favourites layout (inflated with list item layouts) -->
-    <LinearLayout
-        android:id="@+id/layoutFavouritesList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--  Favourites layout (inflated with list item layouts) -->
+        <LinearLayout
+            android:id="@+id/layoutFavouritesList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <!-- message to show if no favourites -->
+        <TextView
+            android:id="@+id/txtNoFavourites"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="30dp"
+            android:textSize="28dp"
+            android:textColor="@color/lightGrey"
+            android:textAlignment="center"
+            android:text="Your favourites list is empty. Start adding favourite places now!"
+            />
+
+    </RelativeLayout>
 
 </ScrollView>

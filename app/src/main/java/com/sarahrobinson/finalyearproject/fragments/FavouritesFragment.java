@@ -43,6 +43,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
     private ArrayList<String> favPlacesList = new ArrayList<>();
     private LinearLayout layoutFavouritesList;
+    private TextView txtNoFavPlaces;
 
     public FavouritesFragment() {
         // Required empty public constructor
@@ -79,6 +80,10 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         // getting fragment context
         favouritesFragmentContext = getActivity();
 
+        // hiding no pending friends textView on initial load
+        txtNoFavPlaces = (TextView)rootView.findViewById(R.id.txtNoFavourites);
+        txtNoFavPlaces.setVisibility(rootView.GONE);
+
         // getting layout to be inflated
         layoutFavouritesList = (LinearLayout)rootView.findViewById(R.id.layoutFavouritesList);
 
@@ -87,14 +92,14 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         favPlacesList.clear();
 
         // retrieving user's favourite places
-        getFavPlaceDetails();
+        getFavPlaceDetails(rootView);
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
     }
 
-    public void getFavPlaceDetails(){
+    public void getFavPlaceDetails(final View view){
 
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
@@ -102,13 +107,18 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         favPlacesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "Getting favPlaceId");
-                    // adding fav place id into array list
-                    favPlacesList.add(String.valueOf(dsp.getKey()));
-                    Log.d(TAG, "Favourite Places: " + favPlacesList);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "Getting favPlaceId");
+                        // adding fav place id into array list
+                        favPlacesList.add(String.valueOf(dsp.getKey()));
+                        Log.d(TAG, "Favourite Places: " + favPlacesList);
+                    }
+                    getFavPlaceIds();
+                } else {
+                    // user has no favourite places in database, show message
+                    txtNoFavPlaces.setVisibility(view.VISIBLE);
                 }
-                getFavPlaceIds();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

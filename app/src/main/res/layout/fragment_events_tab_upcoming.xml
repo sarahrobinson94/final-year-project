@@ -4,11 +4,24 @@
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabUpcoming">
 
-    <!--  Upcoming events layout (inflated with list item layouts) -->
+    <!-- Upcoming events layout (inflated with list item layouts) -->
     <LinearLayout
         android:id="@+id/layoutUpcomingEventsList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
+
+    <!-- message to show if no upcoming events -->
+    <TextView
+        android:id="@+id/txtNoUpcomingEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="30dp"
+        android:textSize="28dp"
+        android:textColor="@color/lightGrey"
+        android:textAlignment="center"
+        android:text="You have no upcoming events. Create an event now!"
+        />
 
 </FrameLayout>

@@ -39,6 +39,7 @@ public class EventsFragmentTabUpcoming extends Fragment {
     private FragmentActivity tabUpcomingEventsContext;
 
     private LinearLayout layoutUpcomingEventsList;
+    private TextView txtNoUpcomingEvents;
 
     private ArrayList<String> eventsListUpcoming = new ArrayList<>();
 
@@ -57,6 +58,10 @@ public class EventsFragmentTabUpcoming extends Fragment {
         // getting fragment context
         tabUpcomingEventsContext = getActivity();
 
+        // hiding no upcoming events textView on initial load
+        txtNoUpcomingEvents = (TextView)rootView.findViewById(R.id.txtNoUpcomingEvents);
+        txtNoUpcomingEvents.setVisibility(rootView.GONE);
+
         // getting layout to be inflated
         layoutUpcomingEventsList = (LinearLayout)rootView.findViewById(R.id.layoutUpcomingEventsList);
 
@@ -64,13 +69,13 @@ public class EventsFragmentTabUpcoming extends Fragment {
         layoutUpcomingEventsList.removeAllViews();
         eventsListUpcoming.clear();
 
-        retrieveEvents();
+        retrieveEvents(rootView);
 
         return rootView;
     }
 
     // method to get user's events from database
-    public void retrieveEvents() {
+    public void retrieveEvents(final View view) {
         Log.d(TAG, "retrieveEvents() entered");
 
         DatabaseReference eventsRef = databaseRef.child("users").child(currentUserId).child("events");
@@ -78,15 +83,20 @@ public class EventsFragmentTabUpcoming extends Fragment {
         eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "Getting events");
-                    // adding events to array list
-                    if (dsp.getValue().equals("creator") || dsp.getValue().equals("accepted")) {
-                        // add upcoming events
-                        eventsListUpcoming.add(String.valueOf(dsp.getKey()));
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "Getting events");
+                        // adding events to array list
+                        if (dsp.getValue().equals("creator") || dsp.getValue().equals("accepted")) {
+                            // add upcoming events
+                            eventsListUpcoming.add(String.valueOf(dsp.getKey()));
+                        }
                     }
+                    retrieveEventDetails();
+                } else {
+                    // user has no upcoming events in database, show message
+                    txtNoUpcomingEvents.setVisibility(view.VISIBLE);
                 }
-                retrieveEventDetails();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

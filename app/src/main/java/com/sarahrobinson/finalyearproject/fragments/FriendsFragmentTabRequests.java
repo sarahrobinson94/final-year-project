@@ -25,6 +25,8 @@ import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
@@ -46,6 +48,8 @@ public class FriendsFragmentTabRequests extends Fragment {
 
     private String userId, userName, userImg, userEmail;
 
+    private TextView txtNoPendingFriends;
+
 
     public FriendsFragmentTabRequests() {
         // Required empty public constructor
@@ -61,19 +65,23 @@ public class FriendsFragmentTabRequests extends Fragment {
         // getting fragment context
         tabFriendRequestContext = getActivity();
 
+        // hiding no pending friends textView on initial load
+        txtNoPendingFriends = (TextView)rootView.findViewById(R.id.txtNoPendingFriends);
+        txtNoPendingFriends.setVisibility(rootView.GONE);
+
         // getting layout to be inflated
         layoutFriendRequestList = (LinearLayout)rootView.findViewById(R.id.layoutFriendRequestsList);
 
         // clearing lists when fragment is first loaded
         listFriendRequests.clear();
 
-        retrieveFriendRequests();
+        retrieveFriendRequests(rootView);
 
         return rootView;
     }
 
     // method to get user's pending friend requests from database
-    public void retrieveFriendRequests() {
+    public void retrieveFriendRequests(final View view) {
         Log.d(TAG, "retrieveFriendRequests entered");
 
         // creating search query
@@ -84,15 +92,12 @@ public class FriendsFragmentTabRequests extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-
                         userId = dsp.getKey().toString();
                         retreiveUserDetails();
-
                     }
                 } else {
-                    // user has no pending requests in database
-                    Toast.makeText(getActivity(), "No pending requests to show" ,Toast.LENGTH_SHORT).show();
-
+                    // user has no pending requests in database, show message
+                    txtNoPendingFriends.setVisibility(view.VISIBLE);
                 }
             }
             @Override

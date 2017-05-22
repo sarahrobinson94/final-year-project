@@ -316,19 +316,34 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         if (id == R.id.nav_find) {
             homeFragment = new HomeFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, homeFragment)
+                    //.addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_favs) {
             favouritesFragment = new FavouritesFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, favouritesFragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, favouritesFragment)
+                    //.addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_friends) {
             friendsFragment = new FriendsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, friendsFragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, friendsFragment)
+                    //.addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_events) {
             eventsFragment = new EventsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, eventsFragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, eventsFragment)
+                    //.addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_settings) {
             settingsFragment = new SettingsFragment();
-            fragmentManager.beginTransaction().replace(R.id.content_main, settingsFragment).commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, settingsFragment)
+                    //.addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
             firebaseAuth.signOut();

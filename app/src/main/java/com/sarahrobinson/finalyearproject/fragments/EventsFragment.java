@@ -1,6 +1,7 @@
 package com.sarahrobinson.finalyearproject.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -9,11 +10,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
+
+import static android.R.id.tabhost;
 
 public class EventsFragment extends Fragment implements View.OnClickListener{
 
@@ -22,7 +27,8 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private FragmentTabHost tabHost;
+    private FragmentTabHost mTabHost;
+
 
     public EventsFragment() {
         // Required empty public constructor
@@ -57,13 +63,30 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         getActivity().setTitle("Events");
 
         // setting up tabs
-        tabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
-        tabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_events_list);
+        mTabHost = (FragmentTabHost)rootView.findViewById(tabhost);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), android.R.id.tabcontent);
 
-        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("UPCOMING"),
+        mTabHost.addTab(
+                mTabHost.newTabSpec("tab1").setIndicator("UPCOMING", null),
                 EventsFragmentTabUpcoming.class, null);
-        tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("PENDING"),
+        mTabHost.addTab(
+                mTabHost.newTabSpec("tab2").setIndicator("PENDING", null),
                 EventsFragmentTabPending.class, null);
+
+        // setting tab text colours
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                // unselected tabs
+                for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+                    TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+                    tv.setTextColor(Color.parseColor("#ADADAD"));
+                }
+                // selected tab
+                TextView tv = (TextView) mTabHost.getCurrentTabView().findViewById(android.R.id.title);
+                tv.setTextColor(Color.parseColor("#666666"));
+            }
+        });
 
         // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
@@ -77,6 +100,21 @@ public class EventsFragment extends Fragment implements View.OnClickListener{
         menu.findItem(R.id.action_settings).setVisible(false);
         // inflate event action item
         inflater.inflate(R.menu.action_create_event, menu);
+    }
+
+    @Override
+    public void onResume() {
+        // setting initial tab text colour
+        for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++)
+        {
+            // unselected tabs
+            TextView tvUnselected = (TextView)mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tvUnselected.setTextColor(Color.parseColor("#ADADAD"));
+            // selected tab
+            TextView tvSelected = (TextView) mTabHost.getCurrentTabView().findViewById(android.R.id.title); // selected tab
+            tvSelected.setTextColor(Color.parseColor("#666666"));
+        }
+        super.onResume();
     }
 
     @Override

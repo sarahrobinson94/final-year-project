@@ -93,7 +93,7 @@ public class FindFriendsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        // setting inital tab text colour
+        // setting initial tab text colour
         for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++)
         {
             // unselected tabs

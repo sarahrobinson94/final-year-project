@@ -134,8 +134,6 @@ public class FriendsFragmentTabRequests extends Fragment {
                 // getting pending friend details
                 User user = dataSnapshot.getValue(User.class);
 
-                User user1 = dataSnapshot.
-
                 userName = (user.getName());
                 userEmail = (user.getEmail());
                 userImg = (user.getImage());

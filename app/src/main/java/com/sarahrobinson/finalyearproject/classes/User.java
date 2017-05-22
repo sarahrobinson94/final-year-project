@@ -1,6 +1,7 @@
 package com.sarahrobinson.finalyearproject.classes;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sarahrobinson on 19/03/2017.
@@ -12,14 +13,14 @@ public class User {
     private String name;
     private String email;
     private String image;
-    private List<String> favouritePlaces;
-    private List<String> events;
+    private Map<String, Object> favouritePlaces;
+    private Map<String, Object> events;
 
     public User() {
 
     }
 
-    public User(String id, String name, String email, String image, List<String> favouritePlaces, List<String> events) {
+    public User(String id, String name, String email, String image, Map<String, Object> favouritePlaces, Map<String, Object> events) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -60,19 +61,19 @@ public class User {
         this.image = image;
     }
 
-    public List<String> getFavouritePlaces() {
+    public Map<String, Object> getFavouritePlaces() {
         return favouritePlaces;
     }
 
-    public void setFavouritePlaces(List<String> favouritePlaces) {
+    public void setFavouritePlaces(Map<String, Object> favouritePlaces) {
         this.favouritePlaces = favouritePlaces;
     }
 
-    public List<String> getEvents() {
+    public Map<String, Object> getEvents() {
         return events;
     }
 
-    public void setEvents(List<String> events) {
+    public void setEvents(Map<String, Object> events) {
         this.events = events;
     }
 

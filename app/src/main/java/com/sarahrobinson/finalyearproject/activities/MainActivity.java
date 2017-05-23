@@ -51,6 +51,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
@@ -113,8 +114,10 @@ public class MainActivity extends AppCompatActivity implements
     public static String selectedFavPlaceId;
     public static String selectedEventId;
 
-    // to store a list of friends (active users for now)
+    // to store a list of friends for event invitee modal
     private ArrayList<String> friendIdList = new ArrayList<>();
+    // friend details
+    private String friendId, friendName, friendPhoto;
 
     // to store id of selected friend request user
     String friendRequestUserId;
@@ -733,19 +736,17 @@ public class MainActivity extends AppCompatActivity implements
     public void retrieveFriends(final AlertDialog alertDialog){
         Log.d(TAG, "retrieveFriends entered");
 
-        final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference friendsRef = databaseRef.child("friendships").child(currentUserId);
+        Query queryFriends = databaseRef.child("friendships").child(currentUserId)
+                .orderByChild("requestStatus").equalTo("accepted");
 
-        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        queryFriends.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    // TODO: 23/05/2017 check if friendship status is accepted, then...
-                        Log.d(TAG, "Getting friends by id");
-                        // adding users ids to list
-                        friendIdList.add(String.valueOf(snapshot.getKey()));
-                        Log.d(TAG, "Friend ids: " + friendIdList);
+                    Log.d(TAG, "Getting friends by id");
+                    // adding users ids to list
+                    friendIdList.add(String.valueOf(snapshot.getKey()));
+                    Log.d(TAG, "Friend ids: " + friendIdList);
                 }
                 // continue dialog creation
                 setStrValues(alertDialog);
@@ -759,13 +760,27 @@ public class MainActivity extends AppCompatActivity implements
     // getting each friend's id and name
     private void setStrValues(AlertDialog alertDialog){
         for (int i=0; i<friendIdList.size(); i++){
-            // TODO: 23/05/2017 get the friend's name (this doesn't work)...
-                // get user id and name
-                String friendId = friendIdList.get(i);
-                String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
 
-            // inflate list with friend item
-            inflateFriendListItem(friendId, friendName);
+            friendId = friendIdList.get(i);
+            DatabaseReference eventRef = databaseRef.child("users").child(friendId);
+
+            eventRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, "Getting friend details");
+                        // getting and storing friend details
+                        User user = dataSnapshot.getValue(User.class);
+                        friendName = user.getName();
+                        friendPhoto = user.getImage();
+                        // inflate list with friend item
+                        inflateFriendListItem(friendId, friendName);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
         // show alert dialog when everything else is complete
         progressDialog.dismiss();

@@ -53,9 +53,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
+import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.Friendship;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.classes.User;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragment;
 import com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabPending;
@@ -731,17 +733,19 @@ public class MainActivity extends AppCompatActivity implements
     public void retrieveFriends(final AlertDialog alertDialog){
         Log.d(TAG, "retrieveFriends entered");
 
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersRef = databaseRef.child("users");
+        final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference friendsRef = databaseRef.child("friendships").child(currentUserId);
 
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "Getting active users by id");
-                    // adding users ids to list
-                    friendIdList.add(String.valueOf(snapshot.getKey()));
-                    Log.d(TAG, "Active users: " + friendIdList);
+
+                    // TODO: 23/05/2017 check if friendship status is accepted, then...
+                        Log.d(TAG, "Getting friends by id");
+                        // adding users ids to list
+                        friendIdList.add(String.valueOf(snapshot.getKey()));
+                        Log.d(TAG, "Friend ids: " + friendIdList);
                 }
                 // continue dialog creation
                 setStrValues(alertDialog);
@@ -755,9 +759,10 @@ public class MainActivity extends AppCompatActivity implements
     // getting each friend's id and name
     private void setStrValues(AlertDialog alertDialog){
         for (int i=0; i<friendIdList.size(); i++){
-            // get user id and name
-            String friendId = friendIdList.get(i);
-            String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
+            // TODO: 23/05/2017 get the friend's name (this doesn't work)...
+                // get user id and name
+                String friendId = friendIdList.get(i);
+                String friendName = firebaseRef.child("users").child(friendId).child("name").toString();
 
             // inflate list with friend item
             inflateFriendListItem(friendId, friendName);

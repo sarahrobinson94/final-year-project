@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -61,8 +62,9 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     // views
     private EditText txtEventName, txtEventDsc, txtEventLocation;
-    private TextView tvEventDate, tvEventTime;
-    private Button btnDatePicker, btnTimePicker, btnInvite, btnEventSaveEdit, btnEventCancel;
+    private TextView tvEventDate, tvEventTime, tvNoAttendees;
+    private ImageView btnDatePicker, btnTimePicker;
+    private Button btnInvite, btnEventSaveEdit, btnEventCancel;
 
     // for datetime pickers
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -108,14 +110,15 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         //
         // editTexts
         txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
-        txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
+        //txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
         txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
         // textViews
         tvEventDate = (TextView)rootView.findViewById(R.id.tvEventDate);
         tvEventTime = (TextView)rootView.findViewById(R.id.tvEventTime);
+        tvNoAttendees = (TextView)rootView.findViewById(R.id.tvNoEventAttendees);
         // buttons
-        btnDatePicker = (Button)rootView.findViewById(R.id.btnEventDatePicker);
-        btnTimePicker = (Button)rootView.findViewById(R.id.btnEventTimePicker);
+        btnDatePicker = (ImageView)rootView.findViewById(R.id.btnEventDatePicker);
+        btnTimePicker = (ImageView)rootView.findViewById(R.id.btnEventTimePicker);
         btnInvite = (Button)rootView.findViewById(R.id.btnInvite);
         btnEventSaveEdit = (Button)rootView.findViewById(R.id.eventButtonSaveEdit);
         btnEventCancel = (Button)rootView.findViewById(R.id.eventButtonCancel);
@@ -232,11 +235,13 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             strEventName = "";
         }
         // description
+        /*
         if (!txtEventDsc.getText().toString().equals(null)) {
             strEventDsc = txtEventDsc.getText().toString();
         } else {
             strEventDsc = "";
         }
+        */
         // date
         if (!tvEventDate.getText().toString().equals(null)) {
             strEventDate = tvEventDate.getText().toString();
@@ -352,7 +357,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         btnEventSaveEdit.setText("SAVE");
         // make editTexts editable
         txtEventName.setEnabled(true);
-        txtEventDsc.setEnabled(true);
+        //txtEventDsc.setEnabled(true);
         txtEventLocation.setEnabled(true);
         btnDatePicker.setVisibility(view.VISIBLE);
         btnTimePicker.setVisibility(view.VISIBLE);
@@ -364,7 +369,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         btnEventSaveEdit.setText("EDIT");
         // make editTexts not editable
         txtEventName.setEnabled(false);
-        txtEventDsc.setEnabled(false);
+        //txtEventDsc.setEnabled(false);
         txtEventLocation.setEnabled(false);
         btnDatePicker.setVisibility(view.GONE);
         btnTimePicker.setVisibility(view.GONE);
@@ -383,7 +388,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                 // getting and displaying selected event details
                 Event event = dataSnapshot.getValue(Event.class);
                 txtEventName.setText(event.getName());
-                txtEventDsc.setText(event.getDescription());
+                //txtEventDsc.setText(event.getDescription());
                 // TODO: 30/04/2017 set date & time pickers to selected date/time
                 tvEventDate.setText(event.getDate());
                 tvEventTime.setText(event.getTime());

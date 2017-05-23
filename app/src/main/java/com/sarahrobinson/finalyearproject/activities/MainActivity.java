@@ -18,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,12 +37,9 @@ import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -75,8 +70,6 @@ import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,7 +77,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static android.R.id.message;
 import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.editTextSearchLocation;
 
 public class MainActivity extends AppCompatActivity implements
@@ -782,7 +774,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // inflating layout to be used as a list item
         LayoutInflater inflater = LayoutInflater.from(this);
-        View listItem = inflater.inflate(R.layout.event_invitee_wrapper, layoutFriendList, false);
+        View listItem = inflater.inflate(R.layout.dialog_event_invitee_wrapper, layoutFriendList, false);
 
         // adding inflated item to list
         layoutFriendList.addView(listItem, layoutFriendList.getChildCount() - 1);

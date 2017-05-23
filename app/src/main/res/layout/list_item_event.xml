@@ -93,13 +93,11 @@
 
             <Button
                 android:id="@+id/eventsListItemBtnMore"
-                android:layout_width="match_parent"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/lightGrey"
-                android:textColor="@color/grey"
-                android:textStyle="bold"
-                android:textSize="12dp"
-                android:text="View"
+                android:layout_gravity="right"
+                android:background="@drawable/ic_chevron_right_24dp"
+                android:backgroundTint="@color/grey"
                 android:onClick="eventOnClick"/>
 
         </LinearLayout>

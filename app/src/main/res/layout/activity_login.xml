@@ -99,12 +99,16 @@
 
         </LinearLayout>
 
+        <!-- forgot password -->
         <TextView
             android:id="@+id/btnResetPassword"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Forgot Password?" />
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="54dp"
+            android:layout_marginRight="40dp"
+            android:text="Forgot Password?"
+            android:textSize="14dp"/>
 
         <!-- login -->
         <Button
@@ -114,20 +118,43 @@
             android:background="@drawable/button_standard"
             android:backgroundTint="@color/white"
             android:text="LOG IN"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             style="@style/BtnWhite" />
 
-        <!-- facebook login -->
-        <Button
-            android:id="@+id/btnFbLoginLarge"
-            android:layout_width="280dp"
+        <TextView
+            android:id="@+id/txtLoginWithFbOrGoogle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_fb_login_large"
-            android:text="Log in with Facebook"
-            android:layout_marginBottom="10dp"
-            style="@style/BtnSocialLoginLarge" />
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="or log in with:"
+            android:textSize="14dp"/>
 
-        <!-- google login -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- facebook login -->
+            <Button
+                android:id="@+id/btnFbLoginLarge"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_fb_blue"
+                android:layout_marginRight="10dp" />
+
+            <!-- google login -->
+            <Button
+                android:id="@+id/btnGoogleLoginLarge"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_google_red"
+                android:layout_marginLeft="10dp" />
+
+        </LinearLayout>
+
+        <!--
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btnGoogleLoginLarge"
             android:layout_width="310dp"
@@ -136,6 +163,7 @@
             android:paddingTop="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
+        -->
 
         <!--
         <Button

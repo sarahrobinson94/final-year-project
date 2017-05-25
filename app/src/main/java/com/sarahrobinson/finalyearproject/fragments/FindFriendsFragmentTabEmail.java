@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentLocation;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
@@ -50,10 +52,13 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     private Button btnFindEmailUser;
 
     private String strSearchedEmail;
-    private String searchedEmailStatusInDb;
+    private String strFriendship;
     private String strSearchedUserId;
     private String strSearchedUserName;
     private String strSearchedUserImg;
+
+    private Pattern validEmailRegex =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     public FindFriendsFragmentTabEmail() {
         // Required empty public constructor
@@ -83,70 +88,86 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
         return rootView;
     }
 
+    // method for validating entered email,
+    // checking if it exists in db,
+    // and displaying the user if appropriate
     private void findEmailUser() {
 
         // getting searched email
         strSearchedEmail = txtEmailSearch.getText().toString().trim();
         Log.d(TAG, "email " + strSearchedEmail);
 
-        // checking if email has been entered
+        // checking searched email
         if (strSearchedEmail.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter an email address" ,Toast.LENGTH_SHORT).show();
+            // no text entered
+            Toast.makeText(getActivity(), "Please enter an email address" ,Toast.LENGTH_LONG).show();
+        } else if (!isValidEmailAddress(strSearchedEmail)) {
+            // invalid email address entered
+            Toast.makeText(getActivity(), "Please enter a valid email address" ,Toast.LENGTH_LONG).show();
         } else {
+            // valid email address entered, creating db search query
+            Query query1 = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
 
-            // creating search query
-            Query query = databaseRef.child("users").orderByChild("email").equalTo(strSearchedEmail);
-
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+            query1.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    // checking if searched email exists in the database
                     if (dataSnapshot.exists()) {
+                        // searched email exists in the database
                         Log.d(TAG, "email exists");
-
-                        for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                            strSearchedUserId = dsp.getKey().toString();
-
-                            checkSearchedEmail();
-
+                        // getting search user's id
+                        for (final DataSnapshot dsp1 : dataSnapshot.getChildren()) {
+                            strSearchedUserId = dsp1.getKey().toString();
+                            // if searched email is the current user's email address, show message
                             if (strSearchedUserId.equals(currentUserId)) {
-                                // searched email is the current user's email address
                                 Toast.makeText(getActivity(), "Searched email matches the email address" +
-                                        "of this account", Toast.LENGTH_SHORT).show();
-                            } else if (searchedEmailStatusInDb.equals("pending")) {
-                                // searched email is the current user's pending friend
-                                Toast.makeText(getActivity(), "Searched user is already a pending" +
-                                        "friend", Toast.LENGTH_SHORT).show();
-                            } else if (searchedEmailStatusInDb.equals("accepted")) {
-                                // searched email is the current user's friend
-                                Toast.makeText(getActivity(), "Searched user is already on your" +
-                                        "friends list", Toast.LENGTH_SHORT).show();
+                                        " of this account", Toast.LENGTH_LONG).show();
+                            // if searched email is not the current user's email address, continue
+                            // and check if a friendship already exists
                             } else {
-
-                                if (dsp.child("image").exists()) {
-                                    strSearchedUserImg = dsp.child("image").getValue().toString();
-                                    Picasso.with(getContext())
-                                            .load(strSearchedUserImg)
-                                            .transform(new CircleTransform())
-                                            .into(imgEmailUserImg);
-                                }
-
-                                strSearchedUserName = dsp.child("name").getValue().toString();
-
-                                Log.d(TAG, "id " + strSearchedUserId);
-                                Log.d(TAG, "name " + strSearchedUserName);
-                                Log.d(TAG, "imgUrl " + strSearchedUserImg);
-
-                                // populate views
-                                tvEmailUserId.setText(strSearchedUserId);
-                                tvEmailUserName.setText(strSearchedUserName);
-                                // show user
-                                layoutEmailUser.setVisibility(View.VISIBLE);
+                                // checking if friendship exists in db
+                                Query query2 = databaseRef.child("friendships").child(currentUserId)
+                                        .child(strSearchedUserId);
+                                query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            // friendship already exists with searched email user
+                                            Friendship friendship = dataSnapshot.getValue(Friendship.class);
+                                            // checking friendship status
+                                            if (friendship.getRequestStatus().equals("pending")) {
+                                                Toast.makeText(getActivity(), "User is already" +
+                                                        " a pending friend", Toast.LENGTH_LONG).show();
+                                            } else if (friendship.getRequestStatus().equals("accepted")) {
+                                                Toast.makeText(getActivity(), "User is already" +
+                                                        " on your friends list", Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            // friendship doesn't exist with searched email user
+                                            // populate user id, name & image views
+                                            if (dsp1.child("image").exists()) {
+                                                strSearchedUserImg = dsp1.child("image").getValue().toString();
+                                                Picasso.with(getContext())
+                                                        .load(strSearchedUserImg)
+                                                        .transform(new CircleTransform())
+                                                        .into(imgEmailUserImg);
+                                            }
+                                            strSearchedUserName = dsp1.child("name").getValue().toString();
+                                            tvEmailUserId.setText(strSearchedUserId);
+                                            tvEmailUserName.setText(strSearchedUserName);
+                                            // show user
+                                            layoutEmailUser.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
                             }
                         }
                     } else {
                         // searched email does not exist in database
-                        Toast.makeText(getActivity(), "Email not found" ,Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getActivity(), "User not found" ,Toast.LENGTH_LONG).show();
                     }
                 }
                 @Override
@@ -156,54 +177,10 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
         }
     }
 
-    private String checkSearchedEmail() {
-
-        // initially setting variable to non-existent
-        searchedEmailStatusInDb = "non-existent";
-
-        // creating search query to check if searched user is pending friend
-        Query queryPending = databaseRef.child("friendships").child(currentUserId)
-                .orderByChild("requestStatus").equalTo("pending");
-
-        queryPending.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                        String userId = dsp.getKey().toString();
-                        if (userId.equals(strSearchedUserId)) {
-                            searchedEmailStatusInDb = "pending";
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        // creating search query to check if searched user is accepted friend
-        Query queryAccepted = databaseRef.child("friendships").child(currentUserId)
-                .orderByChild("requestStatus").equalTo("accepted");
-
-        queryAccepted.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                        String userId = dsp.getKey().toString();
-                        if (userId == strSearchedUserId) {
-                            searchedEmailStatusInDb = "accepted";
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        return searchedEmailStatusInDb;
+    // method for validating email address format
+    private boolean isValidEmailAddress(String email) {
+        Matcher matcher = validEmailRegex .matcher(email);
+        return matcher.find();
     }
 
     @Override

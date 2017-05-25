@@ -143,6 +143,10 @@ public class FriendsFragmentTabFriends extends Fragment {
         // populating views with user details
         tvUserName.setText(name);
         //tvUserEmail.setText(email);
+        // handing both null & empty string images
+        if (img == null) {
+            img = "";
+        }
         if (!img.isEmpty()) {
             Picasso.with(getContext())
                     .load(img)

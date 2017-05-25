@@ -23,7 +23,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="20dp"
+            android:paddingRight="10dp"
             android:paddingTop="20dp"
             android:paddingBottom="20dp">
 
@@ -45,6 +45,13 @@
                 android:hint="Find user by email"
                 android:textSize="16dp"
                 android:textColor="@color/grey"/>
+
+            <Button
+                android:id="@+id/btnClearSearchField"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_cancel_24dp"
+                android:backgroundTint="@color/lightGrey"/>
 
         </LinearLayout>
 
@@ -76,7 +83,8 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/circle_white"/>
+                    android:background="@drawable/circle"
+                    android:backgroundTint="@color/lightGrey"/>
 
             </RelativeLayout>
 

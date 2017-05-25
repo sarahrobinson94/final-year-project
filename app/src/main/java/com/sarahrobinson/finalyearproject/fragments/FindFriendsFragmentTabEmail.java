@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,14 +46,15 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
     private static final String TAG = "TabEmail ******* ";
 
     private EditText txtEmailSearch;
+    private Button btnClearSearchField;
     private LinearLayout layoutEmailUser;
     private ImageView imgEmailUserImg;
     private TextView tvEmailUserId;
     private TextView tvEmailUserName;
+    private CheckBox chkBxEmailUser;
     private Button btnFindEmailUser;
 
     private String strSearchedEmail;
-    private String strFriendship;
     private String strSearchedUserId;
     private String strSearchedUserName;
     private String strSearchedUserImg;
@@ -73,16 +75,25 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
 
         // getting views
         txtEmailSearch = (EditText)rootView.findViewById(R.id.editTextFindEmailUser);
+        btnClearSearchField = (Button)rootView.findViewById(R.id.btnClearSearchField);
         layoutEmailUser = (LinearLayout) rootView.findViewById(R.id.tabLayoutEmailUser);
         imgEmailUserImg = (ImageView)rootView.findViewById(R.id.tabEmailUserImg);
         tvEmailUserId = (TextView) rootView.findViewById(R.id.tabEmailUserId);
         tvEmailUserName = (TextView) rootView.findViewById(R.id.tabEmailUserName);
+        chkBxEmailUser = (CheckBox)rootView.findViewById(R.id.tabEmailUserAddChkBox);
         btnFindEmailUser = (Button) rootView.findViewById(R.id.btnFindEmailUser);
 
         // hiding search result layout until user is found
         layoutEmailUser.setVisibility(View.GONE);
 
-        // find user button onclick listener
+        // hiding clear button
+        //btnClearSearchField.setVisibility(View.VISIBLE);
+
+        // clearing previous search input
+        txtEmailSearch.setText("");
+
+        // onclick listeners
+        btnClearSearchField.setOnClickListener(this);
         btnFindEmailUser.setOnClickListener(this);
 
         return rootView;
@@ -156,6 +167,8 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                                             strSearchedUserName = dsp1.child("name").getValue().toString();
                                             tvEmailUserId.setText(strSearchedUserId);
                                             tvEmailUserName.setText(strSearchedUserName);
+                                            chkBxEmailUser.setChecked(false);
+                                            chkBxEmailUser.setEnabled(true);
                                             // show user
                                             layoutEmailUser.setVisibility(View.VISIBLE);
                                         }
@@ -189,6 +202,8 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
         if (view == btnFindEmailUser) {
             Log.d(TAG, "btnFindEmailUser clicked");
             findEmailUser();
+        } else if (view == btnClearSearchField) {
+            txtEmailSearch.setText("");
         }
     }
 }

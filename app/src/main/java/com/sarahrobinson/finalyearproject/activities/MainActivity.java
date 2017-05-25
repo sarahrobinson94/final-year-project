@@ -683,9 +683,8 @@ public class MainActivity extends AppCompatActivity implements
         if (chkFriend.isChecked()) {
             // send user a friend request
             sendFriendRequest();
-        } else {
-            // undo friend request
-            deleteFriendRequest();
+            // disable uncheck
+            chkFriend.setEnabled(false);
         }
     }
 

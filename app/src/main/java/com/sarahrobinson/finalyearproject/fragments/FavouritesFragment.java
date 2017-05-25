@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.R;
+import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
@@ -151,9 +152,11 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         TextView txtId = (TextView) listItem.findViewById(R.id.favsListItemPlaceId);
 
         // populating views with place details
-        Picasso.with(getContext())
-                .load(image)
-                .into(imgIcon);
+        if (!image.isEmpty()) {
+            Picasso.with(getContext())
+                    .load(image)
+                    .into(imgIcon);
+        }
         txtName.setText(name);
         txtAddress.setText(address);
         txtId.setText(id);

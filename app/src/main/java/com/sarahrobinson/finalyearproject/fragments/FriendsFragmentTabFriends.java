@@ -143,10 +143,12 @@ public class FriendsFragmentTabFriends extends Fragment {
         // populating views with user details
         tvUserName.setText(name);
         //tvUserEmail.setText(email);
-        Picasso.with(getContext())
-                .load(img)
-                .transform(new CircleTransform())
-                .into(ivUserImg);
+        if (!img.isEmpty()) {
+            Picasso.with(getContext())
+                    .load(img)
+                    .transform(new CircleTransform())
+                    .into(ivUserImg);
+        }
         tvUserId.setText(userId);
 
         // hiding checkbox

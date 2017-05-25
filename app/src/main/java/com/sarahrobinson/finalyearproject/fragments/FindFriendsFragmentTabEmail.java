@@ -147,6 +147,7 @@ public class FindFriendsFragmentTabEmail extends Fragment implements View.OnClic
                                             // populate user id, name & image views
                                             if (dsp1.child("image").exists()) {
                                                 strSearchedUserImg = dsp1.child("image").getValue().toString();
+                                                if (!strSearchedUserImg.isEmpty())
                                                 Picasso.with(getContext())
                                                         .load(strSearchedUserImg)
                                                         .transform(new CircleTransform())

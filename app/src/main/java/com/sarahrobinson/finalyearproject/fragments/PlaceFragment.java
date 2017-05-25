@@ -117,9 +117,11 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
                                   String phoneNo, String website) {
         Log.d(TAG, "ShowPlaceDetails entered");
         // load image from url
-        Picasso.with(getContext())
-                .load(image)
-                .into(ivPlaceIcon);
+        if (!image.isEmpty()) {
+            Picasso.with(getContext())
+                    .load(image)
+                    .into(ivPlaceIcon);
+        }
         // set string details
         tvPlaceType.setText(type);
         tvPlaceName.setText(name);

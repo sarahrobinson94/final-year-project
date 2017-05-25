@@ -1,27 +1,35 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="com.sarahrobinson.finalyearproject.fragments.EventsFragmentTabPending">
 
-    <!-- Pending events layout (inflated with list item layouts) -->
-    <LinearLayout
-        android:id="@+id/layoutPendingEventsList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <!-- message to show if no pending events -->
-    <TextView
-        android:id="@+id/txtNoPendingEvents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="30dp"
-        android:textSize="18dp"
-        android:textColor="@color/lightGrey"
-        android:textAlignment="center"
-        android:text="You have no pending events."
-        />
+        <!-- Pending events layout (inflated with list item layouts) -->
+        <LinearLayout
+            android:id="@+id/layoutPendingEventsList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="25dp" />
 
-</FrameLayout>
+        <!-- message to show if no pending events -->
+        <TextView
+            android:id="@+id/txtNoPendingEvents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="30dp"
+            android:textSize="18dp"
+            android:textColor="@color/lightGrey"
+            android:textAlignment="center"
+            android:text="You have no pending events."
+            />
+
+    </RelativeLayout>
+
+</ScrollView>

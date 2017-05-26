@@ -74,9 +74,9 @@ public class GetPlacesData extends AsyncTask<Object, String, String> {
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(thePlaceName);
-            markerOptions.snippet(thePlaceId);
+            markerOptions.snippet(thePlaceAddress);
             //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            googleMap.addMarker(markerOptions);
+            googleMap.addMarker(markerOptions).setTag(thePlaceId);
 
             //move map camera
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

@@ -55,8 +55,6 @@ public class MapFragment extends Fragment implements
     public static String thePlaceId, thePlaceName, thePlaceAddress, thePlacePhoneNo;
     public static String selectedPlaceId;
 
-    private FloatingActionButton fabMap;
-
     public MapFragment() {
         // Required empty public constructor
     }
@@ -71,18 +69,6 @@ public class MapFragment extends Fragment implements
         getActivity().setTitle("Results");
 
         fragmentManager = getFragmentManager();
-
-        fabMap = (FloatingActionButton)rootView.findViewById(R.id.fabMap);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlacesListFragment placesListFragment = new PlacesListFragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_main, placesListFragment)
-                        //.addToBackStack(null)
-                        .commit();
-            }
-        });
 
         return rootView;
     }
@@ -132,7 +118,7 @@ public class MapFragment extends Fragment implements
             public void onInfoWindowClick(Marker marker) {
                 Log.d(TAG, "info window clicked");
                 selectedMarker = marker;
-                selectedPlaceId = selectedMarker.getSnippet();
+                selectedPlaceId = selectedMarker.getTag().toString();
                 fromFragmentString = "MapFragment";
                 placeFragment = new PlaceFragment();
                 fragmentManager.beginTransaction()

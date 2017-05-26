@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
@@ -46,11 +47,13 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private FragmentActivity placeFragmentContext;
     private Fragment fromFragment;
+
     private String placeId;
+    private boolean isFavourite;
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     private ImageView ivPlaceIcon;
-    private Button btnFavourite, btnCall;
+    private LinearLayout btnCall, btnSuggest, btnFavourite;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -84,13 +87,17 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         tvPlacePhoneNo = (TextView)rootView.findViewById(R.id.textViewPlacePhoneNumber);
         tvPlaceWebsite = (TextView)rootView.findViewById(R.id.textViewPlaceWebsite);
 
-        // favourite button
-        btnFavourite = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
-        btnFavourite.setOnClickListener(this);
-
         // call button
-        btnCall = (Button)rootView.findViewById(R.id.buttonCallPlace);
+        btnCall = (LinearLayout)rootView.findViewById(R.id.btnCallPlace);
         btnCall.setOnClickListener(this);
+
+        // suggest button
+        btnSuggest = (LinearLayout)rootView.findViewById(R.id.btnSuggestPlace);
+        btnSuggest.setOnClickListener(this);
+
+        // favourite button
+        btnFavourite = (LinearLayout)rootView.findViewById(R.id.btnFavouritePlace);
+        btnFavourite.setOnClickListener(this);
 
         // retrieving place details based on place id
         if (fromFragmentString == "MapFragment") {
@@ -99,6 +106,9 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
             placeId = selectedFavPlaceId;
         }
         ((MainActivity)getActivity()).getDetails(placeId, fromFragment);
+
+        // initially setting isFavourite to false
+        isFavourite = false;
 
         // check if place is in favourites
         checkIfFavourite();
@@ -116,10 +126,10 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    btnFavourite.setText("Remove from favourites");
+                    isFavourite = true;
                 }
                 else {
-                    btnFavourite.setText("Add to favourites");
+                    isFavourite = false;
                 }
             }
 
@@ -155,18 +165,20 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         // TODO: 18/04/2017 change to switch statements (in all fragments/activities)
         if (view == btnFavourite) {
-            if (btnFavourite.getText() == "Add to favourites") {
+            if (isFavourite == false) {
                 // add to favourites list
                 firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
                         child(placeId).setValue(true);
-                btnFavourite.setText("Remove from favourites");
+                // set isFavourite to true
+                isFavourite = true;
                 // show success toast
                 Toast.makeText(getActivity(), "Added to favourites", Toast.LENGTH_SHORT).show();
-            } else if (btnFavourite.getText() == "Remove from favourites") {
+            } else if (isFavourite == true) {
                 // remove from favourites list
                 firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
                         child(placeId).removeValue();
-                btnFavourite.setText("Add to favourites");
+                // set isFavourite to false
+                isFavourite = false;
                 // show success toast
                 Toast.makeText(getActivity(), "Removed from favourites", Toast.LENGTH_SHORT).show();
             }

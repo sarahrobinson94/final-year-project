@@ -13,43 +13,43 @@
             android:id="@+id/first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:orientation="horizontal"
-            android:weightSum="8">
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/imageViewPlaceIcon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_margin="10dp"
-                android:layout_weight="0.1"/>
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="5dp"
+                android:backgroundTint="@color/grey"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:layout_weight="7.9">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textViewPlaceName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center"
-                    android:textSize="16dp"
-                    android:textColor="@color/grey" />
+                    android:paddingBottom="5dp"
+                    android:gravity="bottom"
+                    android:textSize="22dp"
+                    android:textColor="@color/grey"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/textViewPlaceType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center"
+                    android:gravity="top"
                     android:textSize="16dp"
-                    android:textColor="@color/grey" />
+                    android:textColor="@color/lightGrey" />
 
             </LinearLayout>
 
@@ -62,34 +62,95 @@
             android:layout_below="@id/first"
             android:padding="15dp"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:weightSum="3"
+            android:background="@color/colorPrimary">
 
-            <Button
-                android:id="@+id/buttonCallPlace"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+            <LinearLayout
+                android:id="@+id/btnCallPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="16dp"
-                android:textColor="@color/white" />
+                android:orientation="vertical"
+                android:gravity="center">
 
-            <Button
-                android:id="@+id/buttonAddToFavourites"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="16dp"
-                android:textColor="@color/white" />
+                <ImageView
+                    android:id="@+id/imageViewCallPlace"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/ic_phone_24dp"
+                    android:backgroundTint="@color/white"/>
 
-            <Button
-                android:id="@+id/buttonSuggest"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                <TextView
+                    android:id="@+id/textViewCallPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="center"
+                    android:text="CALL"
+                    android:textSize="14dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnSuggestPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="16dp"
-                android:textColor="@color/white" />
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewSuggestPlace"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/ic_lightbulb_outline_24dp"
+                    android:backgroundTint="@color/white"/>
+
+                <TextView
+                    android:id="@+id/textViewSuggestPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="center"
+                    android:text="SUGGEST"
+                    android:textSize="14dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnFavouritePlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewFavouritePlace"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/ic_favorite_fill_24dp"
+                    android:backgroundTint="@color/white"/>
+
+                <TextView
+                    android:id="@+id/textViewFavouritePlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="center"
+                    android:text="FAVOURITE"
+                    android:textSize="14dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -99,27 +160,32 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/second"
             android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:backgroundTint="@color/colorPrimary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center_vertical"
+                android:paddingBottom="15dp">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="30dp"
                     android:background="@drawable/ic_menu_location_24dp"
                     android:backgroundTint="@color/grey"/>
 
                 <TextView
                     android:id="@+id/textViewPlaceAddress"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:gravity="center"
                     android:textSize="16dp"
                     android:textColor="@color/grey" />
 
@@ -129,13 +195,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center_vertical"
+                android:paddingBottom="15dp">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_menu_location_24dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/ic_phone_24dp"
                     android:backgroundTint="@color/grey"/>
 
                 <TextView
@@ -144,7 +212,6 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:gravity="center"
                     android:textSize="16dp"
                     android:textColor="@color/grey" />
 
@@ -154,13 +221,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_menu_location_24dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/ic_www_24dp"
                     android:backgroundTint="@color/grey"/>
 
                 <TextView
@@ -169,7 +237,6 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:gravity="center"
                     android:textSize="16dp"
                     android:textColor="@color/grey" />
 

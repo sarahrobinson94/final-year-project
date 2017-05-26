@@ -5,90 +5,178 @@
     android:layout_height="match_parent"
     tools:context="com.sarahrobinson.finalyearproject.fragments.PlaceFragment">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageViewPlaceIcon"
+        <LinearLayout
+            android:id="@+id/first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"/>
+            android:padding="15dp"
+            android:orientation="horizontal"
+            android:weightSum="8">
 
-        <TextView
-            android:id="@+id/textViewPlaceType"
+            <ImageView
+                android:id="@+id/imageViewPlaceIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="10dp"
+                android:layout_weight="0.1"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:layout_weight="7.9">
+
+                <TextView
+                    android:id="@+id/textViewPlaceName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/grey" />
+
+                <TextView
+                    android:id="@+id/textViewPlaceType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/grey" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/second"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/grey" />
+            android:layout_below="@id/first"
+            android:padding="15dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-        <TextView
-            android:id="@+id/textViewPlaceName"
+            <Button
+                android:id="@+id/buttonCallPlace"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/buttonAddToFavourites"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/buttonSuggest"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/third"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/grey" />
+            android:layout_below="@id/second"
+            android:orientation="vertical"
+            android:backgroundTint="@color/colorPrimary">
 
-        <TextView
-            android:id="@+id/textViewPlaceAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/grey" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
 
-        <TextView
-            android:id="@+id/textViewPlacePhoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/grey" />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_menu_location_24dp"
+                    android:backgroundTint="@color/grey"/>
 
-        <TextView
-            android:id="@+id/textViewPlaceWebsite"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/grey" />
+                <TextView
+                    android:id="@+id/textViewPlaceAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/grey" />
 
-        <Button
-            android:id="@+id/buttonAddToFavourites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:textColor="@color/white" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/buttonCallPlace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center"
-            android:text="Call"
-            android:textSize="16dp"
-            android:textColor="@color/white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
 
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_menu_location_24dp"
+                    android:backgroundTint="@color/grey"/>
+
+                <TextView
+                    android:id="@+id/textViewPlacePhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/grey" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_menu_location_24dp"
+                    android:backgroundTint="@color/grey"/>
+
+                <TextView
+                    android:id="@+id/textViewPlaceWebsite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/grey" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </ScrollView>

@@ -78,6 +78,17 @@
             android:textSize="16dp"
             android:textColor="@color/white" />
 
+        <Button
+            android:id="@+id/buttonCallPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:text="Call"
+            android:textSize="16dp"
+            android:textColor="@color/white" />
+
     </LinearLayout>
 
 </ScrollView>

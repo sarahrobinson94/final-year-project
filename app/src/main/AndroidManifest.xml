@@ -7,7 +7,7 @@
 
     <!-- to use device internet connection -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- TO access device location -->
+    <!-- to access device location -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.B00636922.findapharmacy.permission.MAPS_RECEIVE" />
@@ -16,6 +16,7 @@
     <!-- to determine location using GPS (more precise) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

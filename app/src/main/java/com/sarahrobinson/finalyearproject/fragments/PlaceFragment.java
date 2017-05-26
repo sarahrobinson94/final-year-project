@@ -1,9 +1,19 @@
 package com.sarahrobinson.finalyearproject.fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +22,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+//import com.sarahrobinson.finalyearproject.Manifest;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.R;
 import com.squareup.picasso.Picasso;
@@ -38,7 +50,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     private ImageView ivPlaceIcon;
-    private Button btnFavourite;
+    private Button btnFavourite, btnCall;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -75,6 +87,10 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         // favourite button
         btnFavourite = (Button)rootView.findViewById(R.id.buttonAddToFavourites);
         btnFavourite.setOnClickListener(this);
+
+        // call button
+        btnCall = (Button)rootView.findViewById(R.id.buttonCallPlace);
+        btnCall.setOnClickListener(this);
 
         // retrieving place details based on place id
         if (fromFragmentString == "MapFragment") {
@@ -128,12 +144,17 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         tvPlaceAddress.setText(address);
         tvPlacePhoneNo.setText(phoneNo);
         tvPlaceWebsite.setText(website);
+
+        // disable call button if no phone number
+        if (phoneNo == null) {
+            btnCall.setEnabled(false);
+        }
     }
 
     @Override
     public void onClick(View view) {
         // TODO: 18/04/2017 change to switch statements (in all fragments/activities)
-        if (view == btnFavourite){
+        if (view == btnFavourite) {
             if (btnFavourite.getText() == "Add to favourites") {
                 // add to favourites list
                 firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
@@ -149,6 +170,11 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
                 // show success toast
                 Toast.makeText(getActivity(), "Removed from favourites", Toast.LENGTH_SHORT).show();
             }
+        } else if (view == btnCall) {
+            // open dialer with pre loaded place tel number
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tvPlacePhoneNo.getText().toString()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }

@@ -30,6 +30,8 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
     private String placeId, placeImage, placeType, placeName,
             placeAddress, placePhoneNo, placeWebsite;
 
+    private Double placeLat, placeLng;
+
     @Override
     protected String doInBackground(Object... params) {
         try {
@@ -49,14 +51,17 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
     protected void onPostExecute(String result) {
         Log.d(TAG, "onPostExecute entered");
         try {
-            // Create a JSON object hierarchy from the results
+            // creating a JSON object hierarchy from results
             JSONObject jsonObject = new JSONObject((String)result);
             JSONObject placeDetailsJsonArray = jsonObject.getJSONObject("result");
 
-            // Extract the place details from the results
+            // extracting place details from results
+            //
+            // place type icon
             if (!placeDetailsJsonArray.isNull("icon")) {
                 placeImage = placeDetailsJsonArray.getString("icon");
             }
+            // place types
             if (!placeDetailsJsonArray.isNull("types")) {
                 JSONArray types = new JSONArray();
                 types = placeDetailsJsonArray.getJSONArray("types");
@@ -71,18 +76,33 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
                 strTypes = strTypes.substring(0, strTypes.length()- 1);
                 placeType = strTypes;
             }
+            // place name
             if (!placeDetailsJsonArray.isNull("name")) {
                 placeName = placeDetailsJsonArray.getString("name");
             }
+            // place address
             if (!placeDetailsJsonArray.isNull("formatted_address")) {
                 placeAddress = placeDetailsJsonArray.getString("formatted_address");
             }
+            // place lat
+            placeLat = placeDetailsJsonArray
+                    .getJSONObject("geometry")
+                    .getJSONObject("location")
+                    .getDouble("lat");
+            // place lng
+            placeLng = placeDetailsJsonArray
+                    .getJSONObject("geometry")
+                    .getJSONObject("location")
+                    .getDouble("lng");
+            // place phone number
             if (!placeDetailsJsonArray.isNull("formatted_phone_number")) {
                 placePhoneNo = placeDetailsJsonArray.getString("formatted_phone_number");
             }
+            // place website
             if (!placeDetailsJsonArray.isNull("website")) {
                 placeWebsite = placeDetailsJsonArray.getString("website");
             }
+            // place id
             placeId = placeDetailsJsonArray.getString("place_id");
 
         } catch (JSONException e) {
@@ -96,7 +116,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             Log.d(TAG, "fromFragment = PlaceFragment");
             // calling the ShowPlaceDetails method, passing in the place details
             placeFragment.ShowPlaceDetails(placeId, placeImage, placeType, placeName,
-                    placeAddress, placePhoneNo, placeWebsite);
+                    placeAddress, placeLat, placeLng, placePhoneNo, placeWebsite);
         }
         else if (fromFragment instanceof FavouritesFragment)
         {

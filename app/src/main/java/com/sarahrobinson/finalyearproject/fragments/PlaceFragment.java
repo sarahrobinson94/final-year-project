@@ -39,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
 import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
 
@@ -50,11 +51,12 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
     private Fragment fromFragment;
 
     private String placeId;
+    private Double placeLat, placeLng;
     private boolean isFavourite;
 
     private TextView tvPlaceType, tvPlaceName, tvPlaceAddress, tvPlacePhoneNo, tvPlaceWebsite;
     private ImageView ivPlaceIcon;
-    private LinearLayout btnCall, btnSuggest, btnFavourite;
+    private LinearLayout btnCall, btnSuggest, btnFavourite, btnDirections;
 
     public PlaceFragment() {
         // Required empty public constructor
@@ -100,6 +102,10 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         btnFavourite = (LinearLayout)rootView.findViewById(R.id.btnFavouritePlace);
         btnFavourite.setOnClickListener(this);
 
+        // directions button
+        btnDirections = (LinearLayout)rootView.findViewById(R.id.btnGetDirections);
+        btnDirections.setOnClickListener(this);
+
         // retrieving place details based on place id
         if (fromFragmentString == "MapFragment") {
             placeId = selectedPlaceId;
@@ -141,7 +147,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
     }
 
     public void ShowPlaceDetails(String id, String image, String type, String name, String address,
-                                  String phoneNo, String website) {
+                                 Double lat, Double lng, String phoneNo, String website) {
         Log.d(TAG, "ShowPlaceDetails entered");
         // load image from url
         if (!image.isEmpty()) {
@@ -167,6 +173,10 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         } else {
             tvPlaceWebsite.setText(website);
         }
+
+        // set variables for place lat & lng
+        placeLat = lat;
+        placeLng = lng;
     }
 
     @Override
@@ -195,6 +205,11 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tvPlacePhoneNo.getText().toString()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        } else if (view == btnDirections) {
+            String uri = "http://maps.google.com/maps?f=d&hl=en&saddr="+location.getLatitude()+","+
+                    location.getLongitude()+"&daddr="+placeLat+","+placeLng;
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+            startActivity(Intent.createChooser(intent, "Select an application"));
         }
     }
 }

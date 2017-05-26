@@ -80,7 +80,29 @@ public class MapFragment extends Fragment implements
         // loading the map fragment on startup
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
         mapFragment.getMapAsync(this);
+
+        /*
+        setUpMapIfNeeded();
+        */
     }
+
+    /*
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
+    }
+
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (googleMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
+            mapFragment.getMapAsync(this);
+        }
+    }
+    */
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     //                               MAP INITIALIZATION                              //

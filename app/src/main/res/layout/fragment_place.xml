@@ -62,8 +62,37 @@
             android:layout_below="@id/first"
             android:padding="15dp"
             android:orientation="horizontal"
-            android:weightSum="3"
+            android:weightSum="4"
             android:background="@color/colorPrimary">
+
+            <LinearLayout
+                android:id="@+id/btnGetDirections"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewGetDirections"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/ic_directions_24dp"
+                    android:backgroundTint="@color/white"/>
+
+                <TextView
+                    android:id="@+id/textViewGetDirections"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="center"
+                    android:text="DIRECTIONS"
+                    android:textSize="14dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/btnCallPlace"
@@ -95,35 +124,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnSuggestPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageViewSuggestPlace"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/ic_lightbulb_outline_24dp"
-                    android:backgroundTint="@color/white"/>
-
-                <TextView
-                    android:id="@+id/textViewSuggestPlace"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textAlignment="center"
-                    android:text="SUGGEST"
-                    android:textSize="14dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/btnFavouritePlace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,6 +146,35 @@
                     android:paddingBottom="10dp"
                     android:textAlignment="center"
                     android:text="FAVOURITE"
+                    android:textSize="14dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnSuggestPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageViewSuggestPlace"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/ic_lightbulb_outline_24dp"
+                    android:backgroundTint="@color/white"/>
+
+                <TextView
+                    android:id="@+id/textViewSuggestPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="center"
+                    android:text="SUGGEST"
                     android:textSize="14dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>

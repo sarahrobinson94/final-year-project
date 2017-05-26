@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -152,12 +153,19 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         tvPlaceType.setText(type);
         tvPlaceName.setText(name);
         tvPlaceAddress.setText(address);
-        tvPlacePhoneNo.setText(phoneNo);
-        tvPlaceWebsite.setText(website);
-
-        // disable call button if no phone number
         if (phoneNo == null) {
+            tvPlacePhoneNo.setText("Telephone number not available");
+            tvPlacePhoneNo.setTextColor(Color.parseColor("#ADADAD"));
+            // disable call button if no phone number
             btnCall.setEnabled(false);
+        } else {
+            tvPlacePhoneNo.setText(phoneNo);
+        }
+        if (website == null) {
+            tvPlaceWebsite.setText("Website not available");
+            tvPlaceWebsite.setTextColor(Color.parseColor("#ADADAD"));
+        } else {
+            tvPlaceWebsite.setText(website);
         }
     }
 

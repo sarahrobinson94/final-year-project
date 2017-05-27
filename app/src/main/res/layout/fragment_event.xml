@@ -125,27 +125,28 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
+            android:paddingTop="10dp"
             android:paddingBottom="15dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:background="@drawable/border_bottom"
             android:backgroundTint="@color/lightGrey"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_weight="0.7"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_menu_location_24dp"
                 android:tint="@color/colorPrimary" />
 
             <Spinner
                 android:id="@+id/spinnerEventLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="9.2"
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/colorPrimary" />
 

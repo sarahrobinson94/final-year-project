@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,29 +30,19 @@ import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.Event;
-import com.sarahrobinson.finalyearproject.classes.User;
 
-import org.w3c.dom.Text;
-
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.design.R.id.time;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedEventId;
-import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
 
 public class EventFragment extends Fragment implements View.OnClickListener {
 
@@ -335,16 +324,17 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             spinnerMap.put(i,favPlacesIdList2.get(i));
             spinnerArray[i] = favPlacesInfoList.get(i);
         }
-        // creating spinner
+
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, spinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item_custom);
 
         // accessing view on original ui thread
         getActivity().runOnUiThread(new Thread(new Runnable() {
             @Override
             public void run() {
                 spinnerLocation.setAdapter(adapter);
+                spinnerLocation.setDropDownWidth(920);
             }
         }));
     }

@@ -120,11 +120,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         });
 
         /*
-        myServer = new Server();
-        checkIfDoneThread= new Thread(myServer, "checkIfDoneThread");
-        */
-
-        /*
         runnable = new Server();
         checkIfDoneThread = new Thread(runnable);
         */

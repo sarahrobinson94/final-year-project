@@ -234,6 +234,22 @@
                 android:text="Cancel"
                 android:textColor="@color/white"/>
 
+            <Button
+                android:id="@+id/eventButtonAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Accept"
+                android:textColor="@color/white"/>
+
+            <Button
+                android:id="@+id/eventButtonDecline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Decline"
+                android:textColor="@color/white"/>
+
         </LinearLayout>
 
     </LinearLayout>

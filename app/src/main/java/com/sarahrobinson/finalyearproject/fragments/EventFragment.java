@@ -63,7 +63,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private TextView tvEventDate, tvEventTime, tvEventLocation, tvEventLocationId, tvNoAttendees;
     private ImageView btnDatePicker, btnTimePicker;
     private Spinner spinnerLocation;
-    private Button btnInvite, btnEventSaveEdit, btnEventCancel;
+    private Button btnInvite, btnEventSaveEdit, btnEventCancel, btnAccept, btnDecline;
 
     // for datetime pickers
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -154,6 +154,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
         btnEventSaveEdit = (Button) rootView.findViewById(R.id.eventButtonSaveEdit);
         btnEventCancel = (Button) rootView.findViewById(R.id.eventButtonCancel);
+        btnAccept = (Button) rootView.findViewById(R.id.eventButtonAccept);
+        btnDecline = (Button) rootView.findViewById(R.id.eventButtonDecline);
         // spinner
         spinnerLocation = (Spinner) rootView.findViewById(R.id.spinnerEventLocation);
 
@@ -162,6 +164,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         btnTimePicker.setOnClickListener(this);
         btnEventSaveEdit.setOnClickListener(this);
         btnEventCancel.setOnClickListener(this);
+        btnAccept.setOnClickListener(this);
+        btnDecline.setOnClickListener(this);
 
         // if user is creating an event
         if (fromFragmentString == "Create event") {
@@ -190,6 +194,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             // set UI state
             viewState(rootView);
         }
+
+        // initally hiding accept and decline buttons
+        btnAccept.setVisibility(View.GONE);
+        btnDecline.setVisibility(View.GONE);
 
         return rootView;
     }
@@ -279,8 +287,35 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 viewState(view);
             }
         }
+        //
+        // if onclick accept
+        else if (view == btnAccept)
+        {
+            Log.d(TAG, "Event invite accepted");
+            String response = "accepted";
+            // change event status to 'accepted'
+            respondToInvite(response);
+            // hide buttons
+            btnAccept.setVisibility(view.GONE);
+            btnDecline.setVisibility(view.GONE);
+            // show message
+            Toast.makeText(getActivity(), "Event invite accepted", Toast.LENGTH_SHORT).show();
+        }
+        //
+        // if onclick decline
+        else if (view == btnDecline)
+        {
+            Log.d(TAG, "Event invite declined");
+            String response = "declined";
+            // change event status to 'declined'
+            respondToInvite(response);
+            // hide buttons
+            btnAccept.setVisibility(view.GONE);
+            btnDecline.setVisibility(view.GONE);
+            // show message
+            Toast.makeText(getActivity(), "Event invite declined", Toast.LENGTH_SHORT).show();
+        }
     }
-
 
 
     //////////////// RETRIEVING USER'S FAVOURITE PLACES ////////////////
@@ -373,7 +408,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 spinnerLocation.setAdapter(adapter);
                 spinnerLocation.setDropDownWidth(920);
-
             }
         }));
     }
@@ -530,7 +564,32 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     }
 
     private void viewState(View view){
-        btnEventSaveEdit.setText("EDIT");
+
+        // show edit button if user is the event creator
+        databaseRef.child("users").child(currentUserId).child("events").child(selectedEventId)
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue().equals("creator")) {
+                    btnEventSaveEdit.setText("EDIT");
+                } else if (dataSnapshot.getValue().equals("pending")) {
+                    // hide save/edit button
+                    btnEventSaveEdit.setVisibility(View.GONE);
+                    // show accept invite & decline buttons
+                    btnAccept.setVisibility(View.VISIBLE);
+                    btnDecline.setVisibility(View.VISIBLE);
+                } else if (dataSnapshot.getValue().equals("accepted")) {
+                    // hide all buttons
+                    btnEventSaveEdit.setVisibility(View.GONE);
+                    btnAccept.setVisibility(View.GONE);
+                    btnDecline.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         // make views not editable
         txtEventName.setEnabled(false);
         //txtEventDsc.setEnabled(false);
@@ -568,6 +627,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public void respondToInvite(String response) {
+        firebaseRef.child("users").child(currentUserId).child("events").
+                child(selectedEventId).setValue(response);
     }
     
     private void displayInvitees(){

@@ -569,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements
         View parent = (LinearLayout)view.getParent().getParent();
         TextView tvId = (TextView)parent.findViewById(R.id.eventsListItemId);
         String eventId = tvId.getText().toString();
-        // TODO: 30/04/2017 check correct eventId being assigned
         selectedEventId = eventId;
 
         fromFragmentString = "EventsFragment";

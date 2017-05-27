@@ -85,8 +85,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strEventImage;
 
     private Thread checkIfDoneThread = null;
-    private Server runnable = null;
     private volatile boolean exit = false;
+
+    //private Server runnable = null;
 
     public EventFragment() {
         // Required empty public constructor

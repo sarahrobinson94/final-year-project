@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.favouritesFragment;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.getContext;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
 
 /**

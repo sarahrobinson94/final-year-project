@@ -150,6 +150,22 @@
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/colorPrimary" />
 
+            <TextView
+                android:id="@+id/tvEventLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9.2"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/grey"
+                android:textSize="16dp" />
+
+            <!-- invisible textView to store location id -->
+            <TextView
+                android:id="@+id/tvEventLocationId"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <!-- Invitees -->

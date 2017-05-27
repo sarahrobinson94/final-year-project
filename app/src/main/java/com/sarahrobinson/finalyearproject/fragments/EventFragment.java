@@ -30,6 +30,7 @@ import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.Event;
+import com.sarahrobinson.finalyearproject.classes.Server;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
@@ -57,8 +59,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private FirebaseUser firebaseUser;
 
     // views
-    private EditText txtEventName, txtEventDsc, txtEventLocation;
-    private TextView tvEventDate, tvEventTime, tvNoAttendees;
+    private EditText txtEventName, txtEventDsc;
+    private TextView tvEventDate, tvEventTime, tvEventLocation, tvEventLocationId, tvNoAttendees;
     private ImageView btnDatePicker, btnTimePicker;
     private Spinner spinnerLocation;
     private Button btnInvite, btnEventSaveEdit, btnEventCancel;
@@ -82,7 +84,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strLocationId;
     private String strEventImage;
 
-    private Thread checkIfDoneThread;
+    private Thread checkIfDoneThread = null;
+    private Server runnable = null;
+    private volatile boolean exit = false;
 
     public EventFragment() {
         // Required empty public constructor
@@ -109,9 +113,21 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         // thread for concurrently checking if all fav place data has been retrieved
         checkIfDoneThread = new Thread(new Runnable() {
             public void run() {
-                checkIfDone();
+                while(!exit) {
+                    checkIfDone();
+                }
             }
         });
+
+        /*
+        myServer = new Server();
+        checkIfDoneThread= new Thread(myServer, "checkIfDoneThread");
+        */
+
+        /*
+        runnable = new Server();
+        checkIfDoneThread = new Thread(runnable);
+        */
     }
 
     @Override
@@ -129,6 +145,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         // textViews
         tvEventDate = (TextView) rootView.findViewById(R.id.tvEventDate);
         tvEventTime = (TextView) rootView.findViewById(R.id.tvEventTime);
+        tvEventLocation = (TextView) rootView.findViewById(R.id.tvEventLocation);
+        tvEventLocationId = (TextView) rootView.findViewById(R.id.tvEventLocationId);
         tvNoAttendees = (TextView) rootView.findViewById(R.id.tvNoEventAttendees);
         // buttons
         btnDatePicker = (ImageView) rootView.findViewById(R.id.btnEventDatePicker);
@@ -152,8 +170,15 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             getActivity().setTitle("Create Event");
             // set UI state
             editState(rootView);
-            // get data for spinner
+            // clear event invitee list
+            if (eventInviteeList == null) {
+                // do nothing
+            } else {
+                eventInviteeList.clear();
+            }
+            // get data for places spinner
             getFavPlacesFromDb();
+
         // if user is viewing an event
         } else if (fromFragmentString == "EventsFragment") {
             Log.d(TAG, "View event");
@@ -165,8 +190,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             // set UI state
             viewState(rootView);
         }
-
-        // TODO: 19/03/2017 get name from database and add ValueEventListener ?? (see android bash blog post)
 
         return rootView;
     }
@@ -228,6 +251,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 getEventDetails(view);
             // if onclick edit
             } else if (btnEventSaveEdit.getText() == "EDIT") {
+                // check fromFragment is set to EventFragment
+                if (fromFragment == null) {
+                    fromFragment = eventFragment;
+                }
+                // get data for places spinner
+                getFavPlacesFromDb();
+                // change to edit state
                 editState(view);
             }
         }
@@ -251,6 +281,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+
+    //////////////// RETRIEVING USER'S FAVOURITE PLACES ////////////////
+
+
     // method to retrieve favourite place id's from db
     public void getFavPlacesFromDb(){
 
@@ -269,6 +304,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                     requestFavPlaceDetails();
                     // start the thread
                     checkIfDoneThread.start();
+                    // TODO: 27/05/2017 fix error ^^^^ "thread already started"
                 } else {
                     // user has no favourite places in database
                 }
@@ -299,8 +335,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     public void checkIfDone(){
         if ((favPlacesIdList.size() > 0) && (favPlacesIdList2.size() == favPlacesIdList.size())) {
+            populateSpinner();
+            exit = true;
             try {
-                populateSpinner();
                 checkIfDoneThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -336,6 +373,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 spinnerLocation.setAdapter(adapter);
                 spinnerLocation.setDropDownWidth(920);
+
             }
         }));
     }
@@ -403,6 +441,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         event.setDate(strEventDate);
         event.setTime(strEventTime);
         event.setLocation(strLocation);
+        event.setLocationId(strLocationId);
         event.setImage(strEventImage);
 
         // if creating a new event
@@ -458,11 +497,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         // updating event creator
         firebaseRef.child("users").child(currentUserId).child("events").child(strEventId).setValue("creator");
         // updating event invitees
-        for (int i=0; i<eventInviteeList.size(); i++) {
-            // get user id
-            String friendId = eventInviteeList.get(i);
-            // updating user node
-            firebaseRef.child("users").child(friendId).child("events").child(strEventId).setValue("pending");
+        if (eventInviteeList.size() > 0) {
+            for (int i=0; i<eventInviteeList.size(); i++) {
+                // get user id
+                String friendId = eventInviteeList.get(i);
+                // updating user node
+                firebaseRef.child("users").child(friendId).child("events").child(strEventId).setValue("pending");
+            }
         }
         // show confirmation message
         Toast.makeText(getActivity(), "Event successfully created", Toast.LENGTH_SHORT).show();
@@ -476,26 +517,31 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     private void editState(View view){
         btnEventSaveEdit.setText("SAVE");
-        // make editTexts editable
+        // make views editable
         txtEventName.setEnabled(true);
         //txtEventDsc.setEnabled(true);
-        spinnerLocation.setEnabled(true);
+        spinnerLocation.setVisibility(view.VISIBLE);
         btnDatePicker.setVisibility(view.VISIBLE);
         btnTimePicker.setVisibility(view.VISIBLE);
         btnInvite.setVisibility(view.VISIBLE);
         btnEventCancel.setVisibility(view.VISIBLE);
+        // hide views
+        tvEventLocation.setVisibility(view.GONE);
     }
 
     private void viewState(View view){
         btnEventSaveEdit.setText("EDIT");
-        // make editTexts not editable
+        // make views not editable
         txtEventName.setEnabled(false);
         //txtEventDsc.setEnabled(false);
-        spinnerLocation.setEnabled(false);
+        // hide views
         btnDatePicker.setVisibility(view.GONE);
         btnTimePicker.setVisibility(view.GONE);
+        spinnerLocation.setVisibility(view.GONE);
         btnInvite.setVisibility(view.GONE);
         btnEventCancel.setVisibility(view.GONE);
+        // show views
+        tvEventLocation.setVisibility(view.VISIBLE);
     }
 
     private void retrieveSelectedEventDetails(){
@@ -513,7 +559,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 // TODO: 30/04/2017 set date & time pickers to selected date/time
                 tvEventDate.setText(event.getDate());
                 tvEventTime.setText(event.getTime());
-                txtEventLocation.setText(event.getLocation());
+                tvEventLocation.setText(event.getLocation());
+                tvEventLocationId.setText(event.getLocationId());
                 eventInviteeList = event.getInvited();
                 displayInvitees();
             }

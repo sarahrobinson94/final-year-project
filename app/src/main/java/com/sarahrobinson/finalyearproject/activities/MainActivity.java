@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements
     // to store a list of friends for event invitee modal
     private ArrayList<String> friendIdList = new ArrayList<>();
     // friend details
-    private String friendId, friendName, friendPhoto;
+    private String theFriendId, friendId, friendName, friendPhoto;
 
     // to store id of selected friend request user
     String friendRequestUserId;
@@ -574,9 +574,10 @@ public class MainActivity extends AppCompatActivity implements
 
         fromFragmentString = "EventsFragment";
 
-        EventFragment eventFragment = new EventFragment();
+        EventFragment fragment = new EventFragment();
+        eventFragment = fragment;
         fragmentManager.beginTransaction()
-                .replace(R.id.content_main, eventFragment)
+                .replace(R.id.content_main, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -646,15 +647,15 @@ public class MainActivity extends AppCompatActivity implements
         // friend id
         View parent = (LinearLayout)view.getParent().getParent();
         TextView tvFriendId = (TextView)parent.findViewById(R.id.eventInviteeId);
-        String friendId = tvFriendId.getText().toString();
+        String strFriendId = tvFriendId.getText().toString();
         if (chkFriend.isChecked()) {
             // add friend to invite list
-            eventInviteeList.add(friendId);
+            eventInviteeList.add(strFriendId);
             Log.d(TAG, "Added to invite list");
         } else {
             // remove from invite list
             Log.d(TAG, "Removed from invite list");
-            eventInviteeList.remove(friendId);
+            eventInviteeList.remove(strFriendId);
         }
     }
 
@@ -760,8 +761,8 @@ public class MainActivity extends AppCompatActivity implements
     private void setStrValues(AlertDialog alertDialog){
         for (int i=0; i<friendIdList.size(); i++){
 
-            friendId = friendIdList.get(i);
-            DatabaseReference eventRef = databaseRef.child("users").child(friendId);
+            theFriendId = friendIdList.get(i);
+            DatabaseReference eventRef = databaseRef.child("users").child(theFriendId);
 
             eventRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -770,6 +771,7 @@ public class MainActivity extends AppCompatActivity implements
                         Log.d(TAG, "Getting friend details");
                         // getting and storing friend details
                         User user = dataSnapshot.getValue(User.class);
+                        friendId = dataSnapshot.getKey();
                         friendName = user.getName();
                         friendPhoto = user.getImage();
                         // inflate list with friend item

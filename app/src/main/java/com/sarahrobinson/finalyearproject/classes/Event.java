@@ -13,6 +13,7 @@ public class Event {
     private String date;
     private String time;
     private String location;
+    private String locationId;
     private String image;
     private String creator;
     private List<String> invited;
@@ -21,12 +22,13 @@ public class Event {
 
     }
 
-    public Event(String name, String description, String date, String time, String location, String image, String creator, List<String> invited) {
+    public Event(String name, String description, String date, String time, String location, String locationId, String image, String creator, List<String> invited) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.time = time;
         this.location = location;
+        this.locationId = locationId;
         this.image = image;
         this.creator = creator;
         this.invited = invited;
@@ -70,6 +72,14 @@ public class Event {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 
     public String getImage() {

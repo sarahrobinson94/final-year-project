@@ -79,6 +79,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strEventDate;
     private String strEventTime;
     private String strLocation;
+    private String strLocationId;
     private String strEventImage;
 
     private Thread checkIfDoneThread;
@@ -371,10 +372,12 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             strEventTime = "";
         }
         // location
-        if (txtEventLocation.getText().toString() != null) {
-            strLocation = txtEventLocation.getText().toString();
-        } else {
-            strLocation = "";
+        strLocation = spinnerLocation.getSelectedItem().toString();
+        int selectedPos = spinnerLocation.getSelectedItemPosition();
+        for ( int key : spinnerMap.keySet() ) {
+            if (key == selectedPos) {
+                strLocationId = spinnerMap.get(key);
+            }
         }
         // image
         strEventImage = "";

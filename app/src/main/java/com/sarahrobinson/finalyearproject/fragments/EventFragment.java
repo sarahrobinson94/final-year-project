@@ -73,6 +73,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private List<String> favPlacesIdList2 = new ArrayList<>();
     private List<String> favPlacesInfoList = new ArrayList<>();
     private HashMap<Integer,String> spinnerMap = new HashMap<Integer, String>();
+    // if a place was suggested
+    private String suggestedPlaceId;
+    private int suggestedPlacePosition;
 
     // event details
     private String strEventId;
@@ -96,6 +99,12 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // receiving bundle arguments
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey("suggestedPlaceId")) {
+            suggestedPlaceId = arguments.getString("suggestedPlaceId");
+        }
 
         fragmentManager = getFragmentManager();
         fromFragment = ((MainActivity)getActivity()).eventFragment;
@@ -351,7 +360,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     public void requestFavPlaceDetails(){
         for(int i=0; i<favPlacesIdList.size(); i++){
             String id = favPlacesIdList.get(i);
-            ((MainActivity)getActivity()).getDetails(id, fromFragment);
+            ((MainActivity)getActivity()).getDetails(id, eventFragment);
         }
     }
 
@@ -390,8 +399,17 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         // adding values
         for (int i = 0; i < favPlacesIdList2.size(); i++)
         {
+            String currentVal = favPlacesIdList2.get(i).toString();
+
             spinnerMap.put(i,favPlacesIdList2.get(i));
             spinnerArray[i] = favPlacesInfoList.get(i);
+
+            // if a place suggestion was made, get the position of suggested place
+            if (suggestedPlaceId != null) {
+                if (currentVal.equals(suggestedPlaceId)) {
+                    suggestedPlacePosition = i;
+                }
+            }
         }
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
@@ -403,6 +421,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 spinnerLocation.setAdapter(adapter);
+                // if a place suggestion was made, set the dropdown selection to that place
+                spinnerLocation.setSelection(suggestedPlacePosition);
                 spinnerLocation.setDropDownWidth(920);
             }
         }));

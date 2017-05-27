@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mContext = getApplicationContext();
 
+        fragmentManager = getSupportFragmentManager();
+
         progressDialog = new ProgressDialog(this);
 
         ///// firebase /////
@@ -226,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements
 
         ///// home fragment initialization /////
 
-        fragmentManager = getSupportFragmentManager();
         HomeFragment homeFragment = new HomeFragment();
         fragmentManager.beginTransaction().replace(R.id.content_main, homeFragment).commit();
     }
@@ -249,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
         String addressToShow;
+        // TODO: 27/05/2017 run try catch in a thread to stop home screen from freezing on startup?
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
@@ -573,10 +575,9 @@ public class MainActivity extends AppCompatActivity implements
 
         fromFragmentString = "EventsFragment";
 
-        EventFragment fragment = new EventFragment();
-        eventFragment = fragment;
+        eventFragment = new EventFragment();
         fragmentManager.beginTransaction()
-                .replace(R.id.content_main, fragment)
+                .replace(R.id.content_main, eventFragment)
                 .addToBackStack(null)
                 .commit();
     }

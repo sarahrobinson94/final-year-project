@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -37,6 +38,7 @@ import com.sarahrobinson.finalyearproject.R;
 import com.squareup.picasso.Picasso;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.location;
@@ -49,6 +51,7 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
     private FragmentActivity placeFragmentContext;
     private Fragment fromFragment;
+    private FragmentManager fragmentManager;
 
     private String placeId;
     private Double placeLat, placeLng;
@@ -67,7 +70,6 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         fromFragment = ((MainActivity) getActivity()).placeFragment;
-
     }
 
     @Override
@@ -78,6 +80,9 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
 
         // changing actionBar title
         getActivity().setTitle("Place Details");
+
+        // fragment manager
+        fragmentManager = getFragmentManager();
 
         // getting fragment context
         placeFragmentContext = getActivity();
@@ -210,6 +215,23 @@ public class PlaceFragment extends Fragment implements View.OnClickListener{
                     location.getLongitude()+"&daddr="+placeLat+","+placeLng;
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
             startActivity(Intent.createChooser(intent, "Select an application"));
+        } else if (view == btnSuggest) {
+            // add place to favourites list
+            if (isFavourite == false) {
+                firebaseRef.child("users").child(currentUserId).child("favouritePlaces").
+                        child(placeId).setValue(true);
+                isFavourite = true;
+            }
+            // go to create event screen, passing place id
+            eventFragment = new EventFragment();
+            Bundle args = new Bundle();
+            args.putString("suggestedPlaceId", placeId);
+            eventFragment.setArguments(args);
+            fromFragmentString = "Create event";
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_main, eventFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }

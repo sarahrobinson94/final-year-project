@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
 
 public class FavouritesFragment extends Fragment implements View.OnClickListener{
 
@@ -102,7 +103,6 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
 
     public void getFavPlaceDetails(final View view){
 
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
 
         favPlacesRef.addListenerForSingleValueEvent(new ValueEventListener() {

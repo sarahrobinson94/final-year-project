@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -37,7 +39,11 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static android.support.design.R.id.time;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
@@ -49,11 +55,12 @@ import static com.sarahrobinson.finalyearproject.activities.MainActivity.selecte
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
 import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
 
-public class EventFragment extends Fragment implements View.OnClickListener{
+public class EventFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "CreateEventF ******* ";
 
     private FragmentManager fragmentManager;
+    private Fragment fromFragment;
 
     public Event event;
 
@@ -64,10 +71,17 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private EditText txtEventName, txtEventDsc, txtEventLocation;
     private TextView tvEventDate, tvEventTime, tvNoAttendees;
     private ImageView btnDatePicker, btnTimePicker;
+    private Spinner spinnerLocation;
     private Button btnInvite, btnEventSaveEdit, btnEventCancel;
 
     // for datetime pickers
     private int mYear, mMonth, mDay, mHour, mMinute;
+
+    // for getting/storing favourite places
+    private List<String> favPlacesIdList = new ArrayList<>();
+    private List<String> favPlacesIdList2 = new ArrayList<>();
+    private List<String> favPlacesInfoList = new ArrayList<>();
+    private HashMap<Integer,String> spinnerMap = new HashMap<Integer, String>();
 
     // event details
     private String strEventId;
@@ -78,6 +92,8 @@ public class EventFragment extends Fragment implements View.OnClickListener{
     private String strLocation;
     private String strEventImage;
 
+    private Thread checkIfDoneThread;
+
     public EventFragment() {
         // Required empty public constructor
     }
@@ -87,17 +103,25 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         fragmentManager = getFragmentManager();
+        fromFragment = ((MainActivity)getActivity()).eventFragment;
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
         // starting login activity if user is not logged in
-        if(firebaseAuth.getCurrentUser() == null){
+        if (firebaseAuth.getCurrentUser() == null) {
             startActivity(new Intent(getActivity(), LoginActivity.class));
             getActivity().finish();
-        }else {
+        } else {
             // stay in fragment
         }
+
+        // thread for concurrently checking if all fav place data has been retrieved
+        checkIfDoneThread = new Thread(new Runnable() {
+            public void run() {
+                checkIfDone();
+            }
+        });
     }
 
     @Override
@@ -109,19 +133,21 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // getting views
         //
         // editTexts
-        txtEventName = (EditText)rootView.findViewById(R.id.txtEventName);
+        txtEventName = (EditText) rootView.findViewById(R.id.txtEventName);
         //txtEventDsc = (EditText)rootView.findViewById(R.id.txtEventDsc);
-        txtEventLocation = (EditText)rootView.findViewById(R.id.txtEventLocation);
+        //txtEventLocation = (EditText) rootView.findViewById(R.id.txtEventLocation);
         // textViews
-        tvEventDate = (TextView)rootView.findViewById(R.id.tvEventDate);
-        tvEventTime = (TextView)rootView.findViewById(R.id.tvEventTime);
-        tvNoAttendees = (TextView)rootView.findViewById(R.id.tvNoEventAttendees);
+        tvEventDate = (TextView) rootView.findViewById(R.id.tvEventDate);
+        tvEventTime = (TextView) rootView.findViewById(R.id.tvEventTime);
+        tvNoAttendees = (TextView) rootView.findViewById(R.id.tvNoEventAttendees);
         // buttons
-        btnDatePicker = (ImageView)rootView.findViewById(R.id.btnEventDatePicker);
-        btnTimePicker = (ImageView)rootView.findViewById(R.id.btnEventTimePicker);
-        btnInvite = (Button)rootView.findViewById(R.id.btnInvite);
-        btnEventSaveEdit = (Button)rootView.findViewById(R.id.eventButtonSaveEdit);
-        btnEventCancel = (Button)rootView.findViewById(R.id.eventButtonCancel);
+        btnDatePicker = (ImageView) rootView.findViewById(R.id.btnEventDatePicker);
+        btnTimePicker = (ImageView) rootView.findViewById(R.id.btnEventTimePicker);
+        btnInvite = (Button) rootView.findViewById(R.id.btnInvite);
+        btnEventSaveEdit = (Button) rootView.findViewById(R.id.eventButtonSaveEdit);
+        btnEventCancel = (Button) rootView.findViewById(R.id.eventButtonCancel);
+        // spinner
+        spinnerLocation = (Spinner) rootView.findViewById(R.id.spinnerEventLocation);
 
         // setting onclick listeners
         btnDatePicker.setOnClickListener(this);
@@ -136,8 +162,10 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             getActivity().setTitle("Create Event");
             // set UI state
             editState(rootView);
+            // get data for spinner
+            getFavPlacesFromDb();
         // if user is viewing an event
-        } else if (fromFragmentString == "EventsFragment"){
+        } else if (fromFragmentString == "EventsFragment") {
             Log.d(TAG, "View event");
             // change actionBar title
             getActivity().setTitle("Event Details");
@@ -155,6 +183,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        //
         // if onclick datepicker
         if (view == btnDatePicker)
         {
@@ -163,7 +192,6 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
             mDay = c.get(Calendar.DAY_OF_MONTH);
-
             // launch datepicker dialog
             DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                     new DatePickerDialog.OnDateSetListener() {
@@ -174,6 +202,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
+        //
         // if onclick timepicker
         }
         else if (view == btnTimePicker)
@@ -182,7 +211,6 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             final Calendar c = Calendar.getInstance();
             mHour = c.get(Calendar.HOUR_OF_DAY);
             mMinute = c.get(Calendar.MINUTE);
-
             // Launch Time Picker Dialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
                     new TimePickerDialog.OnTimeSetListener() {
@@ -193,8 +221,15 @@ public class EventFragment extends Fragment implements View.OnClickListener{
                         }
                     }, mHour, mMinute, false);
             timePickerDialog.show();
-        // if onclick save/edit
         }
+        //
+        // if onclick spinner
+        else if (view == spinnerLocation)
+        {
+
+        }
+        //
+        // if onclick save/edit
         else if (view == btnEventSaveEdit)
         {
             Log.d(TAG, "SAVING");
@@ -205,13 +240,14 @@ public class EventFragment extends Fragment implements View.OnClickListener{
             } else if (btnEventSaveEdit.getText() == "EDIT") {
                 editState(view);
             }
-        // if onclick cancel
         }
+        //
+        // if onclick cancel
         else if (view == btnEventCancel)
         {
             Log.d(TAG, "CANCELLING");
             Log.d(TAG, "fromFragmentString: " + fromFragmentString);
-            if (fromFragmentString == "Create event"){
+            if (fromFragmentString == "Create event") {
                 Toast.makeText(getActivity(), "Event creation cancelled", Toast.LENGTH_SHORT).show();
                 // go back to events list
                 EventsFragment eventsFragment = new EventsFragment();
@@ -225,7 +261,97 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    // method to retrieve favourite place id's from db
+    public void getFavPlacesFromDb(){
+
+        DatabaseReference favPlacesRef = databaseRef.child("users").child(currentUserId).child("favouritePlaces");
+
+        favPlacesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "Getting favPlaceId");
+                        // adding fav place id into array list
+                        favPlacesIdList.add(String.valueOf(dsp.getKey()));
+                        Log.d(TAG, "Favourite Places: " + favPlacesIdList);
+                    }
+                    requestFavPlaceDetails();
+                    // start the thread
+                    checkIfDoneThread.start();
+                } else {
+                    // user has no favourite places in database
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+    // method to request favourite place details using place ids
+    public void requestFavPlaceDetails(){
+        for(int i=0; i<favPlacesIdList.size(); i++){
+            String id = favPlacesIdList.get(i);
+            ((MainActivity)getActivity()).getDetails(id, fromFragment);
+        }
+    }
+
+    // method to get back the favourite place details
+    public void retrieveFavPlaceDetails(String id, String name, String address){
+        // concatenate name & address
+        String placeInfo = name + " (" + address + ")";
+        // storing details in arrayLists
+        favPlacesIdList2.add(id);
+        favPlacesInfoList.add(placeInfo);
+    }
+
+    public void checkIfDone(){
+        if ((favPlacesIdList.size() > 0) && (favPlacesIdList2.size() == favPlacesIdList.size())) {
+            try {
+                populateSpinner();
+                checkIfDoneThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }else{
+            // sleep for 1 second then re-check
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                checkIfDone();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // method to add favourite place details to spinner
+    public void populateSpinner(){
+        String[] spinnerArray = new String[favPlacesIdList2.size()];
+        // adding values
+        for (int i = 0; i < favPlacesIdList2.size(); i++)
+        {
+            spinnerMap.put(i,favPlacesIdList2.get(i));
+            spinnerArray[i] = favPlacesInfoList.get(i);
+        }
+        // creating spinner
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // accessing view on original ui thread
+        getActivity().runOnUiThread(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                spinnerLocation.setAdapter(adapter);
+            }
+        }));
+    }
+
+
     //////////// SAVING EVENT TO FIREBASE REALTIME DATABASE ////////////
+
 
     private void getEventDetails(View view){
         // name
@@ -351,14 +477,16 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         viewState(view);
     }
 
+
     ///////////////////////////////////////////////////////////////////
+
 
     private void editState(View view){
         btnEventSaveEdit.setText("SAVE");
         // make editTexts editable
         txtEventName.setEnabled(true);
         //txtEventDsc.setEnabled(true);
-        txtEventLocation.setEnabled(true);
+        spinnerLocation.setEnabled(true);
         btnDatePicker.setVisibility(view.VISIBLE);
         btnTimePicker.setVisibility(view.VISIBLE);
         btnInvite.setVisibility(view.VISIBLE);
@@ -370,7 +498,7 @@ public class EventFragment extends Fragment implements View.OnClickListener{
         // make editTexts not editable
         txtEventName.setEnabled(false);
         //txtEventDsc.setEnabled(false);
-        txtEventLocation.setEnabled(false);
+        spinnerLocation.setEnabled(false);
         btnDatePicker.setVisibility(view.GONE);
         btnTimePicker.setVisibility(view.GONE);
         btnInvite.setVisibility(view.GONE);

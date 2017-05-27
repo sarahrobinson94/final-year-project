@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 
@@ -11,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.favouritesFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
 
@@ -111,6 +113,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
         }
 
         // checking which fragment is requesting place details
+
         if (fromFragment instanceof PlaceFragment)
         {
             Log.d(TAG, "fromFragment = PlaceFragment");
@@ -124,6 +127,12 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             // calling the inflateNewListItem method, passing in the place details
             favouritesFragment.inflateNewListItem(placeId, placeImage, placeType, placeName,
                     placeAddress);
+        }
+        else if (fromFragment instanceof EventFragment)
+        {
+            Log.d(TAG, "fromFragment = EventFragment");
+            // calling the fillSpinner method, passing in place details
+            eventFragment.retrieveFavPlaceDetails(placeId, placeName, placeAddress);
         }
     }
 }

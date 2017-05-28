@@ -104,6 +104,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strLocation;
     private String strLocationId;
     private String strEventImage;
+    private int eventLocationPosition;
 
     // invitee details
     private String strInviteeId;
@@ -427,6 +428,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 if (currentVal.equals(suggestedPlaceId)) {
                     suggestedPlacePosition = i;
                 }
+            // if viewing an already created event, get position of event location
+            } else if (tvEventLocationId.getText() != null) {
+                if (currentVal.equals(tvEventLocationId.getText())) {
+                    eventLocationPosition = i;
+                }
             }
         }
 
@@ -434,16 +440,15 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 android.R.layout.simple_spinner_item, spinnerArray);
         adapter.setDropDownViewResource(R.layout.spinner_item_custom);
 
-        // accessing view on original ui thread
-        getActivity().runOnUiThread(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                spinnerLocation.setAdapter(adapter);
-                // if a place suggestion was made, set the dropdown selection to that place
-                spinnerLocation.setSelection(suggestedPlacePosition);
-                spinnerLocation.setDropDownWidth(920);
-            }
-        }));
+        spinnerLocation.setAdapter(adapter);
+        spinnerLocation.setDropDownWidth(920);
+
+        // set spinner to location
+        if (suggestedPlaceId != null) {
+            spinnerLocation.setSelection(suggestedPlacePosition);
+        } else if (tvEventLocationId.getText() != null) {
+            spinnerLocation.setSelection(eventLocationPosition);
+        }
     }
 
 

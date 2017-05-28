@@ -244,7 +244,7 @@ public class MapFragment extends Fragment implements
             types = types + "cafe|";
         }
         if (restaurantSelected){
-            types = types + "restaurant|";
+            types = types + "restaurant|"; 
         }
         if (takeawaySelected){
             types = types + "meal_takeaway|";

@@ -37,7 +37,6 @@ import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
-import com.sarahrobinson.finalyearproject.classes.Server;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
 
@@ -91,6 +90,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private List<String> favPlacesIdList2 = new ArrayList<>();
     private List<String> favPlacesInfoList = new ArrayList<>();
     private HashMap<Integer,String> spinnerMap = new HashMap<Integer, String>();
+    private AtomicInteger noFavPlacesLoaded;
     // if a place was suggested
     private String suggestedPlaceId;
     private int suggestedPlacePosition;
@@ -111,16 +111,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strInviteePhoto;
     private List<String> fullInviteeListFromDb = new ArrayList<>();
     private boolean hasInvitees = false;
-
-    private Thread checkFavPlacesRetrievedThread = null;
-    private volatile boolean exitCheckFavPlaces = false;
-
-    private Thread checkInviteesRetrievedThread = null;
-    private volatile boolean exitCheckInvitees = false;
-
-    //private Server runnable = null;
-
-    private AtomicInteger noFavPlacesLoaded;
 
     public EventFragment() {
         // Required empty public constructor
@@ -149,29 +139,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         } else {
             // stay in fragment
         }
-
-        // thread for concurrently checking if all fav place data has been retrieved
-        checkFavPlacesRetrievedThread = new Thread(new Runnable() {
-            public void run() {
-                while(!exitCheckFavPlaces) {
-                    checkIfFavPlacesDone();
-                }
-            }
-        });
-
-//        // thread for concurrently checking if all invitee data has been retrieved
-//        checkInviteesRetrievedThread = new Thread(new Runnable() {
-//            public void run() {
-//                while(!exitCheckInvitees) {
-//                    checkIfInviteesDone();
-//                }
-//            }
-//        });
-
-        /*
-        runnable = new Server();
-        checkFavPlacesRetrievedThread = new Thread(runnable);
-        */
     }
 
     @Override
@@ -414,14 +381,17 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         final GetPlaceDetails.Callback callback = new GetPlaceDetails.Callback(){
 
             @Override
-            public void onDone(JSONObject result) {
+            public void onDone(String id, String name, String address) {
+
                 // add to the counter and get the latest value
                 final int loadedCount = noFavPlacesLoaded.incrementAndGet();
 
-                if(loadedCount == favPlacesIdList.size()){
+                // store the fav place details in arrays
+                retrieveFavPlaceDetails(id, name, address);
 
-                    // they are all loaded, do stuff with them like populate spinner etc
-
+                // populate spinner if all fav place details have been retrieved
+                if (loadedCount == favPlacesIdList.size()) {
+                    populateSpinner();
                 }
             }
         };
@@ -430,7 +400,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             String id = favPlacesIdList.get(i);
             ((MainActivity)getActivity()).getDetails(id, eventFragment, callback);
         }
-
     }
 
     // method to get back the favourite place details
@@ -440,26 +409,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         // storing details in arrayLists
         favPlacesIdList2.add(id);
         favPlacesInfoList.add(placeInfo);
-    }
-
-    public void checkIfFavPlacesDone(){
-        if ((favPlacesIdList.size() > 0) && (favPlacesIdList2.size() == favPlacesIdList.size())) {
-            populateSpinner();
-            exitCheckFavPlaces = true;
-            try {
-                checkFavPlacesRetrievedThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }else{
-            // sleep for 1 second then re-check
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                checkIfFavPlacesDone();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     // method to add favourite place details to spinner
@@ -529,9 +478,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                     }
                     tvNoAttendees.setVisibility(view.GONE);
                     layoutHorizontalScrollViewInvitees.setVisibility(View.VISIBLE);
-                    // start the thread
-                    checkInviteesRetrievedThread.start();
-                    // TODO: 27/05/2017 fix error ^^^^ "thread already started"
                 } else {
                     tvNoAttendees.setVisibility(view.VISIBLE);
                     layoutHorizontalScrollViewInvitees.setVisibility(View.GONE);
@@ -543,6 +489,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    /*
     public void checkIfInviteesDone(){
         if ((fullInviteeListFromDb.size() > 0)) {
             showInviteeList();
@@ -562,6 +509,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
+    */
 
     public void showInviteeList() {
         // get details and inflate layout for each invited friend
@@ -787,7 +735,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
         checkUserStatusForEvent();
         retrieveSelectedEventDetails();
-        retrieveInvitees(view);
+        //retrieveInvitees(view);
     }
 
     public void checkUserStatusForEvent() {

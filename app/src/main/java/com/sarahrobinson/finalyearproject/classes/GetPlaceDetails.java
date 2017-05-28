@@ -122,7 +122,7 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
             // pass to callback if set
             if(this.callback != null){
-                this.callback.onDone(jsonObject);
+                this.callback.onDone(placeId, placeName, placeAddress);
             }
 
         } catch (JSONException e) {
@@ -146,19 +146,9 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             favouritesFragment.inflateNewListItem(placeId, placeImage, placeType, placeName,
                     placeAddress);
         }
-        else if (fromFragment instanceof EventFragment)
-        {
-            Log.d(TAG, "fromFragment = EventFragment");
-            // calling the fillSpinner method, passing in place details
-            eventFragment.retrieveFavPlaceDetails(placeId, placeName, placeAddress);
-        }
-
-
     }
 
     public interface Callback {
-
-        void onDone(JSONObject result);
-
+        void onDone(String id, String name, String address);
     }
 }

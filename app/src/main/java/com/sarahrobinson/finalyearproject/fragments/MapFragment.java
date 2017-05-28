@@ -243,7 +243,7 @@ public class MapFragment extends Fragment implements
         // if a pharmacy name has been specified in search, add to url
         /*
         if (!sName.equals("") || !sName.equals(null) ){
-            googlePlacesUrl.append("&name=" + sName); 
+            googlePlacesUrl.append("&name=" + sName);
         }
         */
 

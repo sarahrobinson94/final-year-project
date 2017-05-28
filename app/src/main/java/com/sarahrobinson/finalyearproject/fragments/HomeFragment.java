@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +33,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
+    private ImageView ivOptionCafe, ivOptionRestaurant, ivOptionTakeaway, ivOptionBar, ivOptionAll;
     public static EditText editTextSearchRadius;
     public static EditText editTextSearchLocation;
     private Button btnFindPlaces;
@@ -80,8 +82,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         REQUEST_LOCATION = 2;
 
-        editTextSearchRadius = (EditText)rootView.findViewById(R.id.editTextHomeRadius);
+        ivOptionCafe = (ImageView)rootView.findViewById(R.id.imageViewOptionCafe);
+        ivOptionRestaurant = (ImageView)rootView.findViewById(R.id.imageViewOptionRestaurant);
+        ivOptionTakeaway = (ImageView)rootView.findViewById(R.id.imageViewOptionTakeaway);
+        ivOptionBar = (ImageView)rootView.findViewById(R.id.imageViewOptionBar);
+        ivOptionAll = (ImageView)rootView.findViewById(R.id.imageViewOptionAll);
 
+        editTextSearchRadius = (EditText)rootView.findViewById(R.id.editTextHomeRadius);
         editTextSearchLocation = (EditText)rootView.findViewById(R.id.editTextHomeLocation);
         editTextSearchLocation.setText(currentLocation);
 
@@ -95,7 +102,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if (view == btnFindPlaces){
+        if (view == btnFindPlaces)
+        {
             // request permissions or go to map
             if (permissionsGranted == false){
                 ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -119,6 +127,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                         .addToBackStack(null)
                         .commit();
             }
+        }
+        else if (view == ivOptionCafe) {
+            // TODO: 28/05/2017:
+            // toggle colour
+            // toggle selected (add/remove from array)
         }
     }
 

@@ -22,14 +22,14 @@
 
             <!-- option breakfast -->
             <RelativeLayout
-                android:id="@+id/optionBreakfast"
+                android:id="@+id/optionCafe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp">
 
                 <ImageView
-                    android:id="@+id/imageViewOptionBreakfast"
+                    android:id="@+id/imageViewOptionCafe"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -39,26 +39,26 @@
                     android:padding="8dp" />
 
                 <TextView
-                    android:id="@+id/textViewOptionBreakfast"
+                    android:id="@+id/textViewOptionCafe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="55dp"
-                    android:text="Breakfast"
+                    android:text="Cafe"
                     style="@style/textHome"/>
 
             </RelativeLayout>
 
             <!-- option lunch -->
             <RelativeLayout
-                android:id="@+id/optionLunch"
+                android:id="@+id/optionRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp">
 
                 <ImageView
-                    android:id="@+id/imageViewOptionLunch"
+                    android:id="@+id/imageViewOptionRestaurant"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -68,26 +68,26 @@
                     android:padding="8dp"/>
 
                 <TextView
-                    android:id="@+id/textViewOptionLunch"
+                    android:id="@+id/textViewOptionRestaurant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="55dp"
-                    android:text="Lunch"
+                    android:text="Restaurant"
                     style="@style/textHome"/>
 
             </RelativeLayout>
 
             <!-- option dinner -->
             <RelativeLayout
-                android:id="@+id/optionDinner"
+                android:id="@+id/optionTakeaway"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp">
 
                 <ImageView
-                    android:id="@+id/imageViewOptionDinner"
+                    android:id="@+id/imageViewOptionTakeaway"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -97,26 +97,26 @@
                     android:padding="8dp"/>
 
                 <TextView
-                    android:id="@+id/textViewOptionDinner"
+                    android:id="@+id/textViewOptionTakeaway"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="55dp"
-                    android:text="Dinner"
+                    android:text="Takeaway"
                     style="@style/textHome"/>
 
             </RelativeLayout>
 
             <!-- option drinks -->
             <RelativeLayout
-                android:id="@+id/optionDrinks"
+                android:id="@+id/optionBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp">
 
                 <ImageView
-                    android:id="@+id/imageViewOptionDrinks"
+                    android:id="@+id/imageViewOptionBar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -126,12 +126,12 @@
                     android:padding="8dp"/>
 
                 <TextView
-                    android:id="@+id/textViewOptionDrinks"
+                    android:id="@+id/textViewOptionBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="55dp"
-                    android:text="Drinks"
+                    android:text="Bar"
                     style="@style/textHome"/>
 
             </RelativeLayout>

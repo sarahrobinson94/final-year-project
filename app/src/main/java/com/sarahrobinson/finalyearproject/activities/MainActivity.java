@@ -823,11 +823,6 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(this,"Friend request sent",Toast.LENGTH_SHORT).show();
     }
 
-    private void deleteFriendRequest () {
-        // TODO: 08/05/2017 add delete friend request functionality
-        Toast.makeText(this,"Friend request deleted",Toast.LENGTH_SHORT).show();
-    }
-
     private void setFriendship() {
         // getting current date
         Calendar c = Calendar.getInstance();

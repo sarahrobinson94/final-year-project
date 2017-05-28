@@ -2,9 +2,11 @@ package com.sarahrobinson.finalyearproject.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -25,12 +29,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.activities.LoginActivity;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
+import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.Server;
+import com.sarahrobinson.finalyearproject.classes.User;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +53,7 @@ import static com.sarahrobinson.finalyearproject.activities.MainActivity.databas
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventInviteeList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebaseRef;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.dialogFriendIdList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedEventId;
 
@@ -52,6 +63,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     private FragmentManager fragmentManager;
     private Fragment fromFragment;
+    // for inflating invitee scrollview
+    private FragmentActivity eventFragmentContext;
 
     public Event event;
 
@@ -64,6 +77,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private ImageView btnDatePicker, btnTimePicker;
     private Spinner spinnerLocation;
     private Button btnInvite, btnEventSaveEdit, btnEventCancel, btnAccept, btnDecline;
+    // horizontal scrollview of event invitees
+    private LinearLayout layoutHorizontalScrollViewInvitees, inflatedLayoutEventInvitees;
 
     // for datetime pickers
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -87,8 +102,18 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strLocationId;
     private String strEventImage;
 
-    private Thread checkIfDoneThread = null;
-    private volatile boolean exit = false;
+    // invitee details
+    private String strInviteeId;
+    private String strInviteeName;
+    private String strInviteePhoto;
+    private List<String> fullInviteeListFromDb = new ArrayList<>();
+    private boolean hasInvitees = false;
+
+    private Thread checkFavPlacesRetrievedThread = null;
+    private volatile boolean exitCheckFavPlaces = false;
+
+    private Thread checkInviteesRetrievedThread = null;
+    private volatile boolean exitCheckInvitees = false;
 
     //private Server runnable = null;
 
@@ -121,17 +146,26 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         }
 
         // thread for concurrently checking if all fav place data has been retrieved
-        checkIfDoneThread = new Thread(new Runnable() {
+        checkFavPlacesRetrievedThread = new Thread(new Runnable() {
             public void run() {
-                while(!exit) {
-                    checkIfDone();
+                while(!exitCheckFavPlaces) {
+                    checkIfFavPlacesDone();
+                }
+            }
+        });
+
+        // thread for concurrently checking if all invitee data has been retrieved
+        checkInviteesRetrievedThread = new Thread(new Runnable() {
+            public void run() {
+                while(!exitCheckInvitees) {
+                    checkIfInviteesDone();
                 }
             }
         });
 
         /*
         runnable = new Server();
-        checkIfDoneThread = new Thread(runnable);
+        checkFavPlacesRetrievedThread = new Thread(runnable);
         */
     }
 
@@ -140,6 +174,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
+
+        // getting fragment context
+        eventFragmentContext = getActivity();
 
         // getting views
         //
@@ -163,6 +200,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         btnDecline = (Button) rootView.findViewById(R.id.eventButtonDecline);
         // spinner
         spinnerLocation = (Spinner) rootView.findViewById(R.id.spinnerEventLocation);
+        // layouts
+        layoutHorizontalScrollViewInvitees = (LinearLayout)
+                rootView.findViewById(R.id.layoutHorizontalScrollViewInvitees);
+        inflatedLayoutEventInvitees = (LinearLayout)
+                rootView.findViewById(R.id.inflatedLayoutEventInvitees);
 
         // setting onclick listeners
         btnDatePicker.setOnClickListener(this);
@@ -195,14 +237,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             getActivity().setTitle("Event Details");
             // retrieve event details
             strEventId = selectedEventId;
-            retrieveSelectedEventDetails();
-            // set UI state
             viewState(rootView);
         }
 
-        // initally hiding accept and decline buttons
+        // initially hiding accept/decline buttons & invitee scrollview
         btnAccept.setVisibility(View.GONE);
         btnDecline.setVisibility(View.GONE);
+        layoutHorizontalScrollViewInvitees.setVisibility(View.GONE);
 
         return rootView;
     }
@@ -261,6 +302,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             Log.d(TAG, "SAVING");
             // if onclick save
             if (btnEventSaveEdit.getText() == "SAVE") {
+                // clearing lists
+                inflatedLayoutEventInvitees.removeAllViews();
+                dialogFriendIdList.clear();
+                // getting event details to save to db
                 getEventDetails(view);
             // if onclick edit
             } else if (btnEventSaveEdit.getText() == "EDIT") {
@@ -280,6 +325,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         {
             Log.d(TAG, "CANCELLING");
             Log.d(TAG, "fromFragmentString: " + fromFragmentString);
+            dialogFriendIdList.clear();
             if (fromFragmentString == "Create event") {
                 Toast.makeText(getActivity(), "Event creation cancelled", Toast.LENGTH_SHORT).show();
                 // go back to events list
@@ -343,7 +389,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                     }
                     requestFavPlaceDetails();
                     // start the thread
-                    checkIfDoneThread.start();
+                    checkFavPlacesRetrievedThread.start();
                     // TODO: 27/05/2017 fix error ^^^^ "thread already started"
                 } else {
                     // user has no favourite places in database
@@ -373,12 +419,12 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         favPlacesInfoList.add(placeInfo);
     }
 
-    public void checkIfDone(){
+    public void checkIfFavPlacesDone(){
         if ((favPlacesIdList.size() > 0) && (favPlacesIdList2.size() == favPlacesIdList.size())) {
             populateSpinner();
-            exit = true;
+            exitCheckFavPlaces = true;
             try {
-                checkIfDoneThread.join();
+                checkFavPlacesRetrievedThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -386,7 +432,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             // sleep for 1 second then re-check
             try {
                 TimeUnit.SECONDS.sleep(1);
-                checkIfDone();
+                checkIfFavPlacesDone();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -426,6 +472,128 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 spinnerLocation.setDropDownWidth(920);
             }
         }));
+    }
+
+
+    /////////////////// DISPLAYING SELECTED INVITEES ///////////////////
+
+
+    public void showTemporaryInviteeList(View view) {
+        // get details and inflate layout for each selected friend to invite
+        for (int i=0; i<eventInviteeList.size(); i++) {
+            String userId = eventInviteeList.get(i).toString();
+            retrieveUserDetails(userId);
+        }
+        // show selected friends
+        layoutHorizontalScrollViewInvitees.setVisibility(view.VISIBLE);
+        tvNoAttendees.setVisibility(view.GONE);
+    }
+
+    public void retrieveInvitees(final View view) {
+
+        // TODO: 28/05/2017 FIX QUERY
+        Query queryInvitees = databaseRef.child("users").orderByChild("events").orderByKey().equalTo(selectedEventId);
+
+        queryInvitees.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "Getting event invitees by id");
+                        // adding users ids to list
+                        fullInviteeListFromDb.add(String.valueOf(snapshot.getKey()));
+                        Log.d(TAG, "Friend ids: " + fullInviteeListFromDb);
+                    }
+                    tvNoAttendees.setVisibility(view.GONE);
+                    layoutHorizontalScrollViewInvitees.setVisibility(View.VISIBLE);
+                    // start the thread
+                    checkInviteesRetrievedThread.start();
+                    // TODO: 27/05/2017 fix error ^^^^ "thread already started"
+                } else {
+                    tvNoAttendees.setVisibility(view.VISIBLE);
+                    layoutHorizontalScrollViewInvitees.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void checkIfInviteesDone(){
+        if ((fullInviteeListFromDb.size() > 0)) {
+            showInviteeList();
+            exitCheckInvitees = true;
+            try {
+                checkInviteesRetrievedThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }else{
+            // sleep for 1 second then re-check
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                checkIfInviteesDone();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showInviteeList() {
+        // get details and inflate layout for each invited friend
+        for (int i=0; i<fullInviteeListFromDb.size(); i++) {
+            String userId = fullInviteeListFromDb.get(i).toString();
+            retrieveUserDetails(userId);
+        }
+    }
+
+    public void retrieveUserDetails(String userId) {
+        // get user details from db
+        databaseRef.child("users").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Getting user details");
+                // getting user details
+                User user = dataSnapshot.getValue(User.class);
+                strInviteeId = dataSnapshot.getKey();
+                strInviteeName = user.getName();
+                strInviteePhoto = user.getImage();
+                // inflate scrollView with invitee
+                inflateInviteeScrollView(strInviteeId, strInviteeName, strInviteePhoto);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void inflateInviteeScrollView(String id, String name, String photo) {
+        Log.d(TAG, "Inflating invitee scrollview");
+
+        // inflating layout to be used as a scrollview item
+        LayoutInflater inflator = (LayoutInflater)eventFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View scrollViewItem = inflator.inflate(R.layout.h_scrollview_invitee_item, inflatedLayoutEventInvitees, false);
+
+        // adding inflated item layout to scrollview layout
+        inflatedLayoutEventInvitees.addView(scrollViewItem, inflatedLayoutEventInvitees.getChildCount() - 1);
+
+        // getting inflated item views
+        ImageView ivInviteePhoto = (ImageView)scrollViewItem.findViewById(R.id.ivInviteeScrollViewPhoto);
+        TextView tvInviteeName = (TextView)scrollViewItem.findViewById(R.id.tvInviteeScrollViewName);
+        TextView tvInviteeId = (TextView)scrollViewItem.findViewById(R.id.tvInviteeScrollViewId);
+
+        // populating views with user details
+
+        if (photo != null && !photo.isEmpty()) {
+            Picasso.with(getContext())
+                    .load(photo)
+                    .transform(new CircleTransform())
+                    .into(ivInviteePhoto);
+        }
+
+        tvInviteeName.setText(name);
+        tvInviteeId.setText(id);
     }
 
 
@@ -514,6 +682,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         strEventId = firebaseRef.child("events").push().getKey();
         // writing event to database
         firebaseRef.child("events").child(strEventId).setValue(event);
+        // setting event to view
+        selectedEventId = strEventId;
         // updating users
         updateUsers(view);
         /*
@@ -580,32 +750,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     }
 
     private void viewState(View view){
-
-        // show edit button if user is the event creator
-        databaseRef.child("users").child(currentUserId).child("events").child(selectedEventId)
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue().equals("creator")) {
-                    btnEventSaveEdit.setText("EDIT");
-                } else if (dataSnapshot.getValue().equals("pending")) {
-                    // hide save/edit button
-                    btnEventSaveEdit.setVisibility(View.GONE);
-                    // show accept invite & decline buttons
-                    btnAccept.setVisibility(View.VISIBLE);
-                    btnDecline.setVisibility(View.VISIBLE);
-                } else if (dataSnapshot.getValue().equals("accepted")) {
-                    // hide all buttons
-                    btnEventSaveEdit.setVisibility(View.GONE);
-                    btnAccept.setVisibility(View.GONE);
-                    btnDecline.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
         // make views not editable
         txtEventName.setEnabled(false);
         //txtEventDsc.setEnabled(false);
@@ -617,6 +761,43 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         btnEventCancel.setVisibility(view.GONE);
         // show views
         tvEventLocation.setVisibility(view.VISIBLE);
+
+        checkUserStatusForEvent();
+        retrieveSelectedEventDetails();
+        retrieveInvitees(view);
+    }
+
+    public void checkUserStatusForEvent() {
+
+        // show edit button if user is the event creator
+        databaseRef.child("users").child(currentUserId).child("events").child(selectedEventId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            if (dataSnapshot.getValue().equals("creator")) {
+                                btnEventSaveEdit.setText("EDIT");
+                            } else if (dataSnapshot.getValue().equals("pending")) {
+                                // hide save/edit button
+                                btnEventSaveEdit.setVisibility(View.GONE);
+                                // show accept invite & decline buttons
+                                btnAccept.setVisibility(View.VISIBLE);
+                                btnDecline.setVisibility(View.VISIBLE);
+                            } else if (dataSnapshot.getValue().equals("accepted")) {
+                                // hide all buttons
+                                btnEventSaveEdit.setVisibility(View.GONE);
+                                btnAccept.setVisibility(View.GONE);
+                                btnDecline.setVisibility(View.GONE);
+                            }
+                        } else {
+                            checkUserStatusForEvent();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
     }
 
     private void retrieveSelectedEventDetails(){
@@ -636,8 +817,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 tvEventTime.setText(event.getTime());
                 tvEventLocation.setText(event.getLocation());
                 tvEventLocationId.setText(event.getLocationId());
-                eventInviteeList = event.getInvited();
-                displayInvitees();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -649,8 +828,5 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         firebaseRef.child("users").child(currentUserId).child("events").
                 child(selectedEventId).setValue(response);
     }
-    
-    private void displayInvitees(){
-        // TODO: 30/04/2017 show list of invitee names with choice to invite more friends
-    }
+
 }

@@ -18,7 +18,7 @@ public class Server implements Runnable {
     public void run() {
         while (running) {
             Log.d(TAG, "Server is running");
-            eventFragment.checkIfDone();
+            eventFragment.checkIfFavPlacesDone();
         }
         Log.d(TAG, "Server is stopped");
     }

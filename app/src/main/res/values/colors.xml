@@ -8,6 +8,7 @@
     <color name="white">#FFFFFF</color>
     <color name="grey">#666666</color>
     <color name="lightGrey">#ADADAD</color>
+    <color name="veryLightGrey">#E4E4E4</color>
     <color name="facebookBlue">#3B5998</color>
     <color name="googleRed">#DD4B39</color>
 </resources>

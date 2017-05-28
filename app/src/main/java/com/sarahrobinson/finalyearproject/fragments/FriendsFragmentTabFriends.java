@@ -127,6 +127,7 @@ public class FriendsFragmentTabFriends extends Fragment {
     }
 
     private void inflateFriendListItem(String name, String email, String img) {
+
         // inflating layout to be used as a list item
         LayoutInflater inflator = (LayoutInflater)tabFriendContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View listItem = inflator.inflate(R.layout.list_item_friend, layoutFriendList, false);
@@ -141,6 +142,7 @@ public class FriendsFragmentTabFriends extends Fragment {
         CheckBox chkBoxAcceptRequest = (CheckBox)listItem.findViewById(R.id.friendsListItemChkBox);
 
         // populating views with user details
+
         tvUserName.setText(name);
         //tvUserEmail.setText(email);
         // handing both null & empty string images

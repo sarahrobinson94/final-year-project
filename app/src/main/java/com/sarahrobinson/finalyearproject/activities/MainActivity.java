@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
     public static String selectedEventId;
 
     // to store a list of friends for event invitee modal
-    private ArrayList<String> friendIdList = new ArrayList<>();
+    public static ArrayList<String> dialogFriendIdList = new ArrayList<>();
     // friend details
     private String theFriendId, friendId, friendName, friendPhoto;
 
@@ -593,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // invite friends to event -> select invitees dialog
-    public void selectEventInvitees(View view){
+    public void selectEventInvitees(final View view){
 
         // showing progress dialog
         progressDialog.setMessage("Retrieving friends");
@@ -615,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements
         layoutFriendList.removeAllViews();
 
         // TODO: 29/04/2017 if not a new event, tick already invited friends when dialog is opened
-        friendIdList.clear();
+
 
         dialogBuilder
                 .setCancelable(false)
@@ -623,6 +623,7 @@ public class MainActivity extends AppCompatActivity implements
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                eventFragment.showTemporaryInviteeList(view);
                                 dialogInterface.dismiss();
                             }
                         })
@@ -636,8 +637,13 @@ public class MainActivity extends AppCompatActivity implements
 
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // getting list of friends (active users for now)
-        retrieveFriends(alertDialog);
+        if (dialogFriendIdList.size() > 0) {
+            // already retrieved friend list, skip the first method
+            setStrValues(alertDialog);
+        } else {
+            // retrieve friend list, call first method
+            retrieveFriends(alertDialog);
+        }
     }
 
     // event invitee list toggle invite
@@ -745,8 +751,8 @@ public class MainActivity extends AppCompatActivity implements
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "Getting friends by id");
                     // adding users ids to list
-                    friendIdList.add(String.valueOf(snapshot.getKey()));
-                    Log.d(TAG, "Friend ids: " + friendIdList);
+                    dialogFriendIdList.add(String.valueOf(snapshot.getKey()));
+                    Log.d(TAG, "Friend ids: " + dialogFriendIdList);
                 }
                 // continue dialog creation
                 setStrValues(alertDialog);
@@ -759,9 +765,9 @@ public class MainActivity extends AppCompatActivity implements
 
     // getting each friend's id and name
     private void setStrValues(AlertDialog alertDialog){
-        for (int i=0; i<friendIdList.size(); i++){
+        for (int i=0; i<dialogFriendIdList.size(); i++){
 
-            theFriendId = friendIdList.get(i);
+            theFriendId = dialogFriendIdList.get(i);
             DatabaseReference eventRef = databaseRef.child("users").child(theFriendId);
 
             eventRef.addValueEventListener(new ValueEventListener() {

@@ -31,12 +31,16 @@ import com.sarahrobinson.finalyearproject.R;
 import java.io.IOException;
 import java.util.List;
 
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.barSelected;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.cafeSelected;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.restaurantSelected;
 import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.sLocation;
 import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.sRadius;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.googleApiClient;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
+import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.takeawaySelected;
 
 public class MapFragment extends Fragment implements
         OnMapReadyCallback,
@@ -232,21 +236,38 @@ public class MapFragment extends Fragment implements
         // TODO: 16/04/2017 place current location marker ??
     }
 
-    private String getUrl(double latitude, double longitude) {
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + sRadius);
-        googlePlacesUrl.append("&type=" + "bar|cafe|meal_takeaway|restaurant");
+    private String getUrl(double latitude, double longitude)
+    {
+        // checking which place filters have been selected and creating string to append to url
+        String types = "";
+        if (cafeSelected){
+            types = types + "cafe|";
+            Log.d("type ******", "CAFE SELECTED");
 
-        // TODO: 16/04/2017 fix search by name
-        //Log.d("getUrl", "sName: " + sName);
-        // if a pharmacy name has been specified in search, add to url
-        /*
-        if (!sName.equals("") || !sName.equals(null) ){
-            googlePlacesUrl.append("&name=" + sName);
         }
-        */
+        if (restaurantSelected){
+            types = types + "restaurant|";
+            Log.d("type ******", "RESTAURANT SELECTED");
 
+        }
+        if (takeawaySelected){
+            types = types + "meal_takeaway|";
+            Log.d("type ******", "TAKEAWAY SELECTED");
+
+        }
+        if (barSelected){
+            types = types + "bar|";
+            Log.d("type ******", "BAR SELECTED");
+        }
+
+        if (types != "" && types.length() > 0 && types.charAt(types.length()-1)=='|') {
+            // remove "|" from end of types string
+            types = types.substring(0, types.length()-1);
+        }
+
+        // building url
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude + "&radius=" + sRadius + "&type=" + types);
         googlePlacesUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());

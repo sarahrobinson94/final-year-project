@@ -252,8 +252,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layoutHomeSection3"
-            android:paddingTop="30dp"
-            android:paddingBottom="0dp"
+            android:paddingTop="40dp"
             android:gravity="center">
 
             <Button
@@ -268,6 +267,7 @@
 
             <TextView
                 android:id="@+id/textViewOr"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -281,7 +281,8 @@
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/textViewAddMoreDetails"

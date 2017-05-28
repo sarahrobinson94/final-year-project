@@ -242,22 +242,15 @@ public class MapFragment extends Fragment implements
         String types = "";
         if (cafeSelected){
             types = types + "cafe|";
-            Log.d("type ******", "CAFE SELECTED");
-
         }
         if (restaurantSelected){
             types = types + "restaurant|";
-            Log.d("type ******", "RESTAURANT SELECTED");
-
         }
         if (takeawaySelected){
             types = types + "meal_takeaway|";
-            Log.d("type ******", "TAKEAWAY SELECTED");
-
         }
         if (barSelected){
             types = types + "bar|";
-            Log.d("type ******", "BAR SELECTED");
         }
 
         if (types != "" && types.length() > 0 && types.charAt(types.length()-1)=='|') {

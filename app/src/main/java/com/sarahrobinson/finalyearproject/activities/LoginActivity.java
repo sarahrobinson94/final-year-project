@@ -41,6 +41,7 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.classes.User;
+import com.sarahrobinson.finalyearproject.fragments.FindFriendsFragmentTabFacebook;
 
 import org.w3c.dom.Text;
 
@@ -75,6 +76,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView btnSignUpPrompt;
 
     private static final String TAG = "LoginActivity ******* ";
+
+    public static AccessToken facebookAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +123,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess " + loginResult);
                 logInWithFacebook(loginResult.getAccessToken());
+                // assign access token to public variable
+                facebookAccessToken = loginResult.getAccessToken();
             }
             @Override
             public void onCancel() {

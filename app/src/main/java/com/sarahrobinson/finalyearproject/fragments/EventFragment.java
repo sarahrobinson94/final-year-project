@@ -36,10 +36,12 @@ import com.sarahrobinson.finalyearproject.R;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
 import com.sarahrobinson.finalyearproject.classes.Event;
+import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.classes.Server;
 import com.sarahrobinson.finalyearproject.classes.User;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.currentUserId;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.databaseRef;
@@ -117,6 +120,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     //private Server runnable = null;
 
+    private AtomicInteger noFavPlacesLoaded;
+
     public EventFragment() {
         // Required empty public constructor
     }
@@ -154,14 +159,14 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        // thread for concurrently checking if all invitee data has been retrieved
-        checkInviteesRetrievedThread = new Thread(new Runnable() {
-            public void run() {
-                while(!exitCheckInvitees) {
-                    checkIfInviteesDone();
-                }
-            }
-        });
+//        // thread for concurrently checking if all invitee data has been retrieved
+//        checkInviteesRetrievedThread = new Thread(new Runnable() {
+//            public void run() {
+//                while(!exitCheckInvitees) {
+//                    checkIfInviteesDone();
+//                }
+//            }
+//        });
 
         /*
         runnable = new Server();
@@ -388,9 +393,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "Favourite Places: " + favPlacesIdList);
                     }
                     requestFavPlaceDetails();
-                    // start the thread
-                    checkFavPlacesRetrievedThread.start();
-                    // TODO: 27/05/2017 fix error ^^^^ "thread already started"
+
                 } else {
                     // user has no favourite places in database
                 }
@@ -404,10 +407,30 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     // method to request favourite place details using place ids
     public void requestFavPlaceDetails(){
+
+        this.noFavPlacesLoaded = new AtomicInteger(0);
+
+        // callback for tracking when the details are loaded
+        final GetPlaceDetails.Callback callback = new GetPlaceDetails.Callback(){
+
+            @Override
+            public void onDone(JSONObject result) {
+                // add to the counter and get the latest value
+                final int loadedCount = noFavPlacesLoaded.incrementAndGet();
+
+                if(loadedCount == favPlacesIdList.size()){
+
+                    // they are all loaded, do stuff with them like populate spinner etc
+
+                }
+            }
+        };
+
         for(int i=0; i<favPlacesIdList.size(); i++){
             String id = favPlacesIdList.get(i);
-            ((MainActivity)getActivity()).getDetails(id, eventFragment);
+            ((MainActivity)getActivity()).getDetails(id, eventFragment, callback);
         }
+
     }
 
     // method to get back the favourite place details

@@ -26,6 +26,8 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
 
     private static final String TAG = "GetPlaceData ******* ";
 
+    private final Callback callback;
+
     Fragment fromFragment;
 
     String googlePlaceData;
@@ -35,6 +37,15 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             placeAddress, placePhoneNo, placeWebsite;
 
     private Double placeLat, placeLng;
+
+
+    public GetPlaceDetails() {
+        this.callback = null;
+    }
+
+    public GetPlaceDetails(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     protected String doInBackground(Object... params) {
@@ -109,6 +120,11 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             // place id
             placeId = placeDetailsJsonArray.getString("place_id");
 
+            // pass to callback if set
+            if(this.callback != null){
+                this.callback.onDone(jsonObject);
+            }
+
         } catch (JSONException e) {
             Log.d(TAG, "Error parsing json results");
             e.printStackTrace();
@@ -136,5 +152,13 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             // calling the fillSpinner method, passing in place details
             eventFragment.retrieveFavPlaceDetails(placeId, placeName, placeAddress);
         }
+
+
+    }
+
+    public interface Callback {
+
+        void onDone(JSONObject result);
+
     }
 }

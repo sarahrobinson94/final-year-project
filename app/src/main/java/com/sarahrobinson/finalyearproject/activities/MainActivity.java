@@ -54,7 +54,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sarahrobinson.finalyearproject.classes.CircleTransform;
-import com.sarahrobinson.finalyearproject.classes.Event;
 import com.sarahrobinson.finalyearproject.classes.Friendship;
 import com.sarahrobinson.finalyearproject.classes.GetPlaceDetails;
 import com.sarahrobinson.finalyearproject.R;
@@ -519,13 +518,17 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void getDetails(String placeId, Fragment fromFragment){
+        getDetails(placeId, fromFragment, null);
+    }
+
+    public void getDetails(String placeId, Fragment fromFragment, GetPlaceDetails.Callback callback){
         Log.d(TAG, "getPlaceDetails method");
 
         String url = getUrl(placeId);
         Object[] DataTransfer = new Object[2];
         DataTransfer[0] = url;
         DataTransfer[1] = fromFragment;
-        GetPlaceDetails getPlaceDetails = new GetPlaceDetails();
+        GetPlaceDetails getPlaceDetails = new GetPlaceDetails(callback);
         getPlaceDetails.execute(DataTransfer);
     }
 

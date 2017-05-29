@@ -77,7 +77,7 @@ public class FavouritesFragment extends Fragment implements View.OnClickListener
         View rootView = inflater.inflate(R.layout.fragment_favourites_list, container, false);
 
         // changing actionBar title
-        getActivity().setTitle("Favourites");
+        getActivity().setTitle("Favourites");  
 
         // getting fragment context
         favouritesFragmentContext = getActivity();

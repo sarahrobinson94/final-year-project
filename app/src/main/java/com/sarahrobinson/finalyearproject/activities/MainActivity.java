@@ -68,6 +68,7 @@ import com.sarahrobinson.finalyearproject.fragments.FriendsFragment;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragmentTabFriends;
 import com.sarahrobinson.finalyearproject.fragments.FriendsFragmentTabRequests;
 import com.sarahrobinson.finalyearproject.fragments.HomeFragment;
+import com.sarahrobinson.finalyearproject.fragments.MapFragmentTabList;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 import com.sarahrobinson.finalyearproject.fragments.SettingsFragment;
 import com.squareup.picasso.Picasso;
@@ -137,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements
 
     // to store instance of current fragment
     public static HomeFragment homeFragment;
+    public static MapFragment mapFragment;
+    public static MapFragmentTabList mapFragmentTabList;
     public static FavouritesFragment favouritesFragment;
     public static PlaceFragment placeFragment;
     public static FriendsFragment friendsFragment;

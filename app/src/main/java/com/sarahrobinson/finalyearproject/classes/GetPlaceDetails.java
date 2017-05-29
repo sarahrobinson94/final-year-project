@@ -7,6 +7,7 @@ import android.util.Log;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 import com.sarahrobinson.finalyearproject.fragments.EventFragment;
 import com.sarahrobinson.finalyearproject.fragments.FavouritesFragment;
+import com.sarahrobinson.finalyearproject.fragments.MapFragmentTabList;
 import com.sarahrobinson.finalyearproject.fragments.PlaceFragment;
 
 import org.json.JSONArray;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.eventFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.favouritesFragment;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.getContext;
+import static com.sarahrobinson.finalyearproject.activities.MainActivity.mapFragmentTabList;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
 
 /**
@@ -144,6 +146,13 @@ public class GetPlaceDetails extends AsyncTask<Object, String, String> {
             Log.d(TAG, "fromFragment = FavouritesFragment");
             // calling the inflateNewListItem method, passing in the place details
             favouritesFragment.inflateNewListItem(placeId, placeImage, placeType, placeName,
+                    placeAddress);
+        }
+        else if (fromFragment instanceof MapFragmentTabList)
+        {
+            Log.d(TAG, "fromFragment = MapFragmentTabList");
+            // calling the inflateNewListItem method, passing in the place details
+            mapFragmentTabList.inflateNewListItem(placeId, placeImage, placeType, placeName,
                     placeAddress);
         }
     }

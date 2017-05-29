@@ -75,7 +75,7 @@ public class MapFragmentTabMap extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_map_tab_map, container, false);
 
         // changing actionBar title
-        getActivity().setTitle("Map");
+        getActivity().setTitle("Results");
 
         fragmentManager = getFragmentManager();
 

@@ -13,9 +13,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sarahrobinson.finalyearproject.activities.MainActivity;
 
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceAddress;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceId;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceName;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceAddress;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceName;
 
 /**
  * Created by sarahrobinson on 16/04/2017.

@@ -47,24 +47,11 @@ import static com.sarahrobinson.finalyearproject.activities.MainActivity.locatio
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.placeFragment;
 import static com.sarahrobinson.finalyearproject.fragments.HomeFragment.takeawaySelected;
 
-public class MapFragment extends Fragment implements
-        OnMapReadyCallback,
-        LocationListener {
+public class MapFragment extends Fragment {
 
     private static final String TAG = "MapFragment ******* ";
 
-    private FragmentManager fragmentManager;
-
     private FragmentTabHost mTabHost;
-
-    private GoogleMap googleMap;
-    private LatLng latLng;
-    private double latitude, longitude;
-    private Marker currLocationMarker; // TODO: 17/04/2017 needed ??
-    private Marker selectedMarker;
-
-    public static String thePlaceId, thePlaceName, thePlaceAddress, thePlacePhoneNo;
-    public static String selectedPlaceId;
 
     public MapFragment() {
         // Required empty public constructor
@@ -75,11 +62,6 @@ public class MapFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // inflating layout
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
-        // changing actionBar title
-        getActivity().setTitle("Results");
-
-        fragmentManager = getFragmentManager();
 
         // setting up tabs
         mTabHost = (FragmentTabHost)rootView.findViewById(tabhost);
@@ -111,19 +93,6 @@ public class MapFragment extends Fragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // loading the map fragment on startup
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
-        mapFragment.getMapAsync(this);
-
-        /*
-        setUpMapIfNeeded();
-        */
-    }
-
-    @Override
     public void onResume() {
         // setting initial tab text colour
         for(int i=0;i<mTabHost.getTabWidget().getChildCount();i++)
@@ -136,181 +105,5 @@ public class MapFragment extends Fragment implements
             tvSelected.setTextColor(Color.parseColor("#666666"));
         }
         super.onResume();
-    }
-
-    /*
-    @Override
-    public void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
-    }
-
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (googleMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
-            mapFragment.getMapAsync(this);
-        }
-    }
-    */
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                               MAP INITIALIZATION                              //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap mMap) {
-        Log.d(TAG, "onMapReady");
-        googleMap = mMap;
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        // necessary permissions check
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // permission not granted
-            Toast.makeText(getActivity(), "Permission to access the device's location has not been" +
-                    "granted", Toast.LENGTH_LONG).show();
-        }else{
-            googleMap.setMyLocationEnabled(true);
-            setMarker(location);
-            findPlaces(location);
-        }
-        // marker info window onclick listener
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Log.d(TAG, "info window clicked");
-                selectedMarker = marker;
-                selectedPlaceId = selectedMarker.getTag().toString();
-                fromFragmentString = "MapFragment";
-                placeFragment = new PlaceFragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_main, placeFragment)
-                        // TODO: 17/04/2017 fix crash when navigating back to this fragment
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-    }
-
-    // add map marker and zoom to location
-    public void setMarker(Location mLocation){
-        Log.d(TAG, "setMarker");
-        location = mLocation;
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                             HANDLING LOCATION CHANGE                          //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-
-    // TODO: 17/04/2017 check this works
-
-    // Method called when user's location changes
-    @Override
-    public void onLocationChanged(Location mLocation) {
-        Log.d(TAG, "onLocationChanged");
-        location = mLocation;
-        findPlaces(location);
-        // Remove previous location marker
-        if (currLocationMarker != null) {
-            currLocationMarker.remove();
-        }
-        // Place current location marker and move map camera
-        setMarker(location);
-        // Stop location updates
-        if (googleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        }
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                                  NEARBY SEARCH                                //
-    ///////////////////////////////////////////////////////////////////////////////////
-
-    public void findPlaces(Location mLocation){
-        Log.d("findNearbyPlaces", "entered");
-        googleMap.clear();
-
-        // user's location
-        location = mLocation;
-
-        // if a location has not been specified in search, use current location
-        if (sLocation == null || sLocation == ""){
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        // if a location has been specified, get latitude & longitude of location
-        }else{
-            if(Geocoder.isPresent()){
-                try {
-                    String location = sLocation;
-                    Geocoder gc = new Geocoder(getActivity());
-                    List<Address> addresses = gc.getFromLocationName(location, 3);
-                    for (Address a : addresses) {
-                        latitude = a.getLatitude();
-                        longitude = a.getLongitude();
-                    }
-                } catch (IOException e) {
-                    // TODO: 17/04/2017 change to toast message
-                    Log.d("findPlaces", "An error occurred retrieving latitude & longitude of " +
-                            "location specified in search.");
-                }
-            }
-        }
-
-        String url = getUrl(latitude, longitude);
-        Object[] DataTransfer = new Object[2];
-        DataTransfer[0] = googleMap;
-        DataTransfer[1] = url;
-        GetPlacesData getPlacesData = new GetPlacesData();
-        getPlacesData.execute(DataTransfer);
-
-        // TODO: 16/04/2017 place current location marker ??
-    }
-
-    private String getUrl(double latitude, double longitude)
-    {
-        // checking which place filters have been selected and creating string to append to url
-        String types = "";
-        if (cafeSelected){
-            types = types + "cafe|";
-        }
-        if (restaurantSelected){
-            types = types + "restaurant|";
-        }
-        if (takeawaySelected){
-            types = types + "meal_takeaway|";
-        }
-        if (barSelected){
-            types = types + "bar|";
-        }
-
-        if (types != "" && types.length() > 0 && types.charAt(types.length()-1)=='|') {
-            // remove "|" from end of types string
-            types = types.substring(0, types.length()-1);
-        }
-
-        // building url
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude + "&radius=" + sRadius + "&type=" + types);
-        googlePlacesUrl.append("&key=" + "AIzaSyDqO1XsZmh6XI1rqPbiaa2zEqqG7InpDCI");
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
     }
 }

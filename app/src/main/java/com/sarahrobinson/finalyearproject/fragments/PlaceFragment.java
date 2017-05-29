@@ -43,7 +43,7 @@ import static com.sarahrobinson.finalyearproject.activities.MainActivity.firebas
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.fromFragmentString;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.location;
 import static com.sarahrobinson.finalyearproject.activities.MainActivity.selectedFavPlaceId;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.selectedPlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.selectedPlaceId;
 
 public class PlaceFragment extends Fragment implements View.OnClickListener{
 

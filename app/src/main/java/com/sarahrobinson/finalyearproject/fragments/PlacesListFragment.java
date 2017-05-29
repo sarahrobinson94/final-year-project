@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.sarahrobinson.finalyearproject.R;
 
 import static com.sarahrobinson.finalyearproject.classes.GetPlacesData.placesList;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceAddress;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceId;
-import static com.sarahrobinson.finalyearproject.fragments.MapFragment.thePlaceName;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceAddress;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceId;
+import static com.sarahrobinson.finalyearproject.fragments.MapFragmentTabMap.thePlaceName;
 
 public class PlacesListFragment extends Fragment {
 

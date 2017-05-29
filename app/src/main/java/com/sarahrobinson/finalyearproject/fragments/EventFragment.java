@@ -111,8 +111,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strInviteeName;
     private String strInviteePhoto;
     private List<String> fullInviteeListFromDb = new ArrayList<>();
-    private AtomicInteger noInviteesLoaded;
-    private boolean hasInvitees = false;
 
     public EventFragment() {
         // Required empty public constructor
@@ -481,8 +479,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                                     for (DataSnapshot snapshot4 : snapshot3.getChildren()) {
                                         String eventId = snapshot4.getKey().toString();
                                         if (eventId.equals(selectedEventId)) {
-                                            // adding users id to list
-                                            fullInviteeListFromDb.add(String.valueOf(snapshot2.getKey()));
+                                            // adding user id to list
+                                            String userId = String.valueOf(snapshot2.getKey());
+                                            if (!userId.equals(currentUserId)) {
+                                                fullInviteeListFromDb.add(userId);
+                                            }
                                         }
                                     }
                                 }
@@ -717,13 +718,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private void viewState(View view){
         // make views not editable
         txtEventName.setEnabled(false);
-        //txtEventDsc.setEnabled(false);
         // hide views
-        btnDatePicker.setVisibility(view.GONE);
-        btnTimePicker.setVisibility(view.GONE);
+        btnDatePicker.setVisibility(view.INVISIBLE);
+        btnTimePicker.setVisibility(view.INVISIBLE);
         spinnerLocation.setVisibility(view.GONE);
         btnInvite.setVisibility(view.GONE);
         btnEventCancel.setVisibility(view.GONE);
+        tvNoAttendees.setVisibility(view.GONE);
         // show views
         tvEventLocation.setVisibility(view.VISIBLE);
 

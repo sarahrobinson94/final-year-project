@@ -141,7 +141,7 @@
                 android:id="@+id/btnFbLoginLarge"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@drawable/circle_fb_blue"
+                android:background="@drawable/circle_fb_icon1"
                 android:layout_marginRight="10dp" />
 
             <!-- google login -->
@@ -149,7 +149,7 @@
                 android:id="@+id/btnGoogleLoginLarge"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@drawable/circle_google_red"
+                android:background="@drawable/circle_google_red3"
                 android:layout_marginLeft="10dp" />
 
         </LinearLayout>

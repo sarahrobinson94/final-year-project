@@ -53,8 +53,6 @@ public class MapFragmentTabMap extends Fragment implements
 
     private FragmentManager fragmentManager;
 
-    private SupportMapFragment supportMapFragment;
-
     private GoogleMap googleMap;
     private LatLng latLng;
     private double latitude, longitude;
@@ -74,19 +72,27 @@ public class MapFragmentTabMap extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_find_friends_tab_google, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_map_tab_map, container, false);
 
         // changing actionBar title
         getActivity().setTitle("Map");
 
         fragmentManager = getFragmentManager();
 
-        // loading the map fragment on startup
-        supportMapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.fragmentMap);
-        supportMapFragment.getMapAsync(this);
-
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // loading the map fragment on startup
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragmentMap);
+        mapFragment.getMapAsync(this);
+
+        /*
+        setUpMapIfNeeded();
+        */
     }
 
     /*

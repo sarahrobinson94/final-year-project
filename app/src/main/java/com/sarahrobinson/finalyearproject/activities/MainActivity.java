@@ -336,12 +336,6 @@ public class MainActivity extends AppCompatActivity implements
                     .replace(R.id.content_main, eventsFragment)
                     //.addToBackStack(null)
                     .commit();
-        } else if (id == R.id.nav_settings) {
-            settingsFragment = new SettingsFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_main, settingsFragment)
-                    //.addToBackStack(null)
-                    .commit();
         } else if (id == R.id.nav_logout) {
             // firebase user sign out
             firebaseAuth.signOut();

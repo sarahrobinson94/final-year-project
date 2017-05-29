@@ -19,19 +19,22 @@
             android:id="@+id/nav_events"
             android:icon="@drawable/ic_menu_events_24dp"
             android:title="Events" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_logout_24dp"
+            android:title="Log Out" />
     </group>
 
+    <!--
     <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Settings" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_logout_24dp"
-                android:title="Log Out" />
+
         </menu>
     </item>
+    -->
 
 </menu>

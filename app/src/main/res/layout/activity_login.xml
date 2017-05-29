@@ -17,7 +17,7 @@
         android:layout_height="150dp">
 
         <ImageView
-            android:src="@drawable/circle_white"
+            android:src="@drawable/logo2"
             android:contentDescription="Logo"
             android:layout_gravity="center"
             android:layout_width="120dp"

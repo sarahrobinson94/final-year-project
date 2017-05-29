@@ -111,6 +111,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private String strInviteeName;
     private String strInviteePhoto;
     private List<String> fullInviteeListFromDb = new ArrayList<>();
+    private AtomicInteger noInviteesLoaded;
     private boolean hasInvitees = false;
 
     public EventFragment() {
@@ -278,6 +279,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 // clearing lists
                 inflatedLayoutEventInvitees.removeAllViews();
                 dialogFriendIdList.clear();
+                fullInviteeListFromDb.clear();
                 // getting event details to save to db
                 getEventDetails(view);
             // if onclick edit
@@ -297,8 +299,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         else if (view == btnEventCancel)
         {
             Log.d(TAG, "CANCELLING");
-            Log.d(TAG, "fromFragmentString: " + fromFragmentString);
+            // clearing lists
+            inflatedLayoutEventInvitees.removeAllViews();
             dialogFriendIdList.clear();
+            fullInviteeListFromDb.clear();
             if (fromFragmentString == "Create event") {
                 Toast.makeText(getActivity(), "Event creation cancelled", Toast.LENGTH_SHORT).show();
                 // go back to events list
@@ -361,7 +365,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "Favourite Places: " + favPlacesIdList);
                     }
                     requestFavPlaceDetails();
-
                 } else {
                     // user has no favourite places in database
                 }
@@ -383,13 +386,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onDone(String id, String name, String address) {
-
                 // add to the counter and get the latest value
                 final int loadedCount = noFavPlacesLoaded.incrementAndGet();
-
                 // store the fav place details in arrays
                 retrieveFavPlaceDetails(id, name, address);
-
                 // populate spinner if all fav place details have been retrieved
                 if (loadedCount == favPlacesIdList.size()) {
                     populateSpinner();
@@ -468,25 +468,29 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     public void retrieveInvitees(final View view) {
 
-        // TODO: 28/05/2017 FIX QUERY
-        Query queryInvitees = databaseRef.child("users").orderByChild("events").orderByKey().equalTo(selectedEventId);
+        Query query1 = databaseRef.child("users");
 
-        queryInvitees.addListenerForSingleValueEvent(new ValueEventListener() {
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.d(TAG, "Getting event invitees by id");
-                        // adding users ids to list
-                        fullInviteeListFromDb.add(String.valueOf(snapshot.getKey()));
-                        Log.d(TAG, "Friend ids: " + fullInviteeListFromDb);
+            public void onDataChange(DataSnapshot snapshot1) {
+                if (snapshot1.exists()) {
+                    for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+                        if (snapshot2.hasChild("events")) {
+                            for (DataSnapshot snapshot3 : snapshot2.getChildren()) {
+                                if (snapshot3.getKey().equals("events")) {
+                                    for (DataSnapshot snapshot4 : snapshot3.getChildren()) {
+                                        String eventId = snapshot4.getKey().toString();
+                                        if (eventId.equals(selectedEventId)) {
+                                            // adding users id to list
+                                            fullInviteeListFromDb.add(String.valueOf(snapshot2.getKey()));
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    tvNoAttendees.setVisibility(view.GONE);
-                    layoutHorizontalScrollViewInvitees.setVisibility(View.VISIBLE);
-                } else {
-                    tvNoAttendees.setVisibility(view.VISIBLE);
-                    layoutHorizontalScrollViewInvitees.setVisibility(View.GONE);
                 }
+                showInviteeList(view);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -494,33 +498,18 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    /*
-    public void checkIfInviteesDone(){
-        if ((fullInviteeListFromDb.size() > 0)) {
-            showInviteeList();
-            exitCheckInvitees = true;
-            try {
-                checkInviteesRetrievedThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public void showInviteeList(View view) {
+        if (fullInviteeListFromDb.size() == 0) {
+            tvNoAttendees.setVisibility(view.VISIBLE);
+            layoutHorizontalScrollViewInvitees.setVisibility(View.GONE);
+        } else {
+            tvNoAttendees.setVisibility(view.GONE);
+            layoutHorizontalScrollViewInvitees.setVisibility(View.VISIBLE);
+            // get details and inflate layout for each invited friend
+            for (int i=0; i<fullInviteeListFromDb.size(); i++) {
+                String userId = fullInviteeListFromDb.get(i).toString();
+                retrieveUserDetails(userId);
             }
-        }else{
-            // sleep for 1 second then re-check
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                checkIfInviteesDone();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    */
-
-    public void showInviteeList() {
-        // get details and inflate layout for each invited friend
-        for (int i=0; i<fullInviteeListFromDb.size(); i++) {
-            String userId = fullInviteeListFromDb.get(i).toString();
-            retrieveUserDetails(userId);
         }
     }
 
@@ -740,7 +729,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
         checkUserStatusForEvent();
         retrieveSelectedEventDetails();
-        //retrieveInvitees(view);
+        retrieveInvitees(view);
     }
 
     public void checkUserStatusForEvent() {

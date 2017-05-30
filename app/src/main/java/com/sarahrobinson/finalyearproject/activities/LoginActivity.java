@@ -249,9 +249,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         setUpUser(name, email, image);
                                         // saving user to firebase database
                                         onAuthenticationSuccess(firebaseUser);
-                                        // taking user to onboarding screens
-                                        Intent intentOnboarding = new Intent(LoginActivity.this,OnboardingActivity.class);
-                                        startActivity(intentOnboarding);
+                                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                        progressDialog.dismiss();
+                                        finish();
+                                        startActivity(homeIntent);
                                     }
                                 }
                                 @Override
